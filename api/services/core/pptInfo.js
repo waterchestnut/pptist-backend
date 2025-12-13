@@ -51,7 +51,6 @@ export async function saveMyPpt(curUserInfo, pptInfo, skipOperatorCheck = false)
         slideIndex: pptInfo.slideIndex,
         viewportSize: pptInfo.viewportSize,
         viewportRatio: pptInfo.viewportRatio,
-        templates: pptInfo.templates,
         operator: {
             userCode: curUserInfo.userCode,
             realName: curUserInfo.realName
@@ -119,7 +118,6 @@ export async function copyPpt(curUserInfo, pptCodes = [], externalSource) {
         slideIndex: _.slideIndex,
         viewportSize: _.viewportSize,
         viewportRatio: _.viewportRatio,
-        templates: _.templates,
         operator: {
             userCode: curUserInfo.userCode,
             realName: curUserInfo.realName

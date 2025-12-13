@@ -26,7 +26,6 @@ const tools = pptonline.tools
  * @property {Number} viewportRatio 可视区域比例，默认16:9
  * @property {Number} width 页面宽度
  * @property {Number} height 页面高度
- * @property {Schema.Types.Mixed[]} templates 课件模版（整个编辑器可用的模型，该字段已废弃）
  * @property {Schema.Types.Mixed} operator 课件制作者，参加Operator
  * @property {String} coverUrl 课件封面图
  * @property {String} firstSlideImgUrl 课件首页截图
@@ -58,7 +57,6 @@ const pptInfoSchema = new Schema({
     viewportRatio: {type: Number, description: '可视区域比例'},
     width: {type: Number, description: '页面宽度'},
     height: {type: Number, description: '页面高度'},
-    templates: {type: [Object], default: [], description: '模版'},
     operator: {type: Operator, description: '作者'},
     coverUrl: {type: String, description: '课件封面图'},
     firstSlideImgUrl: {type: String, description: '课件首页截图'},
