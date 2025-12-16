@@ -88,13 +88,14 @@ export async function extractorTmplPrompts(tmplCode, tmplInfo) {
         examples.push(example)
         slide.elements?.forEach(element => {
             let groupId = element.groupId
-            if (element.textType) {
-                let textTypeInfo = textTypeOptions.find(_ => _.value === element.textType)
+            let textType = element.textType || element.text?.type
+            if (textType) {
+                let textTypeInfo = textTypeOptions.find(_ => _.value === textType)
                 if (!textTypeInfo) {
                     return
                 }
                 if (['title', 'subtitle', 'content'].includes(textTypeInfo.value)) {
-                    example.data[textTypeInfo.tmplKey || textTypeInfo.value] = `${textTypeInfo.label}，建议${getTextFromHtml(element.content)?.length}个字以内`
+                    example.data[textTypeInfo.tmplKey || textTypeInfo.value] = `${textTypeInfo.label}，建议${getTextFromHtml(element.content || element.text?.content)?.length}个字以内`
                 }
                 if (['item', 'itemTitle'].includes(textTypeInfo.value)) {
                     let itemInfo
@@ -108,7 +109,7 @@ export async function extractorTmplPrompts(tmplCode, tmplInfo) {
                         }
                         example.data.items.push(itemInfo)
                     }
-                    itemInfo[textTypeInfo.tmplKey || textTypeInfo.value] = `${textTypeInfo.label}，建议${getTextFromHtml(element.content)?.length}个字以内`
+                    itemInfo[textTypeInfo.tmplKey || textTypeInfo.value] = `${textTypeInfo.label}，建议${getTextFromHtml(element.content || element.text?.content)?.length}个字以内`
                     itemInfo.elements[textTypeInfo.value] = element
                 }
             } else if (element.imageType) {
