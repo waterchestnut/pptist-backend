@@ -5,6 +5,7 @@
  */
 
 import {chromium} from 'playwright'
+import {addAccessToken} from '../../grpc/clients/token.js'
 
 const config = pptonline.config
 
@@ -90,10 +91,11 @@ export async function execConsoleFun() {
 }
 
 /*调用前端生成PPT结构的数据*/
-export async function packagePPT(contentObj, tmplCode) {
+export async function packagePPT(contentObj, tmplCode, userCode) {
+    let tokenInfo = await addAccessToken(userCode, 10 * 60)
     const browser = await chromium.launch({headless: true})
     const page = await browser.newPage()
-    await page.goto(`${config.frontendBaseUrl}?isMock=1`)
+    await page.goto(`${config.frontendBaseUrl}?isMock=1&accessToken=${encodeURIComponent(tokenInfo?.accessToken)}`)
     await page.waitForSelector('.element-content', {state: 'visible', timeout: 60000})
     const result = await page.evaluate(async (contentObj) => {
         return genPPTContent(contentObj, tmplCode)

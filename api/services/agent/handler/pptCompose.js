@@ -25,7 +25,7 @@ class PPTCompose extends BaseHandler {
                 logGroup: 'error',
             }
         }
-        let pptObj = await packagePPT(JSON.parse(agentTaskInfo.parentRet.pptContent), agentTaskInfo.params?.tmplCode)
+        let pptObj = await packagePPT(JSON.parse(agentTaskInfo.parentRet.pptContent), agentTaskInfo.params?.tmplCode, operator.userCode || 'system')
         let pptCode = pptObj.pptCode = pptObj.pptCode || agentTaskInfo.params?.pptCode || tools.getUUID()
         let title = pptObj.title = agentTaskInfo.params?.pptTitle || pptObj.title
         let operator = agentTaskInfo.params?.operator || {}
