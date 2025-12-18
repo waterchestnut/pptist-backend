@@ -1,0 +1,67 @@
+import React, {ForwardRefRenderFunction, useImperativeHandle, useRef, useState} from 'react'
+import {Modal} from 'antd'
+import {getAccessToken} from '@/utils/authority'
+
+export type SlideEditProps = {
+  onClose?: (resData?: any) => Promise<void>;
+  title?: string;
+};
+
+export type SlideEditAction = {
+  show: (record?: any) => void;
+  close: () => void;
+}
+
+const SlideEdit: ForwardRefRenderFunction<SlideEditAction, SlideEditProps> = (props, ref) => {
+  const {onClose, title} = props
+  const [isOpen, setIsOpen] = useState(false)
+  const [pptInfo, setPptInfo] = useState<any>(null)
+  const previewRef = useRef<HTMLIFrameElement>(null)
+
+  const handleCancel = () => {
+    setIsOpen(false)
+    onClose && onClose()
+  }
+
+  useImperativeHandle(ref, () => ({
+    show: async (info: any) => {
+      setPptInfo(info || null)
+      setIsOpen(true)
+    },
+    close: () => {
+      handleCancel()
+    }
+  }))
+
+  return (
+    <Modal
+      title={title || `课件模版制作`}
+      open={isOpen}
+      onCancel={handleCancel}
+      centered={true}
+      destroyOnClose={true}
+      forceRender={true}
+      footer={null}
+      width='100%'
+      className='modal-fixed modal-no-footer'
+    >
+      {
+        pptInfo?.pptCode ? <iframe
+          id={`iframe-${pptInfo.pptCode}`}
+          style={{width: '100%', height: 'calc(100% - 8px)', overflow: 'visible'}}
+          onLoad={() => {
+          }}
+          ref={previewRef}
+          // @ts-ignore
+          src={`${PPTONLINE_PLATFORM_BASE}/?pptCode=${pptInfo.pptCode}&accessToken=${getAccessToken()}`}
+          width='100%'
+          height='100%'
+          scrolling='no'
+          frameBorder='0'
+        /> : null
+      }
+    </Modal>
+  )
+}
+
+export default React.forwardRef(SlideEdit)
