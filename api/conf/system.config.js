@@ -24,7 +24,6 @@ export default {
             authSource: 'admin'
         }
     },
-
     /** redis 配置，存储session等信息 */
     redisConfig: {
         host: process.env['REDIS_HOST'],
@@ -34,7 +33,7 @@ export default {
         password: process.env['REDIS_PASSWORD']
     },
     /** 分布式锁的Redis配置 */
-    redlockRedis: process.env['REDLOCK_UEI'],
+    redlockRedis: process.env['REDLOCK_URI'],
     /** 加密cookie的秘钥 */
     cookieSecret: process.env['COOKIE_SECRET'],
     /** 默认缓存数据过期时间，单位：分钟 */
