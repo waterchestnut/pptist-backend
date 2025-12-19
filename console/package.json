@@ -1,8 +1,8 @@
 {
   "name": "pptonline.console",
-  "version": "1.0.3",
-  "private": true,
-  "description": "课件管理系统",
+  "version": "1.2.1",
+  "license": "MIT",
+  "description": "在线课件控制台",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
