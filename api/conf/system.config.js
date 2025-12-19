@@ -39,7 +39,7 @@ export default {
     /** 默认缓存数据过期时间，单位：分钟 */
     cacheExpiresTime: 60 * 24 * 7,
     /** 域名跨域访问的白名单 */
-    allowedOrigins: [/localhost(:\d*)?$/, /127\.0\.0\.1(:\d*)?$/],
+    allowedOrigins: [/localhost(:\d*)?$/, /127\.0\.0\.1(:\d*)?$/, /jtxuexi\.com(:\d*)?$/],
     /** kafka相关的配置 */
     kafka: {
         /** 客户端ID */
