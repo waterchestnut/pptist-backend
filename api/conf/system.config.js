@@ -127,7 +127,7 @@ export default {
         /** 最大传送数据：2560M */
         maxMessageLength: 2560 * 1024 * 1024,
     },
-    /** 知识库Python服务的配置 */
+    /** 资源转换服务的配置 */
     transformConfig: {
         /** 基地址 */
         baseUrl: process.env['TRANSFORM_URI'],

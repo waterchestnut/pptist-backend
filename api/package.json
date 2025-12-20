@@ -2,7 +2,8 @@
   "type": "module",
   "name": "pptonline.api",
   "version": "1.2.1",
-  "description": "在线课件API",
+  "license": "MIT",
+  "description": "在线课件服务",
   "main": "app.js",
   "directories": {
     "test": "test"
@@ -16,7 +17,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "MIT",
   "dependencies": {
     "@fastify/autoload": "^6.1.0",
     "@fastify/cookie": "^11.0.2",
