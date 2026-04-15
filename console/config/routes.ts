@@ -29,7 +29,7 @@ export default [
         icon: 'container',
         path: '/ppt/list',
         access: 'normalRouteFilter',
-        authority: ['all'],
+        authority: ['pptonline-ppt-ipmi'],
         component: './Ppt/List',
       },
       {
@@ -37,7 +37,7 @@ export default [
         icon: 'schedule',
         path: '/my-ppt/list',
         access: 'normalRouteFilter',
-        authority: ['all'],
+        authority: ['pptonline-ppt-my'],
         component: './MyPpt/List',
       },
       {
@@ -45,7 +45,7 @@ export default [
         icon: 'appstore',
         path: '/tmpl/list',
         access: 'normalRouteFilter',
-        authority: ['all'],
+        authority: ['pptonline-tmpl-ipmi'],
         component: './Tmpl/List',
       },
       {
@@ -53,7 +53,7 @@ export default [
         icon: 'appstoreAdd',
         path: '/my-tmpl/list',
         access: 'normalRouteFilter',
-        authority: ['all'],
+        authority: ['pptonline-tmpl-my'],
         component: './MyTmpl/List',
       },
       {
