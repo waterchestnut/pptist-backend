@@ -2,6 +2,8 @@
 
 PPTist 在线演示文稿后端服务，为 [pptist-frontend](https://github.com/pptist/pptist) 提供完整的服务端支持，包含 PPT JSON 格式存储、AI 生成 PPT 后端接口、控制台管理等功能。
 
+**在线体验地址👉：[https://micro.lc.jtxuexi.com/sub/pptonline](https://micro.lc.jtxuexi.com/sub/pptonline)**
+
 ## 项目结构
 
 ```
