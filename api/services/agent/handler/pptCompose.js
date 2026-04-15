@@ -30,7 +30,7 @@ class PPTCompose extends BaseHandler {
         let title = pptObj.title = agentTaskInfo.params?.pptTitle || pptObj.title
         let operator = agentTaskInfo.params?.operator || {}
         await pptInfoDac.upsert({
-            ...pptObj,
+            ...pptObj,pptCode,title,
             operator: {
                 userCode: operator.userCode || 'system',
                 realName: operator.realName || '系统生成'
