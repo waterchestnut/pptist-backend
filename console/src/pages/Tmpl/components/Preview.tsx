@@ -5,6 +5,7 @@ import {getAccessToken} from '@/utils/authority'
 export type PreviewProps = {
   onClose?: (resData?: any) => Promise<void>;
   title?: string;
+  version?: number;
 };
 
 export type PreviewAction = {
@@ -13,7 +14,7 @@ export type PreviewAction = {
 }
 
 const Preview: ForwardRefRenderFunction<PreviewAction, PreviewProps> = (props, ref) => {
-  const {onClose, title} = props
+  const {onClose, title, version} = props
   const [isOpen, setIsOpen] = useState(false)
   const [pptInfo, setPptInfo] = useState<any>(null)
   const previewRef = useRef<HTMLIFrameElement>(null)
@@ -53,7 +54,7 @@ const Preview: ForwardRefRenderFunction<PreviewAction, PreviewProps> = (props, r
           }}
           ref={previewRef}
           // @ts-ignore
-          src={`${PPTONLINE_PLATFORM_BASE}/preview?pptCode=${pptInfo.pptCode}&accessToken=${getAccessToken()}`}
+          src={`${PPTONLINE_PLATFORM_BASE}/preview?pptCode=${pptInfo.pptCode}&accessToken=${getAccessToken()}&version=${version}`}
           width='100%'
           height='100%'
           scrolling='no'

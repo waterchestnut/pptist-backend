@@ -1,7 +1,7 @@
 import {ActionType, PageContainer, ProCard, ProList} from '@ant-design/pro-components'
 import {useModel} from '@umijs/max'
 import {Button, Card, Popconfirm, Tag, Typography, theme, Space} from 'antd'
-import React, {createRef, ReactNode, useRef} from 'react'
+import React, {createRef, ReactNode, useRef, useState} from 'react'
 import {createStyles} from 'antd-style'
 import {errorMessage, successMessage} from '@/utils/msg'
 import {
@@ -65,9 +65,11 @@ const TmplList: React.FC<TmplListProps> = (props) => {
   const previewRef = createRef<PreviewAction>()
   const slideEditRef = createRef<SlideEditAction>()
   const promptViewRef = createRef<PromptViewAction>()
+  const [version, setVersion] = useState(Date.now())
 
   const localEditFinish = async () => {
     actionRef.current?.reloadAndRest?.()
+    setVersion(Date.now())
   }
 
   return (
@@ -214,7 +216,7 @@ const TmplList: React.FC<TmplListProps> = (props) => {
                     key='promptView'
                     type='text'
                     icon={
-                      <JavaScriptOutlined />
+                      <JavaScriptOutlined/>
                     }
                     onClick={() => {
                       promptViewRef?.current?.show(record.pptCode)
@@ -313,8 +315,8 @@ const TmplList: React.FC<TmplListProps> = (props) => {
       />
       <Edit ref={editRef} onEditFinish={localEditFinish} apiRelativeUrls={apiRelativeUrls}
             addHidePptCode={addHidePptCode} forcePptType={forcePptType}/>
-      <Preview ref={previewRef}/>
-      <SlideEdit ref={slideEditRef} onClose={localEditFinish}/>
+      <Preview ref={previewRef} version={version}/>
+      <SlideEdit ref={slideEditRef} onClose={localEditFinish} version={version}/>
       <PromptView ref={promptViewRef}/>
     </ProCard>
   )

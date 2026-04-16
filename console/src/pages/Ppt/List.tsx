@@ -56,13 +56,14 @@ export type PptListProps = {
   defaultFilter?: any;
 };
 
-const renderCover = (pptInfo: any, styles: any) => {
+const renderCover = (pptInfo: any, styles: any, version: number) => {
   if (pptInfo.coverUrl || pptInfo.firstSlideImgUrl) {
+    let url = getDocHttpUrl(pptInfo.firstSlideImgUrl || pptInfo.coverUrl)
     return (
       <img
         className={styles.coverImg}
         alt='cover'
-        src={getDocHttpUrl(pptInfo.firstSlideImgUrl || pptInfo.coverUrl)}
+        src={`${url}${url.includes('?') ? '&' : '?'}version=${version}`}
       />
     )
   }
@@ -75,7 +76,7 @@ const renderCover = (pptInfo: any, styles: any) => {
       onLoad={() => {
       }}
       // @ts-ignore
-      src={`${PPTONLINE_PLATFORM_BASE}/first-slide?pptCode=${pptInfo.pptCode}&accessToken=${getAccessToken()}`}
+      src={`${PPTONLINE_PLATFORM_BASE}/first-slide?pptCode=${pptInfo.pptCode}&accessToken=${getAccessToken()}&version=${version}`}
       width='100%'
       height='100%'
       scrolling='no'
@@ -93,9 +94,11 @@ const PptList: React.FC<PptListProps> = (props) => {
   const previewRef = createRef<PreviewAction>()
   const slideEditRef = createRef<SlideEditAction>()
   const [adding, setAdding] = useState(false)
+  const [version, setVersion] = useState(Date.now())
 
   const localEditFinish = async () => {
     actionRef.current?.reloadAndRest?.()
+    setVersion(Date.now())
   }
 
   const addEmptyPpt = async () => {
@@ -212,7 +215,7 @@ const PptList: React.FC<PptListProps> = (props) => {
               return (
                 <div className={styles.coverContainer}>
                   {
-                    renderCover(record, styles)
+                    renderCover(record, styles, version)
                   }
                 </div>
               )
@@ -302,8 +305,8 @@ const PptList: React.FC<PptListProps> = (props) => {
           }
         }
       />
-      <Preview ref={previewRef} title='课件预览'/>
-      <SlideEdit ref={slideEditRef} onClose={localEditFinish} title='课件制作'/>
+      <Preview ref={previewRef} title='课件预览' version={version}/>
+      <SlideEdit ref={slideEditRef} onClose={localEditFinish} title='课件制作' version={version}/>
     </ProCard>
   )
 }
