@@ -26,8 +26,11 @@ const Preview: ForwardRefRenderFunction<PreviewAction, PreviewProps> = (props, r
 
   useImperativeHandle(ref, () => ({
     show: async (info: any) => {
-      setPptInfo(info || null)
+      setPptInfo(null)
       setIsOpen(true)
+      setTimeout(() => {
+        setPptInfo(info || null)
+      }, 500)
     },
     close: () => {
       handleCancel()
