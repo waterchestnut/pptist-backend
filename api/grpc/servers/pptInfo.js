@@ -1,6 +1,7 @@
 import {createEmptyPpt, copyPpt, importPptxFromUrl} from '../../services/core/pptInfo.js'
 import {loadProto} from '../utils.js'
 import {getAgentTaskForPPT} from '../../services/core/llm.js'
+import {getAgentTaskForPPTDirect} from '../../services/core/llmDirect.js'
 
 const protoPath = 'grpc/servers/pptInfo.proto'
 const pptonlineProto = loadProto(protoPath).pptonline
@@ -40,7 +41,9 @@ export function initService(server) {
                 if (call.request.options) {
                     options = JSON.parse(call.request.options)
                 }
-                let agentTaskInfo = await getAgentTaskForPPT(call.request.subject, options)
+                let agentTaskInfo = options.mode === 'direct'
+                    ? await getAgentTaskForPPTDirect(call.request.subject, options)
+                    : await getAgentTaskForPPT(call.request.subject, options)
                 callback(null, {agentTaskInfo: JSON.stringify(agentTaskInfo)})
             } catch (e) {
                 callback(e)

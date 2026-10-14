@@ -1,0 +1,4781 @@
+{
+  "generatedAt": "2026-10-14T04:33:41.731Z",
+  "source": "init-data/cache/tmpl.json",
+  "stats": {
+    "templates": 20,
+    "slides": 499
+  },
+  "layouts": [
+    {
+      "key": "contents-list",
+      "name": "目录页",
+      "description": "4~8个目录条目纵向或网格排布，条目含编号形状（圆/方块/胶囊）+ 章节标题文本",
+      "frequency": 113,
+      "pageTypes": {
+        "contents": 113
+      },
+      "elementRatio": {
+        "shape": 6.5,
+        "text": 9.39,
+        "line": 1.1,
+        "image": 0.53
+      },
+      "avgElementCount": 17.5
+    },
+    {
+      "key": "transition-number",
+      "name": "章节过渡页",
+      "description": "超大节编号（80~160px或装饰形状）+ 章节标题，常配大色块/大圆形装饰",
+      "frequency": 53,
+      "pageTypes": {
+        "transition": 53
+      },
+      "elementRatio": {
+        "text": 2.77,
+        "shape": 3.3,
+        "line": 0.34,
+        "image": 1.13
+      },
+      "avgElementCount": 7.5
+    },
+    {
+      "key": "cover-center",
+      "name": "居中式封面",
+      "description": "页面中央大标题（40~54px）+ 副标题/演讲人信息，背景由整幅图片、大色块或几何装饰构成",
+      "frequency": 42,
+      "pageTypes": {
+        "end": 22,
+        "cover": 20
+      },
+      "elementRatio": {
+        "shape": 5.02,
+        "text": 2.17,
+        "line": 0.29,
+        "image": 0.1
+      },
+      "avgElementCount": 7.6
+    },
+    {
+      "key": "cards-4",
+      "name": "四宫格页",
+      "description": "4个等尺寸卡片呈2x2网格排布，每卡片含小标题与正文",
+      "frequency": 35,
+      "pageTypes": {
+        "content": 35
+      },
+      "elementRatio": {
+        "text": 9.46,
+        "line": 0.54,
+        "shape": 10.37,
+        "image": 1.6
+      },
+      "avgElementCount": 22
+    },
+    {
+      "key": "timeline",
+      "name": "时间轴/流程页",
+      "description": "一条主线条（line或细长shape）贯穿页面，沿线分布3~6个节点（圆/胶囊shape + 文本）",
+      "frequency": 33,
+      "pageTypes": {
+        "content": 33
+      },
+      "elementRatio": {
+        "shape": 6.73,
+        "text": 10.55,
+        "image": 2.52,
+        "line": 0.97
+      },
+      "avgElementCount": 20.8
+    },
+    {
+      "key": "cards-3",
+      "name": "三卡片页",
+      "description": "3个等尺寸卡片形状横向并排（或2+1错位），每卡片含编号/图标、小标题与正文",
+      "frequency": 33,
+      "pageTypes": {
+        "content": 33
+      },
+      "elementRatio": {
+        "shape": 8.67,
+        "text": 7.3,
+        "image": 2.48,
+        "line": 0.39
+      },
+      "avgElementCount": 18.8
+    },
+    {
+      "key": "title-bullets",
+      "name": "标题+要点页",
+      "description": "顶部标题 + 大段正文或多段列表文本，无图片",
+      "frequency": 30,
+      "pageTypes": {
+        "content": 30
+      },
+      "elementRatio": {
+        "shape": 2.8,
+        "text": 6.43,
+        "line": 0.67,
+        "image": 1.4
+      },
+      "avgElementCount": 11.3
+    },
+    {
+      "key": "big-number",
+      "name": "大数字页",
+      "description": "超大数字文本（48~96px）+ 简短说明，常配色块底衬",
+      "frequency": 27,
+      "pageTypes": {
+        "content": 27
+      },
+      "elementRatio": {
+        "shape": 5.26,
+        "image": 2.04,
+        "text": 3.63,
+        "line": 0.44
+      },
+      "avgElementCount": 11.4
+    },
+    {
+      "key": "cover-split",
+      "name": "左右分栏封面",
+      "description": "封面左右一侧为大色块或整幅图片，另一侧排布主标题与副标题文字",
+      "frequency": 20,
+      "pageTypes": {
+        "cover": 20
+      },
+      "elementRatio": {
+        "shape": 4.6,
+        "image": 0.65,
+        "text": 2.55,
+        "line": 0.6
+      },
+      "avgElementCount": 8.4
+    },
+    {
+      "key": "data-chart",
+      "name": "图表页",
+      "description": "1~2个chart元素为视觉主体 + 标题 + 简要结论文本",
+      "frequency": 20,
+      "pageTypes": {
+        "content": 20
+      },
+      "elementRatio": {
+        "shape": 7.5,
+        "text": 7.6,
+        "chart": 1.6,
+        "image": 1.25,
+        "line": 0.2
+      },
+      "avgElementCount": 18.2
+    },
+    {
+      "key": "cards-2",
+      "name": "双卡片页",
+      "description": "2个等尺寸卡片形状（圆角矩形+阴影）横向并排，每卡片含图标/形状、小标题与正文",
+      "frequency": 19,
+      "pageTypes": {
+        "content": 19
+      },
+      "elementRatio": {
+        "shape": 7.26,
+        "text": 5.95,
+        "line": 0.79,
+        "image": 1.63
+      },
+      "avgElementCount": 15.6
+    },
+    {
+      "key": "split-image-right",
+      "name": "右图左文页",
+      "description": "右侧约1/3版面为大幅图片，左侧为标题+正文/条目区",
+      "frequency": 17,
+      "pageTypes": {
+        "content": 17
+      },
+      "elementRatio": {
+        "image": 1.76,
+        "text": 6.29,
+        "shape": 7.24,
+        "line": 0.47
+      },
+      "avgElementCount": 15.8
+    },
+    {
+      "key": "list-rows",
+      "name": "条目列表页",
+      "description": "3~6个条目纵向排布，每条含编号形状/图标 + 标题 + 正文，条目间用细线或色块分隔",
+      "frequency": 16,
+      "pageTypes": {
+        "content": 16
+      },
+      "elementRatio": {
+        "text": 8.5,
+        "shape": 9.25,
+        "image": 2.38,
+        "line": 1.19
+      },
+      "avgElementCount": 21.3
+    },
+    {
+      "key": "image-top",
+      "name": "上图下文页",
+      "description": "上半部为大图或图片+色带，下半部为标题与正文",
+      "frequency": 13,
+      "pageTypes": {
+        "content": 13
+      },
+      "elementRatio": {
+        "image": 1.85,
+        "text": 7.23,
+        "shape": 6.92,
+        "line": 0.85
+      },
+      "avgElementCount": 16.8
+    },
+    {
+      "key": "full-image",
+      "name": "全图金句页",
+      "description": "整幅背景图（1000x562.5）+ 半透明色块或描边形状衬托一句主旨文字",
+      "frequency": 12,
+      "pageTypes": {
+        "end": 11,
+        "content": 1
+      },
+      "elementRatio": {
+        "shape": 2.25,
+        "image": 1.17,
+        "text": 2.08,
+        "line": 0.5
+      },
+      "avgElementCount": 6
+    },
+    {
+      "key": "split-image-left",
+      "name": "左图右文页",
+      "description": "左侧约1/3版面为大幅图片（通高或近通高），右侧为标题+正文/条目区",
+      "frequency": 9,
+      "pageTypes": {
+        "content": 9
+      },
+      "elementRatio": {
+        "shape": 7.44,
+        "text": 4.56,
+        "image": 2.78,
+        "line": 0.78
+      },
+      "avgElementCount": 15.6
+    },
+    {
+      "key": "cards-5",
+      "name": "五卡片页",
+      "description": "5个卡片呈上3下2或横向5列排布",
+      "frequency": 3,
+      "pageTypes": {
+        "content": 3
+      },
+      "elementRatio": {
+        "shape": 6.67,
+        "text": 11,
+        "image": 5.33,
+        "line": 0.33
+      },
+      "avgElementCount": 23.3
+    },
+    {
+      "key": "data-table",
+      "name": "表格页",
+      "description": "1个table元素为主体 + 标题 + 说明文本",
+      "frequency": 2,
+      "pageTypes": {
+        "content": 2
+      },
+      "elementRatio": {
+        "table": 1,
+        "text": 2.5,
+        "shape": 1,
+        "image": 0.5,
+        "line": 0.5
+      },
+      "avgElementCount": 5.5
+    },
+    {
+      "key": "cards-6",
+      "name": "六宫格页",
+      "description": "6个卡片呈2行x3列网格排布",
+      "frequency": 2,
+      "pageTypes": {
+        "content": 2
+      },
+      "elementRatio": {
+        "shape": 31.5,
+        "text": 15,
+        "image": 3,
+        "line": 2
+      },
+      "avgElementCount": 51.5
+    }
+  ],
+  "typography": {
+    "title": {
+      "median": 44,
+      "p25": 36,
+      "p75": 48,
+      "samples": 360
+    },
+    "subtitle": {
+      "median": 18,
+      "p25": 16,
+      "p75": 20,
+      "samples": 61
+    },
+    "partNumber": {
+      "median": 80,
+      "p25": 60,
+      "p75": 88,
+      "samples": 29
+    },
+    "itemTitle": {
+      "median": 20,
+      "p25": 18,
+      "p75": 20,
+      "samples": 637
+    },
+    "item": {
+      "median": 16,
+      "p25": 14,
+      "p75": 22,
+      "samples": 988
+    },
+    "itemNumber": {
+      "median": 28,
+      "p25": 24,
+      "p75": 36,
+      "samples": 412
+    },
+    "content": {
+      "median": 16,
+      "p25": 16,
+      "p75": 16,
+      "samples": 162
+    },
+    "unknown": {
+      "median": 32,
+      "p25": 22,
+      "p75": 60,
+      "samples": 497
+    },
+    "shapeText": {
+      "median": 24,
+      "p25": 18,
+      "p75": 28,
+      "samples": 336
+    }
+  },
+  "decorationPatterns": {
+    "topBand": 0.24,
+    "bottomBand": 0.04,
+    "sideBand": 0.1,
+    "dividerLine": 0.14,
+    "cornerMark": 0.15
+  },
+  "palettes": [
+    {
+      "template": "pro_12",
+      "title": "专业模版十二：橄榄暖橙多元信息呈现模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_11",
+      "title": "专业模版十一：浅蓝简约高效汇报模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_10",
+      "title": "专业模版十：蓝橙撞色多场景展示模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_9",
+      "title": "专业模版九：青韵高效商务全版式模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_8",
+      "title": "专业模版八：深蓝沉稳正式汇报模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_7",
+      "title": "专业模版七：柔紫雅致数据分析模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_6",
+      "title": "专业模版六：蓝调轻科技图文可视化模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_5",
+      "title": "专业模版五：红韵商务数据分析模板  ",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_4",
+      "title": "专业模版四：暖橙活力多元展示模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_3",
+      "title": "专业模版三：湛蓝简约多版式展示模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_2",
+      "title": "专业模版二：粉韵启智数据可视化模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "pro_1",
+      "title": "专业模版一：轻简蓝紫图表展示模板",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "template_5",
+      "title": "简约绿意",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "template_6",
+      "title": "暖色复古",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "template_7",
+      "title": "深邃沉稳",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "template_8",
+      "title": "浅蓝小清新",
+      "themeColors": [
+        "#5b9bd5",
+        "#ed7d31",
+        "#a5a5a5",
+        "#ffc000",
+        "#4472c4",
+        "#70ad47"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "template_4",
+      "title": "柔光莫兰迪",
+      "themeColors": [
+        "rgb(128, 147, 125)",
+        "rgb(215, 168, 154)"
+      ],
+      "backgroundColor": "rgb(255, 255, 255)",
+      "fontColor": "rgb(51, 51, 51)"
+    },
+    {
+      "template": "template_3",
+      "title": "智感几何",
+      "themeColors": [
+        "rgb(96, 84, 111)"
+      ],
+      "backgroundColor": "rgb(255, 255, 255)",
+      "fontColor": "rgb(51, 51, 51)"
+    },
+    {
+      "template": "template_2",
+      "title": "都市蓝调",
+      "themeColors": [
+        "rgba(71,172,197,1)"
+      ],
+      "backgroundColor": "#fff",
+      "fontColor": "#333"
+    },
+    {
+      "template": "template_1",
+      "title": "山河映红",
+      "themeColors": [
+        "rgb(155, 0, 0)"
+      ],
+      "backgroundColor": "rgb(255, 255, 255)",
+      "fontColor": "rgb(51, 51, 51)"
+    }
+  ],
+  "goldenSlides": [
+    {
+      "layoutKey": "cover-split",
+      "pageType": "cover",
+      "sourceTemplate": "pro_9",
+      "slide": {
+        "id": "bHMul-A9Fo",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "shape",
+            "id": "FntEcrjYG-",
+            "left": 535.5673133450911,
+            "top": -358.0729166666667,
+            "rotate": 0,
+            "width": 548.2069370958261,
+            "height": 548.2069370958261,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(50,116,88,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 45,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(50,116,88,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(64,175,113,1)"
+                }
+              ]
+            }
+          },
+          {
+            "type": "shape",
+            "id": "00grAmO54w",
+            "left": 809.6707818930041,
+            "top": -131.7599941211053,
+            "rotate": 0,
+            "width": 266.0199882422106,
+            "height": 266.0199882422106,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(50,116,88,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 45,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(55,180,103,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(67,156,106,1)"
+                }
+              ]
+            }
+          },
+          {
+            "type": "shape",
+            "id": "_92Fw9SdSi",
+            "left": 566.1375661375662,
+            "top": 40.222203850676074,
+            "rotate": 0,
+            "width": 717.2297545561435,
+            "height": 717.2297545561435,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "#5b9bd5"
+          },
+          {
+            "type": "image",
+            "id": "EXBEvG2x9i",
+            "left": 558.7889476778366,
+            "top": 14.69723691945923,
+            "rotate": 0,
+            "width": 842.6294820717133,
+            "height": 757.9732510288065,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "ellipse",
+              "range": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  100,
+                  100
+                ]
+              ]
+            }
+          },
+          {
+            "type": "text",
+            "id": "VHIXUhs7U9",
+            "left": 76.77248677248684,
+            "top": 205.27336860670192,
+            "rotate": 0,
+            "width": 482.01646090534985,
+            "height": 101,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 54px;\">模板封面标题标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "text",
+            "id": "SzDJ86Vmyp",
+            "left": 76.77248677248684,
+            "top": 292.1268090154214,
+            "rotate": 0,
+            "width": 482.01646090534973,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "subtitle"
+          },
+          {
+            "type": "shape",
+            "id": "amltaBr-cQ",
+            "left": 85.54251175778954,
+            "top": 384.13754776601996,
+            "rotate": 0,
+            "width": 138.15402704291594,
+            "height": 39.68253968253967,
+            "viewBox": [
+              138.15402704291594,
+              39.68253968253967
+            ],
+            "path": "M 19.841269841269835 0 L 118.31275720164611 0 Q 138.15402704291594 0 138.15402704291594 19.841269841269835 L 138.15402704291594 19.841269841269835 Q 138.15402704291594 39.68253968253967 118.31275720164611 39.68253968253967 L 19.841269841269835 39.68253968253967 Q 0 39.68253968253967 0 19.841269841269835 L 0 19.841269841269835 Q 0 0 19.841269841269835 0 Z",
+            "fill": "rgba(51,123,91,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 0,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(51,123,91,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(75,190,120,1)"
+                }
+              ]
+            },
+            "text": {
+              "content": "<p style=\"text-align: center;\"><strong><span style=\"color: rgb(255, 255, 255);\">NEXT</span></strong></p>",
+              "defaultFontName": "",
+              "defaultColor": "#333",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "shape",
+            "id": "Ys_h-qhz6r",
+            "left": 231.77542621987075,
+            "top": 384.13754776601996,
+            "rotate": 0,
+            "width": 39.682539682539684,
+            "height": 39.682539682539684,
+            "viewBox": [
+              1024,
+              1024
+            ],
+            "path": "M512 2.27555555C230.51377778 2.27555555 2.27555555 230.51377778 2.27555555 512s228.23822222 509.72444445 509.72444445 509.72444445 509.72444445-228.23822222 509.72444445-509.72444445S793.48622222 2.27555555 512 2.27555555z m163.95377778 517.57511112L427.46311111 700.64355555c-1.59288889 1.13777778-3.41333333 1.70666667-5.34755556 1.70666667-5.00622222 0-9.10222222-4.096-9.10222222-9.10222222V331.88977778c0-1.93422222 0.56888889-3.75466667 1.70666667-5.34755556 2.95822222-4.096 8.64711111-5.00622222 12.74311111-2.048L675.95377778 505.17333333c0.79644445 0.56888889 1.47911111 1.25155555 2.048 2.048 2.95822222 3.98222222 2.048 9.67111111-2.048 12.62933334z",
+            "fill": "rgba(82,169,120,1)"
+          },
+          {
+            "type": "shape",
+            "id": "L7taYF8uU3",
+            "left": -117.2793577307466,
+            "top": 512.5293944738389,
+            "rotate": 45,
+            "width": 251.32275132275146,
+            "height": 251.32275132275146,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(50,116,88,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 45,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(50,116,88,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(64,175,113,1)"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "data-chart",
+      "pageType": "content",
+      "sourceTemplate": "pro_7",
+      "slide": {
+        "id": "oGUf297KmY",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "text",
+            "id": "10qAi0d1rp",
+            "left": 415.36041799957354,
+            "top": 40.87963144310835,
+            "rotate": 0,
+            "width": 165.94689699296222,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题文字</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "UPeCddkBxp",
+            "left": 351.18095542759653,
+            "top": 75.95107524775754,
+            "rotate": 0,
+            "width": 314.6992962252079,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "RIM1Ub4liR",
+            "left": 513.9823136618919,
+            "top": 235.75041054139172,
+            "rotate": 0,
+            "width": 314.69929622520783,
+            "height": 50,
+            "content": "<p style=\"\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题文字添加标题文字</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "text",
+            "id": "pLIsyk5Zrt",
+            "left": 513.9823136618919,
+            "top": 270.8218543460409,
+            "rotate": 0,
+            "width": 314.6992962252079,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "content"
+          },
+          {
+            "type": "text",
+            "id": "wMhv6UMNfA",
+            "left": 513.9823136618919,
+            "top": 198.06364701326498,
+            "rotate": 0,
+            "width": 197.1109060260307,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "subtitle"
+          },
+          {
+            "type": "shape",
+            "id": "tmeQaYFo5O",
+            "left": 76.71369902186376,
+            "top": 208.4402511673701,
+            "rotate": 0,
+            "width": 162.23354084135067,
+            "height": 162.23354084135067,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(104,105,172,1)"
+          },
+          {
+            "type": "shape",
+            "id": "tYQz52eSof",
+            "left": 144.15380466230877,
+            "top": 365.17794442689353,
+            "rotate": 180,
+            "width": 27.353329560460292,
+            "height": 22.06094284318515,
+            "viewBox": [
+              27.353329560460292,
+              22.06094284318515
+            ],
+            "path": "M 13.676664780230146 0 L 0 22.06094284318515 L 27.353329560460292 22.06094284318515 Z",
+            "fill": "rgba(102,106,171,1)"
+          },
+          {
+            "type": "text",
+            "id": "V8HjpL2gQs",
+            "left": 76.13275525158758,
+            "top": 250.36259617733268,
+            "rotate": 0,
+            "width": 162.8144846116268,
+            "height": 68,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 32px;\"><span style=\"color: rgb(255, 255, 255);\">11%</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "Qi-kOjyAt2",
+            "left": 76.71369902186376,
+            "top": 416.6310627436021,
+            "rotate": 0,
+            "width": 162.23354084135067,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "8z_IOgqb1M",
+            "left": 294.8689261835638,
+            "top": 208.4402511673701,
+            "rotate": 0,
+            "width": 162.23354084135067,
+            "height": 162.23354084135067,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(155,151,202,1)"
+          },
+          {
+            "type": "shape",
+            "id": "8l0QTciqST",
+            "left": 362.30903182400885,
+            "top": 365.17794442689353,
+            "rotate": 180,
+            "width": 27.353329560460292,
+            "height": 22.06094284318515,
+            "viewBox": [
+              27.353329560460292,
+              22.06094284318515
+            ],
+            "path": "M 13.676664780230146 0 L 0 22.06094284318515 L 27.353329560460292 22.06094284318515 Z",
+            "fill": "rgba(154,152,201,1)"
+          },
+          {
+            "type": "text",
+            "id": "2uuNsCYsb8",
+            "left": 294.2879824132877,
+            "top": 250.36259617733265,
+            "rotate": 0,
+            "width": 162.8144846116268,
+            "height": 68,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 32px;\"><span style=\"color: rgb(255, 255, 255);\">22%</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "KVUmsoSe6S",
+            "left": 294.8689261835638,
+            "top": 416.6310627436021,
+            "rotate": 0,
+            "width": 162.2335408413507,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "chart",
+            "id": "kOXruVEPsG",
+            "left": 494.14641779825706,
+            "top": 323.65762748487464,
+            "rotate": 0,
+            "width": 200,
+            "height": 200,
+            "chartType": "ring",
+            "data": {
+              "labels": [
+                "类别1",
+                "类别2"
+              ],
+              "legends": [
+                "值"
+              ],
+              "series": [
+                [
+                  12,
+                  19
+                ]
+              ]
+            },
+            "themeColors": [
+              "rgba(95,90,146,0.73)",
+              "rgba(166,161,231,0.73)"
+            ],
+            "textColor": "rgba(51,51,51,1)",
+            "fill": "rgba(170,131,131,0)"
+          },
+          {
+            "type": "chart",
+            "id": "cj6f1mk9b4",
+            "left": 718.0659238360914,
+            "top": 318.34697117733265,
+            "rotate": 0,
+            "width": 200,
+            "height": 200,
+            "chartType": "ring",
+            "data": {
+              "labels": [
+                "类别1",
+                "类别2"
+              ],
+              "legends": [
+                "值"
+              ],
+              "series": [
+                [
+                  10,
+                  20
+                ]
+              ]
+            },
+            "themeColors": [
+              "rgba(95, 90, 146, 0.73)",
+              "rgba(166, 161, 231, 0.73)"
+            ],
+            "textColor": "rgba(51,51,51,1)",
+            "fill": "rgba(170,131,131,0)"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "timeline",
+      "pageType": "content",
+      "sourceTemplate": "pro_6",
+      "slide": {
+        "id": "3RAWqRsbpa",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "image",
+            "id": "yinaUozkOE",
+            "left": 83.50550964187332,
+            "top": 179.49380165289256,
+            "rotate": 0,
+            "width": 243.2851239669422,
+            "height": 269.3698347107438,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  100,
+                  74.07407407407408
+                ]
+              ]
+            }
+          },
+          {
+            "type": "shape",
+            "id": "PrZd4JPi97",
+            "left": 83.5055096418733,
+            "top": 457.7334065082644,
+            "rotate": 0,
+            "width": 243.28512396694214,
+            "height": 52.513774104683186,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(57,86,156,1)"
+          },
+          {
+            "type": "text",
+            "id": "Loy47MxdQ0",
+            "left": 83.50550964187332,
+            "top": 457.7334065082644,
+            "rotate": 0,
+            "width": 243.28512396694222,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><span style=\"color: rgb(255, 255, 255);\">1在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "image",
+            "id": "z9H2WRapYl",
+            "left": 377.711776859504,
+            "top": 179.49380165289256,
+            "rotate": 0,
+            "width": 242.8546831955924,
+            "height": 272.9568411386594,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  23.404255319148938,
+                  0
+                ],
+                [
+                  76.59574468085106,
+                  90.09009009009009
+                ]
+              ]
+            }
+          },
+          {
+            "type": "shape",
+            "id": "DmMG0zqg3x",
+            "left": 378.3421154358838,
+            "top": 457.7334065082644,
+            "rotate": 0,
+            "width": 243.28512396694214,
+            "height": 52.513774104683186,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(81,106,134,1)"
+          },
+          {
+            "type": "text",
+            "id": "0dPlNeHsBA",
+            "left": 378.34211543588367,
+            "top": 457.7334065082644,
+            "rotate": 0,
+            "width": 243.28512396694222,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><span style=\"color: rgb(255, 255, 255);\">2在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "image",
+            "id": "rJSHUMXa6x",
+            "left": 671.4876033057849,
+            "top": 179.49380165289256,
+            "rotate": 0,
+            "width": 242.42424242424244,
+            "height": 269.3698347107438,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  100,
+                  76.33587786259542
+                ]
+              ]
+            }
+          },
+          {
+            "type": "shape",
+            "id": "DLVqXO_twL",
+            "left": 671.4876033057849,
+            "top": 457.7334065082644,
+            "rotate": 0,
+            "width": 243.28512396694214,
+            "height": 52.513774104683186,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(58,85,153,1)"
+          },
+          {
+            "type": "text",
+            "id": "zLPC13nheU",
+            "left": 671.4876033057849,
+            "top": 457.7334065082644,
+            "rotate": 0,
+            "width": 243.28512396694222,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><span style=\"color: rgb(255, 255, 255);\">3在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "iXFnnr5Pl6",
+            "left": 32.34592220853739,
+            "top": 28.243653588111556,
+            "rotate": 0,
+            "width": 37.874221145098275,
+            "height": 37.87422114509828,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(186,213,238,0.37)"
+          },
+          {
+            "type": "image",
+            "id": "W0b8WNin80",
+            "left": 6.02222222222224,
+            "top": 8.85537190082644,
+            "rotate": 0,
+            "width": 88.04738292011018,
+            "height": 73.71219384153537,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "text",
+            "id": "LJx_LPLC1K",
+            "left": 22.687213913465428,
+            "top": 20.6807641606607,
+            "rotate": 0,
+            "width": 59.77657804745529,
+            "height": 53,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 22px;\"><span style=\"color: rgb(58, 79, 147);\">03</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "line",
+            "id": "ain5FNPMDm",
+            "left": 115.86030762167125,
+            "top": 20.015168813247175,
+            "rotate": 0,
+            "start": [
+              0,
+              0
+            ],
+            "end": [
+              0,
+              54.33119069482706
+            ],
+            "width": 8,
+            "style": "solid",
+            "color": "rgba(49,69,87,1)",
+            "points": [
+              "",
+              ""
+            ]
+          },
+          {
+            "type": "text",
+            "id": "q2tZ_oVder",
+            "left": 127.73963881236608,
+            "top": 6.018068030743569,
+            "rotate": 0,
+            "width": 301.94061830425454,
+            "height": 62,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 28px;\"><span style=\"color: rgb(36, 36, 36);\">在此输入目录</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "GzqwAdMFy5",
+            "left": 127.73963881236608,
+            "top": 44.34346029057783,
+            "rotate": 0,
+            "width": 426.6727884909703,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "yg4hv5w57i",
+            "left": 75.4700822917181,
+            "top": 88.34346029057784,
+            "rotate": 0,
+            "width": 847.3380723311643,
+            "height": 74,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 36px;\"><span style=\"color: rgb(36, 36, 36);\">在此输入内容在此输入内容在此输入内容</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "title-bullets",
+      "pageType": "content",
+      "sourceTemplate": "pro_7",
+      "slide": {
+        "id": "-KxbXI_c7h",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "text",
+            "id": "fr6c0fyRT1",
+            "left": 415.36041799957354,
+            "top": 40.87963144310835,
+            "rotate": 0,
+            "width": 165.94689699296222,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题文字</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "0PIfkf79j4",
+            "left": 351.18095542759653,
+            "top": 75.95107524775754,
+            "rotate": 0,
+            "width": 314.6992962252079,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "image",
+            "id": "fRjHvgWhN_",
+            "left": 277.6447532228258,
+            "top": 192.0338218795643,
+            "rotate": 0,
+            "width": 418.16565999501506,
+            "height": 301.0224785023538,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "text",
+            "id": "3tDfUoftAb",
+            "left": 59.238650421764774,
+            "top": 202.74819927389808,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 50,
+            "content": "<p style=\"text-align: right;\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题添加标题添加标题</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "jUvusDarl3",
+            "left": 59.238650421764774,
+            "top": 237.81964307854724,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 68,
+            "content": "<p style=\"text-align: right;\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "OPKkuCco2k",
+            "left": 385.25222775258754,
+            "top": 230.7325742738981,
+            "rotate": 0,
+            "width": 40,
+            "height": 44,
+            "content": "<p style=\"\" class=\"ProseMirror-selectednode\" draggable=\"true\"><span style=\"color: rgb(255, 255, 255);\">01</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "H69AlZX7vo",
+            "left": 665.8802516528044,
+            "top": 194.84791837502166,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 50,
+            "content": "<p style=\"\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题添加标题添加标题</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "yxIOBwI0Y_",
+            "left": 665.8802516528044,
+            "top": 229.91936217967088,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "rVYw13uCiX",
+            "left": 561.3073149925358,
+            "top": 230.7325742738981,
+            "rotate": 0,
+            "width": 40,
+            "height": 44,
+            "content": "<p style=\"\" class=\"ProseMirror-selectednode\" draggable=\"true\"><span style=\"color: rgb(255, 255, 255);\">02</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "_Z7R-89Fu5",
+            "left": 59.238650421764774,
+            "top": 389.9848565772689,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 50,
+            "content": "<p style=\"text-align: right;\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题添加标题添加标题</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "TW6x-Mul68",
+            "left": 59.238650421764774,
+            "top": 425.0563003819181,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 68,
+            "content": "<p style=\"text-align: right;\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "dBHZW461Zr",
+            "left": 385.25222775258754,
+            "top": 409.9870884575358,
+            "rotate": 0,
+            "width": 40,
+            "height": 44,
+            "content": "<p style=\"\" class=\"ProseMirror-selectednode\" draggable=\"true\"><span style=\"color: rgb(255, 255, 255);\">03</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "IGAG0Q8uUA",
+            "left": 665.8802516528044,
+            "top": 389.9848565772689,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 50,
+            "content": "<p style=\"\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题添加标题添加标题</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "jj6ws0Ak98",
+            "left": 665.8802516528044,
+            "top": 425.0563003819181,
+            "rotate": 0,
+            "width": 264.58200042653016,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "2XF3cgXkrM",
+            "left": 561.3073149925358,
+            "top": 409.9870884575358,
+            "rotate": 0,
+            "width": 40,
+            "height": 44,
+            "content": "<p style=\"\" class=\"ProseMirror-selectednode\" draggable=\"true\"><span style=\"color: rgb(255, 255, 255);\">04</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemNumber"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "image-top",
+      "pageType": "content",
+      "sourceTemplate": "pro_3",
+      "slide": {
+        "id": "cal24mY9si",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "image",
+            "id": "zj7FG3isXr",
+            "left": 539.9376870557426,
+            "top": 146.5757108118219,
+            "rotate": 0,
+            "width": 385.3348297792741,
+            "height": 202.02020202020205,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  100,
+                  80.64516129032258
+                ]
+              ]
+            }
+          },
+          {
+            "type": "image",
+            "id": "Ns3EWi82TQ",
+            "left": 62.298330527497185,
+            "top": 146.5757108118219,
+            "rotate": 0,
+            "width": 385.3348297792742,
+            "height": 202.02020202020202,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  100,
+                  78.74015748031496
+                ]
+              ]
+            }
+          },
+          {
+            "type": "text",
+            "id": "P0PrC0p0fg",
+            "left": 2.842170943040401e-14,
+            "top": 16.787042298019255,
+            "rotate": 0,
+            "width": 1000,
+            "height": 92,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 48px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入标题在此输入标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "shape",
+            "id": "oK-cbiWkC3",
+            "left": 238.74353980563137,
+            "top": 233.7218894373798,
+            "rotate": 0,
+            "width": 231.039178622598,
+            "height": 137.3207125079999,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(62,91,193,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 90,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(60,86,183,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(85,124,243,1)"
+                }
+              ]
+            },
+            "shadow": {
+              "h": 3,
+              "v": 3,
+              "blur": 2,
+              "color": "rgb(196, 196, 196)"
+            }
+          },
+          {
+            "type": "text",
+            "id": "89bAs3_nhj",
+            "left": 254.96574541713426,
+            "top": 285.5935703033321,
+            "rotate": 0,
+            "width": 201.03097730172468,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(255, 255, 255);\">在此输入内容在此输入内容在此在此输入内容在此</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "1u3sDn3blk",
+            "left": 254.96574541713426,
+            "top": 251.1709210794274,
+            "rotate": 0,
+            "width": 192.66741488963712,
+            "height": 47,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(255, 255, 255);\">2在此输入标题标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "shape",
+            "id": "fryxiDtgCz",
+            "left": 345.307456604571,
+            "top": 389.74817620650947,
+            "rotate": 0,
+            "width": 67.34006734006734,
+            "height": 67.34006734006734,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(91,155,213,0)",
+            "outline": {
+              "width": 10,
+              "color": "rgba(63,90,189,1)",
+              "style": "solid"
+            }
+          },
+          {
+            "type": "text",
+            "id": "D5EJz9tb0k",
+            "left": 62.298330527497185,
+            "top": 413.0882435465768,
+            "rotate": 0,
+            "width": 203.54307904030125,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此在此输入内容在此</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "IvA72oJG1k",
+            "left": 62.298330527497185,
+            "top": 378.66559432267206,
+            "rotate": 0,
+            "width": 203.54307904030128,
+            "height": 47,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 18px;\">1在此输入标题标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "shape",
+            "id": "inWt8hGiya",
+            "left": 716.3828963338769,
+            "top": 233.7218894373798,
+            "rotate": 0,
+            "width": 231.039178622598,
+            "height": 137.3207125079999,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(62,91,193,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 90,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(60,86,183,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(85,124,243,1)"
+                }
+              ]
+            },
+            "shadow": {
+              "h": 3,
+              "v": 3,
+              "blur": 2,
+              "color": "rgb(196, 196, 196)"
+            }
+          },
+          {
+            "type": "text",
+            "id": "AyIiZvkLnn",
+            "left": 732.6051019453798,
+            "top": 285.59357030333206,
+            "rotate": 0,
+            "width": 201.03097730172468,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(255, 255, 255);\">在此输入内容在此输入内容在此在此输入内容在此</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "RIjPo_EI_M",
+            "left": 732.6051019453798,
+            "top": 251.17092107942727,
+            "rotate": 0,
+            "width": 186.50216774411442,
+            "height": 47,
+            "content": "<p style=\"\" class=\"\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(255, 255, 255);\">4在此输入标题标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "shape",
+            "id": "bBVuvu0Mbm",
+            "left": 822.9468131328165,
+            "top": 389.74817620650947,
+            "rotate": 0,
+            "width": 67.34006734006734,
+            "height": 67.34006734006734,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(91,155,213,0)",
+            "outline": {
+              "width": 10,
+              "color": "rgba(63,90,189,1)",
+              "style": "solid"
+            }
+          },
+          {
+            "type": "text",
+            "id": "yKDD8Cu1z5",
+            "left": 539.9376870557426,
+            "top": 413.0882435465768,
+            "rotate": 0,
+            "width": 203.54307904030125,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此在此输入内容在此</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "kU867VjtPl",
+            "left": 539.9376870557426,
+            "top": 378.66559432267206,
+            "rotate": 0,
+            "width": 203.54307904030122,
+            "height": 47,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 18px;\">3在此输入标题标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "full-image",
+      "pageType": "content",
+      "sourceTemplate": "pro_8",
+      "slide": {
+        "id": "TB_oxEH4hL",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "image",
+            "id": "MBs21g6skZ",
+            "left": -0.6807357209989107,
+            "top": 1.9330311213991553,
+            "rotate": 0,
+            "width": 1000.6807357209989,
+            "height": 562.5,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "shape",
+            "id": "hEhakX8bIR",
+            "left": 0,
+            "top": 0,
+            "rotate": 0,
+            "width": 1000,
+            "height": 562.5,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "#5b9bd5",
+            "gradient": {
+              "type": "linear",
+              "rotate": 255,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(39,65,100,1)"
+                },
+                {
+                  "pos": 50,
+                  "color": "rgba(62,86,132,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(92,117,173,1)"
+                }
+              ]
+            },
+            "opacity": 0.9
+          },
+          {
+            "type": "shape",
+            "id": "jDs1OWGzpn",
+            "left": 39.94379387557487,
+            "top": -544.5412732994432,
+            "rotate": 0,
+            "width": 1321.5928346647302,
+            "height": 1012.9508593560882,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 100 100 102 1 0 200 100 L 200 0 L 100 0 Z",
+            "fill": "#5b9bd5",
+            "gradient": {
+              "type": "linear",
+              "rotate": 75,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(62,86,132,1)"
+                },
+                {
+                  "pos": 52,
+                  "color": "rgba(39,65,100,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(92,117,173,1)"
+                }
+              ]
+            }
+          },
+          {
+            "type": "shape",
+            "id": "WoJRuN2Mi9",
+            "left": 91.05541087962962,
+            "top": 97.35484182098764,
+            "rotate": 0,
+            "width": 306.0699588477366,
+            "height": 371.656378600823,
+            "viewBox": [
+              306.0699588477366,
+              371.656378600823
+            ],
+            "path": "M 48.54681069958847 0 L 257.5231481481481 0 Q 306.0699588477366 0 306.0699588477366 48.54681069958847 L 306.0699588477366 323.1095679012345 Q 306.0699588477366 371.656378600823 257.5231481481481 371.656378600823 L 48.54681069958847 371.656378600823 Q 0 371.656378600823 0 323.1095679012345 L 0 48.54681069958847 Q 0 0 48.54681069958847 0 Z",
+            "fill": "rgba(245,245,245,1)",
+            "outline": {
+              "width": 2,
+              "color": "#525252",
+              "style": "solid"
+            }
+          },
+          {
+            "type": "shape",
+            "id": "skL9BRTKTF",
+            "left": 490.31900568869526,
+            "top": 305.46477850399424,
+            "rotate": 0,
+            "width": 105.30137981118374,
+            "height": 44.783345436940216,
+            "viewBox": [
+              105.30137981118374,
+              44.783345436940216
+            ],
+            "path": "M 22.391672718470108 0 L 82.90970709271363 0 Q 105.30137981118374 0 105.30137981118374 22.391672718470108 L 105.30137981118374 22.391672718470108 Q 105.30137981118374 44.783345436940216 82.90970709271363 44.783345436940216 L 22.391672718470108 44.783345436940216 Q 0 44.783345436940216 0 22.391672718470108 L 0 22.391672718470108 Q 0 0 22.391672718470108 0 Z",
+            "fill": "#ffffff",
+            "text": {
+              "content": "<p style=\"text-align: center;\"><strong>NEXT</strong></p>",
+              "defaultFontName": "",
+              "defaultColor": "#333",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "text",
+            "id": "haTvPAsizk",
+            "left": 91.05541087962962,
+            "top": 261.88422900024204,
+            "rotate": 0,
+            "width": 306.0699588477366,
+            "height": 92,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(0, 0, 0);\">模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "FfkDfCGAc4",
+            "left": 91.05541087962962,
+            "top": 174.57026143790847,
+            "rotate": 0,
+            "width": 306.0699588477366,
+            "height": 68,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 32px;\"><span style=\"color: rgb(36, 36, 36);\">1模板封面标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "3jNc_sqsv5",
+            "left": 490.31900568869526,
+            "top": 97.35484182098764,
+            "rotate": 0,
+            "width": 306.0699588477366,
+            "height": 68,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 32px;\"><span style=\"color: rgb(255, 255, 255);\">2模板封面标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "ccwYnCWHYb",
+            "left": 490.31900568869526,
+            "top": 165.35484182098764,
+            "rotate": 0,
+            "width": 357.64221738077947,
+            "height": 92,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(255, 255, 255);\">模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "cards-2",
+      "pageType": "content",
+      "sourceTemplate": "pro_3",
+      "slide": {
+        "id": "ODTjG-rUDq",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "shape",
+            "id": "fht2ZcXyFG",
+            "left": 34.48655103066868,
+            "top": 29.794267778336373,
+            "rotate": 0,
+            "width": 30.893246187363836,
+            "height": 30.893246187363836,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(62,95,175,1)"
+          },
+          {
+            "type": "text",
+            "id": "WbcWhr2gK0",
+            "left": 597.8329620907191,
+            "top": 114.07173540118801,
+            "rotate": 0,
+            "width": 262.0874262635528,
+            "height": 80,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 40px;\"><span style=\"color: rgb(174, 179, 215);\">在此输入标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "subtitle"
+          },
+          {
+            "type": "text",
+            "id": "8Etsyw6eNJ",
+            "left": 597.8329620907191,
+            "top": 162.54426021358208,
+            "rotate": 0,
+            "width": 311.7122144504325,
+            "height": 92,
+            "content": "<p style=\"\" class=\"ProseMirror-selectednode\" draggable=\"true\"><strong><span style=\"font-size: 48px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "shape",
+            "id": "gRnq7X4FK_",
+            "left": 102.58386402994245,
+            "top": 136.623122777126,
+            "rotate": 0,
+            "width": 170.08472524812396,
+            "height": 170.08472524812396,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(57,87,177,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 0,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(57,87,177,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(103,126,195,1)"
+                }
+              ]
+            }
+          },
+          {
+            "type": "text",
+            "id": "43In9zYYtA",
+            "left": 135.58071709215497,
+            "top": 182.868610401188,
+            "rotate": 0,
+            "width": 104.09101912369887,
+            "height": 77.59375,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 48px;\"><span style=\"color: rgb(255, 255, 255);\">11</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1.2,
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "yQYsM80eEt",
+            "left": 90.79737165521476,
+            "top": 383.4840903722913,
+            "rotate": 0,
+            "width": 193.65770999757933,
+            "height": 116,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "1mDd-sbNj3",
+            "left": 123.28600063507184,
+            "top": 344.3849416797258,
+            "rotate": 0,
+            "width": 128.68045203786517,
+            "height": 47,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 18px;\">在此输入标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "shape",
+            "id": "1sCmE3UDWC",
+            "left": 340.13167327709806,
+            "top": 136.623122777126,
+            "rotate": 0,
+            "width": 170.08472524812396,
+            "height": 170.08472524812396,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(52,70,124,1)",
+            "gradient": {
+              "type": "linear",
+              "rotate": 0,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(52,70,124,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(110,127,179,1)"
+                }
+              ]
+            }
+          },
+          {
+            "type": "text",
+            "id": "ojWdTfVSK8",
+            "left": 356.6300998082043,
+            "top": 182.868610401188,
+            "rotate": 0,
+            "width": 137.0878721859114,
+            "height": 77.59375,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 48px;\"><span style=\"color: rgb(255, 255, 255);\">22</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1.2,
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "oyuMCZWREn",
+            "left": 328.3451809023703,
+            "top": 383.4840903722913,
+            "rotate": 0,
+            "width": 193.65770999757933,
+            "height": 116,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "JlygRDAVLL",
+            "left": 360.8338098822274,
+            "top": 344.3849416797258,
+            "rotate": 0,
+            "width": 128.68045203786517,
+            "height": 47,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 18px;\">在此输入标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "NVg-r3_cHf",
+            "left": 597.8329620907191,
+            "top": 262.4480216238042,
+            "rotate": 0,
+            "width": 351.0045993706125,
+            "height": 140,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "content"
+          },
+          {
+            "type": "shape",
+            "id": "F4Mg9d4qGD",
+            "left": 609.9820138441742,
+            "top": 434.22344305718485,
+            "rotate": 0,
+            "width": 150.36403925292814,
+            "height": 37.89359998510324,
+            "viewBox": [
+              150.36403925292814,
+              37.89359998510324
+            ],
+            "path": "M 18.94679999255162 0 L 131.4172392603765 0 Q 150.36403925292814 0 150.36403925292814 18.94679999255162 L 150.36403925292814 18.94679999255162 Q 150.36403925292814 37.89359998510324 131.4172392603765 37.89359998510324 L 18.94679999255162 37.89359998510324 Q 0 37.89359998510324 0 18.94679999255162 L 0 18.94679999255162 Q 0 0 18.94679999255162 0 Z",
+            "fill": "rgba(65,98,205,1)"
+          },
+          {
+            "type": "shape",
+            "id": "U1I1ATh8iG",
+            "left": 948.8375614613316,
+            "top": 17.13751675577764,
+            "rotate": 0,
+            "width": 25.31350204511746,
+            "height": 25.31350204511746,
+            "viewBox": [
+              25.31350204511746,
+              25.31350204511746
+            ],
+            "path": "M 9.492563266919047 0 L 9.492563266919047 9.492563266919047 L 0 9.492563266919047 L 0 15.820938778198412 L 9.492563266919047 15.820938778198412 L 9.492563266919047 25.31350204511746 L 15.820938778198412 25.31350204511746 L 15.820938778198412 15.820938778198412 L 25.31350204511746 15.820938778198412 L 25.31350204511746 9.492563266919047 L 15.820938778198412 9.492563266919047 L 15.820938778198412 0 Z",
+            "fill": "rgba(52,70,124,1)"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "cards-4",
+      "pageType": "content",
+      "sourceTemplate": "template_1",
+      "slide": {
+        "id": "CI-9GGV870",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "text",
+            "id": "7mCd12vwX1",
+            "left": 124.51281138790031,
+            "top": 32.950307680901545,
+            "rotate": 0,
+            "width": 832.3871886120996,
+            "height": 56,
+            "content": "<p style=\"text-align: right;\"><span style=\"font-size: 36px;\">模板内容页标题</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1,
+            "textType": "title"
+          },
+          {
+            "type": "shape",
+            "id": "3kdbcL92R9",
+            "left": 42.1,
+            "top": 29.950307680901542,
+            "rotate": 0,
+            "width": 70,
+            "height": 70,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgb(155, 0, 0)"
+          },
+          {
+            "type": "line",
+            "id": "ZiBrajr-FK",
+            "left": 42.08950548635823,
+            "top": 100.1,
+            "rotate": 0,
+            "start": [
+              0,
+              0
+            ],
+            "end": [
+              904.5077105575326,
+              0
+            ],
+            "width": 2,
+            "style": "solid",
+            "color": "rgb(155, 0, 0)",
+            "points": [
+              "",
+              ""
+            ]
+          },
+          {
+            "type": "shape",
+            "id": "0osXUTkrBj",
+            "left": 53.75,
+            "top": 42.25030768090154,
+            "rotate": 0,
+            "width": 46.7,
+            "height": 46.7,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 80 0 L 200 100 L 80 200 L 0 200 L 120 100 L 0 0 Z",
+            "fill": "#ffffff"
+          },
+          {
+            "type": "shape",
+            "id": "yfgHjk8uJk",
+            "left": 110,
+            "top": 194.41981020166077,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgb(155, 0, 0)",
+            "text": {
+              "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(255, 255, 255);\">01</span></span></strong></p>",
+              "defaultFontName": "",
+              "defaultColor": "#000",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "text",
+            "id": "dYxqN1zGxh",
+            "left": 20,
+            "top": 259.6069988137604,
+            "rotate": 0,
+            "width": 240,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\">内容项标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "UHnyhPP5n2",
+            "left": 20,
+            "top": 309.6069988137603,
+            "rotate": 0,
+            "width": 240,
+            "height": 140,
+            "content": "<p style=\"text-align: center;\">内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文</p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "wdwhVy3FGw",
+            "left": 350,
+            "top": 194.41981020166077,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgb(155, 0, 0)",
+            "text": {
+              "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(255, 255, 255);\">02</span></span></strong></p>",
+              "defaultFontName": "",
+              "defaultColor": "#000",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "text",
+            "id": "5jzw4XLVgF",
+            "left": 260,
+            "top": 259.6069988137605,
+            "rotate": 0,
+            "width": 240,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\">内容项标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "VqXn6HBh-m",
+            "left": 260,
+            "top": 309.6069988137604,
+            "rotate": 0,
+            "width": 240,
+            "height": 140,
+            "content": "<p style=\"text-align: center;\">内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文</p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "QliI3LLJkQ",
+            "left": 590,
+            "top": 194.41981020166077,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgb(155, 0, 0)",
+            "text": {
+              "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(255, 255, 255);\">03</span></span></strong></p>",
+              "defaultFontName": "",
+              "defaultColor": "#000",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "text",
+            "id": "yABWLD03UV",
+            "left": 500,
+            "top": 259.6069988137605,
+            "rotate": 0,
+            "width": 240,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\">内容项标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "xUpuSBIot0",
+            "left": 500,
+            "top": 309.6069988137604,
+            "rotate": 0,
+            "width": 240,
+            "height": 140,
+            "content": "<p style=\"text-align: center;\">内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文</p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "KbFu99PXyv",
+            "left": 830,
+            "top": 194.41981020166077,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgb(155, 0, 0)",
+            "text": {
+              "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(255, 255, 255);\">04</span></span></strong></p>",
+              "defaultFontName": "",
+              "defaultColor": "#000",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "text",
+            "id": "bX2uO1Ism2",
+            "left": 740,
+            "top": 259.60699881376075,
+            "rotate": 0,
+            "width": 240,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\">内容项标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "FgRAbOc5uH",
+            "left": 740,
+            "top": 309.60699881376064,
+            "rotate": 0,
+            "width": 240,
+            "height": 140,
+            "content": "<p style=\"text-align: center;\">内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文</p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "cards-3",
+      "pageType": "content",
+      "sourceTemplate": "pro_5",
+      "slide": {
+        "id": "KqDrtiClb4",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "shape",
+            "id": "v8pC7uj6cg",
+            "left": -16.00365797896661,
+            "top": 106.92443987197075,
+            "rotate": 0,
+            "width": 32.00731595793322,
+            "height": 348.6511202560585,
+            "viewBox": [
+              32.00731595793322,
+              348.6511202560585
+            ],
+            "path": "M 16.00365797896661 0 L 16.00365797896661 0 Q 32.00731595793322 0 32.00731595793322 16.00365797896661 L 32.00731595793322 332.6474622770919 Q 32.00731595793322 348.6511202560585 16.00365797896661 348.6511202560585 L 16.00365797896661 348.6511202560585 Q 0 348.6511202560585 0 332.6474622770919 L 0 16.00365797896661 Q 0 0 16.00365797896661 0 Z",
+            "fill": "rgba(212,60,59,1)"
+          },
+          {
+            "type": "shape",
+            "id": "lBjo5N6-fc",
+            "left": 982.2357786407517,
+            "top": 106.92443987197075,
+            "rotate": 0,
+            "width": 32.00731595793322,
+            "height": 348.6511202560585,
+            "viewBox": [
+              32.00731595793322,
+              348.6511202560585
+            ],
+            "path": "M 16.00365797896661 0 L 16.00365797896661 0 Q 32.00731595793322 0 32.00731595793322 16.00365797896661 L 32.00731595793322 332.6474622770919 Q 32.00731595793322 348.6511202560585 16.00365797896661 348.6511202560585 L 16.00365797896661 348.6511202560585 Q 0 348.6511202560585 0 332.6474622770919 L 0 16.00365797896661 Q 0 0 16.00365797896661 0 Z",
+            "fill": "rgba(212,60,59,1)"
+          },
+          {
+            "type": "shape",
+            "id": "sGRgt68lYS",
+            "left": 383.8365912208505,
+            "top": 175.79682498856883,
+            "rotate": 0,
+            "width": 233.19615912208502,
+            "height": 279.77873513946037,
+            "viewBox": [
+              233.19615912208502,
+              279.77873513946037
+            ],
+            "path": "M 17.28765744929676 0 L 215.90850167278825 0 Q 233.19615912208502 0 233.19615912208502 17.28765744929676 L 233.19615912208502 262.4910776901636 Q 233.19615912208502 279.77873513946037 215.90850167278825 279.77873513946037 L 17.28765744929676 279.77873513946037 Q 0 279.77873513946037 0 262.4910776901636 L 0 17.28765744929676 Q 0 0 17.28765744929676 0 Z",
+            "fill": "rgba(212,60,59,1)",
+            "shadow": {
+              "h": 1,
+              "v": 4,
+              "blur": 2,
+              "color": "#808080"
+            }
+          },
+          {
+            "type": "text",
+            "id": "ae2vmSJpkv",
+            "left": 412.8989140374943,
+            "top": 305.69602694901687,
+            "rotate": 0,
+            "width": 175.07151348879742,
+            "height": 40,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\"><span style=\"color: rgb(255, 255, 255);\">2在此输入内容</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1,
+            "paragraphSpace": 5,
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "Z8ogq0G_X6",
+            "left": 416.9870256058528,
+            "top": 345.69602694901687,
+            "rotate": 0,
+            "width": 166.89529035208045,
+            "height": 92,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1.5,
+            "textType": "item"
+          },
+          {
+            "type": "image",
+            "id": "V1HYIiMZqE",
+            "left": 460.0429980634229,
+            "top": 200.4666545630598,
+            "rotate": 0,
+            "width": 80.78334543694021,
+            "height": 80.78334543694021,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "shape",
+            "id": "cYLP8znCiX",
+            "left": 121.06338591678097,
+            "top": 175.79682498856883,
+            "rotate": 0,
+            "width": 233.19615912208502,
+            "height": 279.77873513946037,
+            "viewBox": [
+              233.19615912208502,
+              279.77873513946037
+            ],
+            "path": "M 17.28765744929676 0 L 215.90850167278825 0 Q 233.19615912208502 0 233.19615912208502 17.28765744929676 L 233.19615912208502 262.4910776901636 Q 233.19615912208502 279.77873513946037 215.90850167278825 279.77873513946037 L 17.28765744929676 279.77873513946037 Q 0 279.77873513946037 0 262.4910776901636 L 0 17.28765744929676 Q 0 0 17.28765744929676 0 Z",
+            "fill": "rgb(242, 242, 242)",
+            "shadow": {
+              "h": 1,
+              "v": 4,
+              "blur": 2,
+              "color": "#808080"
+            }
+          },
+          {
+            "type": "text",
+            "id": "8n0Nz9CQA2",
+            "left": 154.21382030178327,
+            "top": 345.69602694901687,
+            "rotate": 0,
+            "width": 166.89529035208045,
+            "height": 92,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1.5,
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "32R5RvrA9h",
+            "left": 151.84038637402833,
+            "top": 305.686192558299,
+            "rotate": 0,
+            "width": 171.64215820759028,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\">1在此输入内容</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1.5,
+            "paragraphSpace": 5,
+            "textType": "itemTitle"
+          },
+          {
+            "type": "image",
+            "id": "iRKNttFIqb",
+            "left": 198.7755991285403,
+            "top": 211.66249092229484,
+            "rotate": 0,
+            "width": 58.391672718470126,
+            "height": 58.391672718470126,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "shape",
+            "id": "FcTCnreY3O",
+            "left": 646.6097965249201,
+            "top": 175.79682498856886,
+            "rotate": 0,
+            "width": 233.19615912208502,
+            "height": 279.77873513946037,
+            "viewBox": [
+              233.19615912208502,
+              279.77873513946037
+            ],
+            "path": "M 17.28765744929676 0 L 215.90850167278825 0 Q 233.19615912208502 0 233.19615912208502 17.28765744929676 L 233.19615912208502 262.4910776901636 Q 233.19615912208502 279.77873513946037 215.90850167278825 279.77873513946037 L 17.28765744929676 279.77873513946037 Q 0 279.77873513946037 0 262.4910776901636 L 0 17.28765744929676 Q 0 0 17.28765744929676 0 Z",
+            "fill": "rgb(242, 242, 242)",
+            "shadow": {
+              "h": 1,
+              "v": 4,
+              "blur": 2,
+              "color": "#808080"
+            }
+          },
+          {
+            "type": "text",
+            "id": "oQzkXKOOqH",
+            "left": 679.7602309099224,
+            "top": 345.69602694901687,
+            "rotate": 0,
+            "width": 166.89529035208045,
+            "height": 92,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1.5,
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "bEdDIrVAyj",
+            "left": 677.3867969821674,
+            "top": 305.686192558299,
+            "rotate": 0,
+            "width": 171.64215820759028,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\">3在此输入内容</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1.5,
+            "paragraphSpace": 5,
+            "textType": "itemTitle"
+          },
+          {
+            "type": "image",
+            "id": "ZuEuz1IbXV",
+            "left": 735.5249905860835,
+            "top": 213.17544178165096,
+            "rotate": 0,
+            "width": 55.365770999757956,
+            "height": 55.365770999757956,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "text",
+            "id": "H5qC1oWGYn",
+            "left": 78.57596021947872,
+            "top": 20.937965851269578,
+            "rotate": 0,
+            "width": 820,
+            "height": 92,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 48px;\">XXXXXXXXXXXXXXXXXXXX</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "text",
+            "id": "sZhDeJjblA",
+            "left": 78.5759602194787,
+            "top": 90.93796585126958,
+            "rotate": 0,
+            "width": 820,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\" class=\"ProseMirror-selectednode\" draggable=\"true\"><span style=\"font-size: 16px;\">模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "content"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "cover-center",
+      "pageType": "cover",
+      "sourceTemplate": "template_1",
+      "slide": {
+        "id": "kXIk-2p5GV",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "shape",
+            "id": "08eMhOIES5",
+            "left": 0,
+            "top": 0,
+            "rotate": 0,
+            "width": 1000,
+            "height": 281.25,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgb(155, 0, 0)"
+          },
+          {
+            "type": "shape",
+            "id": "CZdIjR_Gpv",
+            "left": 0,
+            "top": 281.25,
+            "rotate": 0,
+            "width": 1000,
+            "height": 281.25,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgb(242, 242, 242)"
+          },
+          {
+            "type": "shape",
+            "id": "EQDezgGTee",
+            "left": 40,
+            "top": 40,
+            "rotate": 0,
+            "width": 920,
+            "height": 482,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "#ffffff",
+            "shadow": {
+              "h": 4,
+              "v": 4,
+              "blur": 8,
+              "color": "rgba(128, 128, 128, 0.13)"
+            }
+          },
+          {
+            "type": "text",
+            "id": "vw6nysUqHb",
+            "left": 90.00000000000006,
+            "top": 170,
+            "rotate": 0,
+            "width": 820,
+            "height": 101,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 54px;\">模板封面标题</span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "text",
+            "id": "sO32lih4vG",
+            "left": 90,
+            "top": 292.1268090154214,
+            "rotate": 0,
+            "width": 820,
+            "height": 68,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 16px;\">模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "content"
+          },
+          {
+            "type": "line",
+            "id": "7F6wpKv3mT",
+            "left": 395.08600237247924,
+            "top": 281.41660735468577,
+            "rotate": 0,
+            "start": [
+              0,
+              0
+            ],
+            "end": [
+              209.82799525504151,
+              0
+            ],
+            "width": 1,
+            "style": "solid",
+            "color": "rgb(155, 0, 0)",
+            "points": [
+              "",
+              ""
+            ]
+          },
+          {
+            "type": "text",
+            "id": "e1tf1Fv94x",
+            "left": 420,
+            "top": 410,
+            "rotate": 0,
+            "width": 160,
+            "height": 44,
+            "content": "<p style=\"text-align: center;\"><em><span style=\"font-size: 16px;\">演讲人：XXX</span></em></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "shape",
+            "id": "KprH-Gfy2J",
+            "left": 53.347697953736684,
+            "top": 472.90878929418744,
+            "rotate": 0,
+            "width": 36.65230204626337,
+            "height": 36.65230204626337,
+            "viewBox": [
+              36.65230204626337,
+              36.65230204626337
+            ],
+            "path": "M 0 0 L 0 36.65230204626337 L 36.65230204626337 36.65230204626337 L 36.65230204626337 32.98707184163703 L 3.6652302046263374 32.98707184163703 L 3.6652302046263374 0 Z",
+            "fill": "rgb(155, 0, 0)"
+          },
+          {
+            "type": "shape",
+            "id": "bOi5kaJXbz",
+            "left": 910,
+            "top": 472.90878929418744,
+            "rotate": -90,
+            "width": 36.65230204626337,
+            "height": 36.65230204626337,
+            "viewBox": [
+              36.65230204626337,
+              36.65230204626337
+            ],
+            "path": "M 0 0 L 0 36.65230204626337 L 36.65230204626337 36.65230204626337 L 36.65230204626337 32.98707184163703 L 3.6652302046263374 32.98707184163703 L 3.6652302046263374 0 Z",
+            "fill": "rgb(155, 0, 0)"
+          },
+          {
+            "type": "shape",
+            "id": "HgW-Hf_ji8",
+            "left": 910,
+            "top": 54.37972642348757,
+            "rotate": 180,
+            "width": 36.65230204626337,
+            "height": 36.65230204626337,
+            "viewBox": [
+              36.65230204626337,
+              36.65230204626337
+            ],
+            "path": "M 0 0 L 0 36.65230204626337 L 36.65230204626337 36.65230204626337 L 36.65230204626337 32.98707184163703 L 3.6652302046263374 32.98707184163703 L 3.6652302046263374 0 Z",
+            "fill": "rgb(155, 0, 0)"
+          },
+          {
+            "type": "shape",
+            "id": "kSRPab7QQJ",
+            "left": 53.347697953736684,
+            "top": 54.37972642348757,
+            "rotate": 90,
+            "width": 36.65230204626337,
+            "height": 36.65230204626337,
+            "viewBox": [
+              36.65230204626337,
+              36.65230204626337
+            ],
+            "path": "M 0 0 L 0 36.65230204626337 L 36.65230204626337 36.65230204626337 L 36.65230204626337 32.98707184163703 L 3.6652302046263374 32.98707184163703 L 3.6652302046263374 0 Z",
+            "fill": "rgb(155, 0, 0)"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "contents-list",
+      "pageType": "contents",
+      "sourceTemplate": "template_6",
+      "slide": {
+        "id": "SM5R0MLtNn",
+        "background": {
+          "type": "solid",
+          "color": "rgb(73, 45, 34)"
+        },
+        "elements": [
+          {
+            "type": "shape",
+            "id": "xzAe7RoxRu",
+            "left": 32.62608695652179,
+            "top": 31.804347826086975,
+            "rotate": 0,
+            "width": 149.76758893280635,
+            "height": 498.89130434782606,
+            "viewBox": [
+              149.76758893280635,
+              498.89130434782606
+            ],
+            "path": "M 5.564242780354121 0 L 144.20334615245224 0 Q 149.76758893280635 0 149.76758893280635 5.564242780354121 L 149.76758893280635 493.32706156747196 Q 149.76758893280635 498.89130434782606 144.20334615245224 498.89130434782606 L 5.564242780354121 498.89130434782606 Q 0 498.89130434782606 0 493.32706156747196 L 0 5.564242780354121 Q 0 0 5.564242780354121 0 Z",
+            "fill": "rgba(251,210,106,1)"
+          },
+          {
+            "type": "text",
+            "id": "N6X2thThcX",
+            "left": 54.85836627140982,
+            "top": 59.29677206851118,
+            "rotate": 0,
+            "width": 105.30303030303031,
+            "height": 145,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 60px;\"><span style=\"color: rgb(73, 45, 34);\">目</span></span></strong></p><p style=\"text-align: center;\"><strong><span style=\"font-size: 60px;\"><span style=\"color: rgb(73, 45, 34);\">录</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "lineHeight": 1
+          },
+          {
+            "type": "text",
+            "id": "ToSpbQDKG8",
+            "left": 313.7351778656125,
+            "top": 42.26009718944507,
+            "rotate": 0,
+            "width": 629.0277315190328,
+            "height": 56,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(251, 210, 106);\">目录项1</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "bNcp6PiPXE",
+            "left": 243.9393939393938,
+            "top": 40.260097189445084,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 100 L 0 200 L 60 100 L 0 0 Z",
+            "fill": "rgb(251, 210, 106)"
+          },
+          {
+            "type": "text",
+            "id": "Py2o6Ek84F",
+            "left": 98.16139657444012,
+            "top": 169.1841238471673,
+            "rotate": 0,
+            "width": 62,
+            "height": 175.38790838790837,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 28px;\"><span style=\"color: rgb(73, 45, 34);\">CONTENT</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333333"
+          },
+          {
+            "type": "text",
+            "id": "Q2qudqsH7d",
+            "left": 313.7351778656125,
+            "top": 211.05201943788896,
+            "rotate": 0,
+            "width": 629.0277315190328,
+            "height": 56,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(251, 210, 106);\">目录项3</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "UAvSk09-W5",
+            "left": 243.93939393939377,
+            "top": 209.05201943788896,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 100 L 0 200 L 60 100 L 0 0 Z",
+            "fill": "rgb(251, 210, 106)"
+          },
+          {
+            "type": "text",
+            "id": "sEm5ACwnTt",
+            "left": 313.7351778656125,
+            "top": 295.4479805621109,
+            "rotate": 0,
+            "width": 629.0277315190328,
+            "height": 56,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(251, 210, 106);\">目录项4</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "Nrw6pcHc1Y",
+            "left": 243.9393939393937,
+            "top": 293.4479805621109,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 100 L 0 200 L 60 100 L 0 0 Z",
+            "fill": "rgb(251, 210, 106)"
+          },
+          {
+            "type": "text",
+            "id": "uUlk6XArBx",
+            "left": 313.7351778656126,
+            "top": 379.84394168633287,
+            "rotate": 0,
+            "width": 629.0277315190328,
+            "height": 56,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(251, 210, 106);\">目录项5</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "NB9b7l1Nwz",
+            "left": 243.9393939393937,
+            "top": 377.84394168633287,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 100 L 0 200 L 60 100 L 0 0 Z",
+            "fill": "rgb(251, 210, 106)"
+          },
+          {
+            "type": "text",
+            "id": "fYeUUal6zd",
+            "left": 313.7351778656126,
+            "top": 464.23990281055484,
+            "rotate": 0,
+            "width": 629.0277315190328,
+            "height": 56,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(251, 210, 106);\">目录项6</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "P695j1_0OT",
+            "left": 243.93939393939363,
+            "top": 462.23990281055484,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 100 L 0 200 L 60 100 L 0 0 Z",
+            "fill": "rgb(251, 210, 106)"
+          },
+          {
+            "type": "text",
+            "id": "3ug5LvHBa4",
+            "left": 313.7351778656126,
+            "top": 126.656058313667,
+            "rotate": 0,
+            "width": 629.0277315190328,
+            "height": 56,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 24px;\"><span style=\"color: rgb(251, 210, 106);\">目录项2</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "24rdR-RD2q",
+            "left": 243.93939393939382,
+            "top": 124.65605831366702,
+            "rotate": 0,
+            "width": 60,
+            "height": 60,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 100 L 0 200 L 60 100 L 0 0 Z",
+            "fill": "rgb(251, 210, 106)"
+          },
+          {
+            "type": "shape",
+            "id": "tJwS_W1u5z",
+            "left": 980,
+            "top": -2.1316282072803006e-14,
+            "rotate": 0,
+            "width": 20,
+            "height": 562.5,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(251,210,106,1)"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "transition-number",
+      "pageType": "transition",
+      "sourceTemplate": "pro_6",
+      "slide": {
+        "id": "Z8ecYiLAyA",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "image",
+            "id": "Q-XM1-mwPK",
+            "left": 134.21266595072458,
+            "top": 138.81169210395103,
+            "rotate": 0,
+            "width": 178.34429139883684,
+            "height": 149.30766301197718,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "image",
+            "id": "ubYp5NWmP0",
+            "left": 129.62129772299272,
+            "top": 134.9678546885048,
+            "rotate": 0,
+            "width": 187.52702785430057,
+            "height": 156.99533784286956,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "image",
+            "id": "1vIZsK3VIN",
+            "left": 8684.565589121827,
+            "top": 170.23807716669964,
+            "rotate": 0,
+            "width": 178.34429139883684,
+            "height": 149.30766301197718,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "image",
+            "id": "0grK0RvYTx",
+            "left": 8679.974220894095,
+            "top": 166.3942397512534,
+            "rotate": 0,
+            "width": 187.52702785430057,
+            "height": 156.99533784286956,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "image",
+            "id": "lFXxSfCaU4",
+            "left": 694.411625240593,
+            "top": 134.96785468850487,
+            "rotate": 0,
+            "width": 178.34429139883684,
+            "height": 149.30766301197718,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "image",
+            "id": "rnxZcJHARP",
+            "left": 689.8202570128611,
+            "top": 131.12401727305863,
+            "rotate": 0,
+            "width": 187.52702785430057,
+            "height": 156.99533784286956,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "shape",
+            "id": "GrMna_PKJ7",
+            "left": 413.08453616804934,
+            "top": 109.26148103975872,
+            "rotate": 0,
+            "width": 186,
+            "height": 186,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(186,213,238,0.37)"
+          },
+          {
+            "type": "image",
+            "id": "829-civG9K",
+            "left": 334.650376388435,
+            "top": 63.8640123942874,
+            "rotate": 0,
+            "width": 330.6246709519437,
+            "height": 276.79493729094264,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "text",
+            "id": "EAAW4vUFlT",
+            "left": 495.4134144475054,
+            "top": 200.1430019895929,
+            "rotate": 0,
+            "width": 153.04560759106215,
+            "height": 44,
+            "content": "",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "IJu5Fqjt_Z",
+            "left": 421.0998284115393,
+            "top": 129.25000000000003,
+            "rotate": 0,
+            "width": 169.96941551302,
+            "height": 152,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 88px;\"><span style=\"color: rgb(58, 79, 147);\">01</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "partNumber"
+          },
+          {
+            "type": "text",
+            "id": "A65IfB7XRX",
+            "left": 79.2934792415958,
+            "top": 332.7448729721457,
+            "rotate": 0,
+            "width": 853.582113852907,
+            "height": 80,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 40px;\"><span style=\"color: rgb(36, 36, 36);\">在此输入目录在此输入目录在此输入目录</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "text",
+            "id": "NzrDOyvxFV",
+            "left": 216.88636490024555,
+            "top": 404.32736455463726,
+            "rotate": 0,
+            "width": 566.1526939283225,
+            "height": 68,
+            "content": "<p style=\"text-align: center;\" class=\"ProseMirror-selectednode\" draggable=\"true\"><span style=\"font-size: 16px;\">模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文模板封面正文</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "content"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "split-image-left",
+      "pageType": "content",
+      "sourceTemplate": "pro_9",
+      "slide": {
+        "id": "XIVoPI52zk",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "image",
+            "id": "WwSttj6_99",
+            "left": -5.1690432695313575,
+            "top": 0.0413580246913865,
+            "rotate": 0,
+            "width": 505.16904326953136,
+            "height": 562.5,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "shape",
+            "id": "OfIzW7u98j",
+            "left": -5.1690432695313575,
+            "top": 0.0413580246913865,
+            "rotate": 0,
+            "width": 505.16904326953136,
+            "height": 562.5,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "#5b9bd5",
+            "gradient": {
+              "type": "linear",
+              "rotate": 225,
+              "colors": [
+                {
+                  "pos": 0,
+                  "color": "rgba(60,124,95,1)"
+                },
+                {
+                  "pos": 52,
+                  "color": "rgba(57,184,127,1)"
+                },
+                {
+                  "pos": 100,
+                  "color": "rgba(54,184,113,1)"
+                }
+              ]
+            },
+            "opacity": 0.5
+          },
+          {
+            "type": "text",
+            "id": "wYMVnMvXK5",
+            "left": 573.1849319404876,
+            "top": 137.0369078027125,
+            "rotate": 0,
+            "width": 311.5285126396236,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "yzx7THjjfJ",
+            "left": 573.1849319404876,
+            "top": 106.20386841411752,
+            "rotate": 0,
+            "width": 168.96531452087004,
+            "height": 47,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(49, 132, 86);\">1One</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "EWzE9SMxR9",
+            "left": 573.1849319404876,
+            "top": 271.96342161811515,
+            "rotate": 0,
+            "width": 311.5285126396236,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "dyKAFe9Tiy",
+            "left": 573.1849319404876,
+            "top": 241.13038222952022,
+            "rotate": 0,
+            "width": 168.96531452087004,
+            "height": 47,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(49, 132, 86);\">2Two</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "Q0wRSJ3UTr",
+            "left": 573.1849319404876,
+            "top": 399.54131697378824,
+            "rotate": 0,
+            "width": 311.5285126396236,
+            "height": 68,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "RKruekzR_a",
+            "left": 573.1849319404876,
+            "top": 368.70827758519334,
+            "rotate": 0,
+            "width": 168.96531452087004,
+            "height": 47,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(49, 132, 86);\">3Three</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemNumber"
+          },
+          {
+            "type": "text",
+            "id": "DZz0h_3_nY",
+            "left": 76.77248677248693,
+            "top": 241.29135802469136,
+            "rotate": 0,
+            "width": 350.96426382478387,
+            "height": 80,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 40px;\"><span style=\"color: rgb(255, 255, 255);\">模板封面标题标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "text",
+            "id": "6G0ut3fnzn",
+            "left": 76.77248677248693,
+            "top": 310.70827758519334,
+            "rotate": 0,
+            "width": 350.96426382478376,
+            "height": 116,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\"><span style=\"color: #ffffff;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "content"
+          },
+          {
+            "type": "shape",
+            "id": "H35Gt6aAyx",
+            "left": 85.39094650205762,
+            "top": 153.20386841411752,
+            "rotate": 0,
+            "width": 86.41975308641976,
+            "height": 86.41975308641976,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "#ffffff"
+          },
+          {
+            "type": "image",
+            "id": "h3rQlgzEym",
+            "left": 92.77836566725456,
+            "top": 160.59128757931444,
+            "rotate": 0,
+            "width": 71.64491475602588,
+            "height": 71.64491475602588,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "big-number",
+      "pageType": "content",
+      "sourceTemplate": "pro_3",
+      "slide": {
+        "id": "IaU0UiK9nr",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "shape",
+            "id": "ISkm5ide6Y",
+            "left": 49.539570660072684,
+            "top": 38.92400913050531,
+            "rotate": 0,
+            "width": 68.8864867945728,
+            "height": 68.8864867945728,
+            "viewBox": [
+              68.8864867945728,
+              68.8864867945728
+            ],
+            "path": "M 25.8324325479648 0 L 25.8324325479648 25.8324325479648 L 0 25.8324325479648 L 0 43.054054246608004 L 25.8324325479648 43.054054246608004 L 25.8324325479648 68.8864867945728 L 43.054054246608004 68.8864867945728 L 43.054054246608004 43.054054246608004 L 68.8864867945728 43.054054246608004 L 68.8864867945728 25.8324325479648 L 43.054054246608004 25.8324325479648 L 43.054054246608004 0 Z",
+            "fill": "rgba(52,70,124,1)"
+          },
+          {
+            "type": "shape",
+            "id": "HNntAwabg8",
+            "left": 147.7869311304769,
+            "top": 78.5,
+            "rotate": 0,
+            "width": 255.38610505930768,
+            "height": 405.47083030743164,
+            "viewBox": [
+              255.38610505930768,
+              405.47083030743164
+            ],
+            "path": "M 16.188574195110142 0 L 239.19753086419755 0 Q 255.38610505930768 0 255.38610505930768 16.188574195110142 L 255.38610505930768 389.2822561123215 Q 255.38610505930768 405.47083030743164 239.19753086419755 405.47083030743164 L 16.188574195110142 405.47083030743164 Q 0 405.47083030743164 0 389.2822561123215 L 0 16.188574195110142 Q 0 0 16.188574195110142 0 Z",
+            "fill": "#72349d"
+          },
+          {
+            "type": "shape",
+            "id": "MBBeMWYzn5",
+            "left": 52.97895952409281,
+            "top": 231.2993454741821,
+            "rotate": 90,
+            "width": 62.00770906653258,
+            "height": 37.89359998510324,
+            "viewBox": [
+              62.00770906653258,
+              37.89359998510324
+            ],
+            "path": "M 6.843193117702915 0 L 55.16451594882966 0 Q 62.00770906653258 0 62.00770906653258 6.843193117702915 L 62.00770906653258 31.050406867400326 Q 62.00770906653258 37.89359998510324 55.16451594882966 37.89359998510324 L 6.843193117702915 37.89359998510324 Q 0 37.89359998510324 0 31.050406867400326 L 0 6.843193117702915 Q 0 0 6.843193117702915 0 Z",
+            "fill": "rgba(65,98,205,1)"
+          },
+          {
+            "type": "text",
+            "id": "GEksn23bq-",
+            "left": 444.11715478014054,
+            "top": 85.08117621455035,
+            "rotate": 0,
+            "width": 441.6185480811194,
+            "height": 92,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 48px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入标题标题</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "text",
+            "id": "ixCegl0Zqq",
+            "left": 444.11715478014054,
+            "top": 184.9849376247726,
+            "rotate": 0,
+            "width": 459.93706124425086,
+            "height": 116,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "content"
+          },
+          {
+            "type": "shape",
+            "id": "6PKAJ78U_5",
+            "left": 444.11715478014054,
+            "top": 343.56899055918666,
+            "rotate": 0,
+            "width": 148.8743645606391,
+            "height": 140.40183974824498,
+            "viewBox": [
+              148.8743645606391,
+              140.40183974824498
+            ],
+            "path": "M 17.550229968530623 0 L 131.32413459210846 0 Q 148.8743645606391 0 148.8743645606391 17.550229968530623 L 148.8743645606391 122.85160977971435 Q 148.8743645606391 140.40183974824498 131.32413459210846 140.40183974824498 L 17.550229968530623 140.40183974824498 Q 0 140.40183974824498 0 122.85160977971435 L 0 17.550229968530623 Q 0 0 17.550229968530623 0 Z",
+            "fill": "#72349d"
+          },
+          {
+            "type": "shape",
+            "id": "4bWNSezrXh",
+            "left": 599.9732620053569,
+            "top": 343.56899055918666,
+            "rotate": 0,
+            "width": 148.8743645606391,
+            "height": 140.40183974824498,
+            "viewBox": [
+              148.8743645606391,
+              140.40183974824498
+            ],
+            "path": "M 17.550229968530623 0 L 131.32413459210846 0 Q 148.8743645606391 0 148.8743645606391 17.550229968530623 L 148.8743645606391 122.85160977971435 Q 148.8743645606391 140.40183974824498 131.32413459210846 140.40183974824498 L 17.550229968530623 140.40183974824498 Q 0 140.40183974824498 0 122.85160977971435 L 0 17.550229968530623 Q 0 0 17.550229968530623 0 Z",
+            "fill": "#72349d"
+          },
+          {
+            "type": "shape",
+            "id": "_9zQlQGHyk",
+            "left": 755.8293692305731,
+            "top": 343.56899055918666,
+            "rotate": 0,
+            "width": 148.8743645606391,
+            "height": 140.40183974824498,
+            "viewBox": [
+              148.8743645606391,
+              140.40183974824498
+            ],
+            "path": "M 17.550229968530623 0 L 131.32413459210846 0 Q 148.8743645606391 0 148.8743645606391 17.550229968530623 L 148.8743645606391 122.85160977971435 Q 148.8743645606391 140.40183974824498 131.32413459210846 140.40183974824498 L 17.550229968530623 140.40183974824498 Q 0 140.40183974824498 0 122.85160977971435 L 0 17.550229968530623 Q 0 0 17.550229968530623 0 Z",
+            "fill": "#72349d"
+          },
+          {
+            "type": "image",
+            "id": "x4dY8lBi_V",
+            "left": 147.7869311304769,
+            "top": 78.50000000000003,
+            "rotate": 0,
+            "width": 255.38610505930768,
+            "height": 405.4708303074316,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "radius": 15
+          },
+          {
+            "type": "image",
+            "id": "L0G6hWWvMw",
+            "left": 444.11715478014054,
+            "top": 343.56899055918666,
+            "rotate": 0,
+            "width": 148.87436456063904,
+            "height": 140.40183974824495,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "radius": 10,
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  16.666666666666668,
+                  0
+                ],
+                [
+                  83.33333333333333,
+                  100
+                ]
+              ]
+            }
+          },
+          {
+            "type": "image",
+            "id": "W9xbbibeef",
+            "left": 599.9732620053568,
+            "top": 343.5689905591866,
+            "rotate": 0,
+            "width": 148.8743645606392,
+            "height": 140.40183974824504,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "radius": 10,
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  33.33333333333333,
+                  0
+                ],
+                [
+                  99.99999999999999,
+                  100
+                ]
+              ]
+            }
+          },
+          {
+            "type": "image",
+            "id": "WZZK6EsPhP",
+            "left": 755.8293692305731,
+            "top": 343.56899055918666,
+            "rotate": 0,
+            "width": 148.2248467938183,
+            "height": 140.401839748245,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "radius": 10,
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  16.6622586617297,
+                  0
+                ],
+                [
+                  83.33774133827029,
+                  100
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "split-image-right",
+      "pageType": "content",
+      "sourceTemplate": "pro_7",
+      "slide": {
+        "id": "kiQtdTMmdC",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "text",
+            "id": "ef077G0n4e",
+            "left": 415.36041799957354,
+            "top": 40.87963144310835,
+            "rotate": 0,
+            "width": 165.94689699296222,
+            "height": 50,
+            "content": "<p style=\"\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">添加标题文字</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "xcPnfFPrwA",
+            "left": 351.18095542759653,
+            "top": 75.95107524775754,
+            "rotate": 0,
+            "width": 314.6992962252079,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "k42FSqb-lX",
+            "left": 143.28256696987398,
+            "top": 179.47471290109974,
+            "rotate": 0,
+            "width": 314.69929622520783,
+            "height": 50,
+            "content": "<p style=\"\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">1添加标题添加标题添加标题</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "-toy3wYM5U",
+            "left": 143.28256696987398,
+            "top": 207.78899273971456,
+            "rotate": 0,
+            "width": 314.6992962252079,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "tkRDvDJUOy",
+            "left": 69.89994434797168,
+            "top": 192.0747679583113,
+            "rotate": 0,
+            "width": 59.714224781403274,
+            "height": 59.714224781403274,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(91,155,213,0)",
+            "outline": {
+              "width": 4,
+              "color": "rgba(108, 120, 184, 0.99)",
+              "style": "solid"
+            }
+          },
+          {
+            "type": "shape",
+            "id": "rOdYtFw92Z",
+            "left": 69.89994434797168,
+            "top": 198.96089127834637,
+            "rotate": 0,
+            "width": 59.59197164682261,
+            "height": 45.94197814133314,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(155,0,0,0)",
+            "text": {
+              "content": "<p style=\"text-align: center;\"><span style=\"font-size: 28px;\"><span style=\"color: #000000;\">A</span></span></p>",
+              "defaultFontName": "",
+              "defaultColor": "#000",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "text",
+            "id": "b63Ufg6Qeo",
+            "left": 143.28256696987398,
+            "top": 291.08856032677056,
+            "rotate": 0,
+            "width": 314.6992962252078,
+            "height": 50,
+            "content": "<p style=\"\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">2添加标题添加标题添加标题</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "fERsVJJM77",
+            "left": 143.28256696987398,
+            "top": 319.4028401653854,
+            "rotate": 0,
+            "width": 314.6992962252079,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "1X07n7Ma6t",
+            "left": 69.89994434797168,
+            "top": 311.2314479360689,
+            "rotate": 0,
+            "width": 59.714224781403274,
+            "height": 59.714224781403274,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(91,155,213,0)",
+            "outline": {
+              "width": 4,
+              "color": "rgba(101, 115, 190, 0.83)",
+              "style": "solid"
+            }
+          },
+          {
+            "type": "shape",
+            "id": "vqIy2m3QIc",
+            "left": 69.89994434797168,
+            "top": 319.4028401653854,
+            "rotate": 0,
+            "width": 59.71422478140329,
+            "height": 44.000000000000014,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(155,0,0,0)",
+            "text": {
+              "content": "<p style=\"text-align: center;\" class=\"\"><span style=\"font-size: 28px;\"><span style=\"color: rgb(0, 0, 0);\">B</span></span></p>",
+              "defaultFontName": "",
+              "defaultColor": "#000",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "text",
+            "id": "K4B_1ZrhjN",
+            "left": 143.28256696987398,
+            "top": 410.2452403045282,
+            "rotate": 0,
+            "width": 314.6992962252078,
+            "height": 50,
+            "content": "<p style=\"\"><span style=\"font-size: 20px;\"><span style=\"color: rgb(0, 0, 0);\">3添加标题添加标题添加标题</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "text",
+            "id": "Xrz-nK9IeL",
+            "left": 143.28256696987398,
+            "top": 438.559520143143,
+            "rotate": 0,
+            "width": 314.6992962252079,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 12px;\"><span style=\"color: rgb(0, 0, 0);\">在此输入内容在此输入内容在此输入内容在此输入内容</span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "shape",
+            "id": "ZiLhpDTg7a",
+            "left": 69.89994434797168,
+            "top": 416.545267833134,
+            "rotate": 0,
+            "width": 59.714224781403274,
+            "height": 59.714224781403274,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(91,155,213,0)",
+            "outline": {
+              "width": 4,
+              "color": "rgba(145, 160, 240, 0.99)",
+              "style": "solid"
+            }
+          },
+          {
+            "type": "shape",
+            "id": "8aBZyos3gR",
+            "left": 69.89994434797168,
+            "top": 423.43139115316905,
+            "rotate": 0,
+            "width": 59.59197164682261,
+            "height": 45.94197814133314,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(155,0,0,0)",
+            "text": {
+              "content": "<p style=\"text-align: center;\" class=\"\"><span style=\"font-size: 28px;\"><span style=\"color: rgb(0, 0, 0);\">C</span></span></p>",
+              "defaultFontName": "",
+              "defaultColor": "#000",
+              "align": "middle"
+            }
+          },
+          {
+            "type": "image",
+            "id": "4FgRqBcY8H",
+            "left": 457.98186319508187,
+            "top": 34.700406688983165,
+            "rotate": 0,
+            "width": 497.41794001131865,
+            "height": 508.0775736371039,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  11.504424778761063,
+                  2.727272727272727
+                ],
+                [
+                  100,
+                  93.63636363636364
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "data-table",
+      "pageType": "content",
+      "sourceTemplate": "pro_6",
+      "slide": {
+        "id": "vvDzotAiRH",
+        "background": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "elements": [
+          {
+            "type": "shape",
+            "id": "1arT4whYNE",
+            "left": 32.34592220853739,
+            "top": 28.243653588111556,
+            "rotate": 0,
+            "width": 37.874221145098275,
+            "height": 37.87422114509828,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
+            "fill": "rgba(186,213,238,0.37)"
+          },
+          {
+            "type": "image",
+            "id": "vrHKKPzYvH",
+            "left": 6.02222222222224,
+            "top": 8.85537190082644,
+            "rotate": 0,
+            "width": 88.04738292011018,
+            "height": 73.71219384153537,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting"
+          },
+          {
+            "type": "text",
+            "id": "GppC4ntxZE",
+            "left": 22.687213913465428,
+            "top": 20.6807641606607,
+            "rotate": 0,
+            "width": 59.77657804745529,
+            "height": 53,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 22px;\"><span style=\"color: rgb(58, 79, 147);\">02</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "line",
+            "id": "prGIh8hl6h",
+            "left": 115.86030762167125,
+            "top": 20.015168813247175,
+            "rotate": 0,
+            "start": [
+              0,
+              0
+            ],
+            "end": [
+              0,
+              54.33119069482706
+            ],
+            "width": 8,
+            "style": "solid",
+            "color": "rgba(49,69,87,1)",
+            "points": [
+              "",
+              ""
+            ]
+          },
+          {
+            "type": "text",
+            "id": "PC6PSdunK2",
+            "left": 127.73963881236608,
+            "top": 6.018068030743569,
+            "rotate": 0,
+            "width": 301.94061830425454,
+            "height": 62,
+            "content": "<p style=\"\"><strong><span style=\"font-size: 28px;\"><span style=\"color: rgb(36, 36, 36);\">在此输入目录</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "text",
+            "id": "Pa31mSkiga",
+            "left": 127.73963881236608,
+            "top": 44.34346029057783,
+            "rotate": 0,
+            "width": 426.6727884909703,
+            "height": 44,
+            "content": "<p style=\"\"><span style=\"font-size: 16px;\">在此输入内容在此输入内容在此输入内容在此输入内容</span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333"
+          },
+          {
+            "type": "table",
+            "id": "boZI-Uxf3B",
+            "left": 73.09523275156455,
+            "top": 188.43929667949442,
+            "rotate": 0,
+            "width": 853.8223140495867,
+            "height": 317.8125,
+            "colWidths": [
+              0.2,
+              0.2,
+              0.2,
+              0.2,
+              0.2
+            ],
+            "cellMinHeight": 52.640269795203984,
+            "data": [
+              [
+                {
+                  "id": "hjJMuMuXEO",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "BH4hKQ9DPy",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "91oCIKuQ_d",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "QxNd3caRK5",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "9LqVZzjQf-",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                }
+              ],
+              [
+                {
+                  "id": "kveXglb6MO",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "Xt3m9WdUSi",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "zzQjxTUj9v",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "qnSk-9DWdc",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "c3sgc48QvV",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                }
+              ],
+              [
+                {
+                  "id": "bwaJ3dd0rY",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "iGn3uu06HH",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "YBgNAPnIwm",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "Zv0LO0LkBE",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "5MweqPYH-W",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                }
+              ],
+              [
+                {
+                  "id": "sZQjBJjyWE",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "V--0hil31_",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "1BE2zKGx9e",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "gYTky4Te0l",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "cEtJoiydBA",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                }
+              ],
+              [
+                {
+                  "id": "amKBOwXFXS",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "MD4FMsekrq",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "hNL0DJhp7_",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "hA1Olui7fO",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "n2dS2Kexj_",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                }
+              ],
+              [
+                {
+                  "id": "vFWivi_76L",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "ziw_BY7dnX",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "HsJdmNgoZv",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "qxKAAmmbmr",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                },
+                {
+                  "id": "LmPqFwHFkd",
+                  "colspan": 1,
+                  "rowspan": 1,
+                  "text": "",
+                  "style": {
+                    "fontname": "",
+                    "color": "#333"
+                  }
+                }
+              ]
+            ],
+            "outline": {
+              "width": 2,
+              "style": "solid",
+              "color": "rgb(242, 242, 242)"
+            },
+            "theme": {
+              "color": "rgba(59,86,152,1)",
+              "rowHeader": true,
+              "rowFooter": false,
+              "colHeader": false,
+              "colFooter": false
+            }
+          },
+          {
+            "type": "text",
+            "id": "WvQ7SqNmH3",
+            "left": 76.52204198473277,
+            "top": 114.43929667949442,
+            "rotate": 0,
+            "width": 847.3380723311643,
+            "height": 74,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 36px;\"><span style=\"color: rgb(36, 36, 36);\">在此输入内容在此输入内容在此输入内容</span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          }
+        ]
+      }
+    },
+    {
+      "layoutKey": "list-rows",
+      "pageType": "content",
+      "sourceTemplate": "template_7",
+      "slide": {
+        "id": "g9YfkNIpv7",
+        "background": {
+          "type": "solid",
+          "color": "rgba(255,255,255,1)"
+        },
+        "elements": [
+          {
+            "type": "image",
+            "id": "jzZnvth7P8",
+            "left": 0,
+            "top": 124.67578125,
+            "rotate": 0,
+            "width": 1000,
+            "height": 378.9335664335665,
+            "src": "",
+            "description": "（图片位：生成时以空src与英文query关键词替换）",
+            "query": "business meeting",
+            "clip": {
+              "shape": "rect",
+              "range": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  100,
+                  67.56756756756756
+                ]
+              ]
+            }
+          },
+          {
+            "type": "shape",
+            "id": "644eKla0Yg",
+            "left": 0,
+            "top": 124.67578125,
+            "rotate": 0,
+            "width": 1002.2,
+            "height": 379.1281362141148,
+            "viewBox": [
+              200,
+              200
+            ],
+            "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+            "fill": "rgba(0,49,83,1)",
+            "opacity": 0.8
+          },
+          {
+            "type": "text",
+            "id": "7FzLn3ZIgN",
+            "left": 29.449999999999967,
+            "top": 19.2,
+            "rotate": 0,
+            "width": 941.1,
+            "height": 92,
+            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 48px;\"><span style=\"font-family: LXGWWenKai;\"><span style=\"color: rgba(30,73,123,1);\">内容页标题</span></span></span></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "title"
+          },
+          {
+            "type": "shape",
+            "id": "GDm8pu12FG",
+            "left": 28.014354066985625,
+            "top": 199.14256446678323,
+            "rotate": 0,
+            "width": 300,
+            "height": 240,
+            "viewBox": [
+              300,
+              240
+            ],
+            "path": "M 10.53539028126933 0 L 289.4646097187307 0 Q 300 0 300 10.53539028126933 L 300 229.46460971873069 Q 300 240 289.4646097187307 240 L 10.53539028126933 240 Q 0 240 0 229.46460971873069 L 0 10.53539028126933 Q 0 0 10.53539028126933 0 Z",
+            "fill": "rgba(162,138,104,1)"
+          },
+          {
+            "type": "shape",
+            "id": "3WayRpnGqE",
+            "left": 18.014354066985597,
+            "top": 189.14256446678323,
+            "rotate": 0,
+            "width": 300,
+            "height": 240,
+            "viewBox": [
+              300,
+              240
+            ],
+            "path": "M 10.53539028126933 0 L 289.4646097187307 0 Q 300 0 300 10.53539028126933 L 300 229.46460971873069 Q 300 240 289.4646097187307 240 L 10.53539028126933 240 Q 0 240 0 229.46460971873069 L 0 10.53539028126933 Q 0 0 10.53539028126933 0 Z",
+            "fill": "rgb(227, 199, 159)"
+          },
+          {
+            "type": "text",
+            "id": "WEXcezAypq",
+            "left": 28.014354066985625,
+            "top": 267.3138563328119,
+            "rotate": 0,
+            "width": 280.2275917065391,
+            "height": 116,
+            "content": "<p style=\"text-align: center;\">内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文</p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "Mk3b1y3suX",
+            "left": 28.014354066985625,
+            "top": 217.31385633281192,
+            "rotate": 0,
+            "width": 280.2275917065391,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\"><span style=\"font-family: LXGWWenKai;\"><span style=\"color: rgb(30, 73, 123);\">内容项标题</span></span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "shape",
+            "id": "uZ72pBNVng",
+            "left": 355,
+            "top": 199.14256446678323,
+            "rotate": 0,
+            "width": 300,
+            "height": 240,
+            "viewBox": [
+              300,
+              240
+            ],
+            "path": "M 10.53539028126933 0 L 289.4646097187307 0 Q 300 0 300 10.53539028126933 L 300 229.46460971873069 Q 300 240 289.4646097187307 240 L 10.53539028126933 240 Q 0 240 0 229.46460971873069 L 0 10.53539028126933 Q 0 0 10.53539028126933 0 Z",
+            "fill": "rgba(162,138,104,1)"
+          },
+          {
+            "type": "shape",
+            "id": "v_xoXseNn_",
+            "left": 345,
+            "top": 189.14256446678323,
+            "rotate": 0,
+            "width": 300,
+            "height": 240,
+            "viewBox": [
+              300,
+              240
+            ],
+            "path": "M 10.53539028126933 0 L 289.4646097187307 0 Q 300 0 300 10.53539028126933 L 300 229.46460971873069 Q 300 240 289.4646097187307 240 L 10.53539028126933 240 Q 0 240 0 229.46460971873069 L 0 10.53539028126933 Q 0 0 10.53539028126933 0 Z",
+            "fill": "rgb(227, 199, 159)"
+          },
+          {
+            "type": "text",
+            "id": "x9Dbk7LYc6",
+            "left": 355,
+            "top": 267.3138563328119,
+            "rotate": 0,
+            "width": 280.2275917065391,
+            "height": 116,
+            "content": "<p style=\"text-align: center;\">内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文</p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "tsPsN9cp-W",
+            "left": 355,
+            "top": 217.31385633281192,
+            "rotate": 0,
+            "width": 280.2275917065391,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\"><span style=\"font-family: LXGWWenKai;\"><span style=\"color: rgb(30, 73, 123);\">内容项标题</span></span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          },
+          {
+            "type": "shape",
+            "id": "iO1YzaQTXg",
+            "left": 681.9856459330143,
+            "top": 199.14256446678328,
+            "rotate": 0,
+            "width": 300,
+            "height": 240,
+            "viewBox": [
+              300,
+              240
+            ],
+            "path": "M 10.53539028126933 0 L 289.4646097187307 0 Q 300 0 300 10.53539028126933 L 300 229.46460971873069 Q 300 240 289.4646097187307 240 L 10.53539028126933 240 Q 0 240 0 229.46460971873069 L 0 10.53539028126933 Q 0 0 10.53539028126933 0 Z",
+            "fill": "rgba(162,138,104,1)"
+          },
+          {
+            "type": "shape",
+            "id": "k_a8oqdfxI",
+            "left": 671.9856459330143,
+            "top": 189.14256446678328,
+            "rotate": 0,
+            "width": 300,
+            "height": 240,
+            "viewBox": [
+              300,
+              240
+            ],
+            "path": "M 10.53539028126933 0 L 289.4646097187307 0 Q 300 0 300 10.53539028126933 L 300 229.46460971873069 Q 300 240 289.4646097187307 240 L 10.53539028126933 240 Q 0 240 0 229.46460971873069 L 0 10.53539028126933 Q 0 0 10.53539028126933 0 Z",
+            "fill": "rgb(227, 199, 159)"
+          },
+          {
+            "type": "text",
+            "id": "v6VQeRFlLx",
+            "left": 681.9856459330143,
+            "top": 267.31385633281195,
+            "rotate": 0,
+            "width": 280.2275917065391,
+            "height": 116,
+            "content": "<p style=\"text-align: center;\">内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文内容项正文</p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "item"
+          },
+          {
+            "type": "text",
+            "id": "E3laz6_DAB",
+            "left": 681.9856459330143,
+            "top": 217.31385633281198,
+            "rotate": 0,
+            "width": 280.2275917065391,
+            "height": 50,
+            "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 20px;\"><span style=\"font-family: LXGWWenKai;\"><span style=\"color: rgb(30, 73, 123);\">内容项标题</span></span></span></strong></p>",
+            "defaultFontName": "",
+            "defaultColor": "#333",
+            "textType": "itemTitle"
+          }
+        ]
+      }
+    }
+  ]
+}

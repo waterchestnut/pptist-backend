@@ -69,6 +69,8 @@ api/
 | `/ideology` | POST | 获取课程思政内容 |
 | `/gen-ppt` | POST | 生成课件 |
 | `/gen-ppt/stream` | POST | 生成课件 (流式) |
+| `/gen-ppt-direct` | POST | 直出模式生成课件（不套模板，直接产出最终slides JSON） |
+| `/gen-ppt-direct/stream` | POST | 直出模式生成课件 (流式, JSONL协议: stage/meta/slide/done/error) |
 
 ### 工具接口 (`/tools`)
 | 接口 | 方法 | 描述 |

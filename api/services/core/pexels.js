@@ -25,7 +25,7 @@ export async function proxyImgSearch(oriParams) {
     return {
         data: ret.photos?.map(_ => ({
             id: _.id,
-            width: _.id,
+            width: _.width,
             height: _.height,
             src: _.src.large
         })),

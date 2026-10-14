@@ -1,5 +1,6 @@
 import {getListResSwaggerSchema, getResSwaggerSchema} from '../../daos/swaggerSchema/responseHandler.js'
 import {genPPT, genPPTSyllabus, getIdeologyContent} from '../../services/core/llm.js'
+import {genPPTDirect} from '../../services/core/llmDirect.js'
 import {getDefaultResponseSchema} from '../../plugins/format-reply.js'
 
 export default async function (fastify, opts) {
@@ -156,6 +157,76 @@ export default async function (fastify, opts) {
                 stream.write(content)
             }
         })
+        stream.end()
+        return reply
+    })
+
+    fastify.post('/gen-ppt-direct', {
+        schema: {
+            description: 'AI直出模式：根据主题或材料直接生成符合pptist规范的最终课件数据（不套模板）',
+            summary: '直出模式生成课件',
+            body: {
+                type: 'object',
+                properties: {
+                    subject: {type: 'string', description: '主题'},
+                    options: {
+                        type: 'object',
+                        properties: {
+                            language: {type: 'string', description: '语言'},
+                            fileInfo: {type: 'object', description: '上传的文本材料信息'},
+                            model: {type: 'string', description: '指定模型（可选）'},
+                        }
+                    }
+                }
+            },
+            tags: ['llm'],
+            response: {
+                default: {...getDefaultResponseSchema({content: {type: 'object', description: '课件数据{title,theme,slides,viewportSize,viewportRatio}'}})}
+            }
+        },
+    }, async function (request, reply) {
+        let ret = await genPPTDirect(request.reqParams.subject, request.reqParams.options)
+        return ret
+    })
+
+    fastify.post('/gen-ppt-direct/stream', {
+        schema: {
+            description: 'AI直出模式：以JSONL流式返回最终课件数据，行协议：{kind:stage|meta|slide|done|error}',
+            summary: '直出模式生成课件（流式）',
+            body: {
+                type: 'object',
+                properties: {
+                    subject: {type: 'string', description: '主题'},
+                    options: {
+                        type: 'object',
+                        properties: {
+                            language: {type: 'string', description: '语言'},
+                            fileInfo: {type: 'object', description: '上传的文本材料信息'},
+                            model: {type: 'string', description: '指定模型（可选）'},
+                        }
+                    }
+                }
+            },
+            tags: ['llm']
+        },
+    }, async function (request, reply) {
+        const stream = reply.raw
+        const headers = {
+            'Content-Type': 'text/event-stream',
+            Connection: 'keep-alive',
+            'Cache-Control': 'no-cache',
+            'Access-Control-Allow-Origin': request.headers.origin || '*'
+        }
+        stream.writeHead(200, headers)
+        try {
+            await genPPTDirect(request.reqParams.subject, {
+                ...request.reqParams.options, stream: true, streamCallback: (content) => {
+                    stream.write(content)
+                }
+            })
+        } catch (e) {
+            stream.write(`${JSON.stringify({kind: 'error', message: e.message || 'AI直出生成失败'})}\n\n`)
+        }
         stream.end()
         return reply
     })
