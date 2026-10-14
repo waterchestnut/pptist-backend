@@ -261,6 +261,8 @@ ${fileText || subject}
 }
 
 /*规划兜底修正*/
+const ALLOWED_FONTS = ['SourceHanSans', 'SourceHanSerif', 'WenDingPLKaiTi', 'WenDingPLSongTi', 'ZhuqueFangSong', 'LXGWWenKai', 'AlibabaPuHuiTi', 'MiSans', 'DeYiHei', 'CangerXiaowanzi', 'YousheTitleBlack', 'FengguangMingrui', 'ShetuModernSquare', 'ZcoolHappy', 'ZizhiQuXiMai', 'SucaiJishiKangkang', 'SucaiJishiCoolSquare', 'TuniuRounded', 'RuiziZhenyan', 'SourceSerif4', 'JetBrainsMono', 'Literata', 'Inter', 'Roboto', 'OpenSans', 'Montserrat', 'SourceSansPro', 'Merriweather']
+
 function normalizePlan(plan) {
     if (!plan || !Array.isArray(plan.pages) || plan.pages.length < 5) return null
     plan.pages = plan.pages.filter(p => p && PAGE_TYPES.includes(p.type))
@@ -284,7 +286,7 @@ function normalizePlan(plan) {
     if (!d.palette.length) d.palette = ['#1D4ED8', '#60A5FA', '#0F172A', '#F8FAFC']
     d.backgroundColor = d.backgroundColor || '#FFFFFF'
     d.fontColor = d.fontColor || '#333333'
-    d.fontName = d.fontName || 'SourceHanSans'
+    d.fontName = ALLOWED_FONTS.includes(d.fontName) ? d.fontName : 'SourceHanSans'
     d.visualDirection = d.visualDirection || '简约商务·卡片化'
     return plan
 }
