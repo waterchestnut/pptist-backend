@@ -308,6 +308,23 @@ ${fileText ? `\n## 参考材料（内容优先取材于此）\n${fileText.substr
 
 /*---------------- LLM调用 ----------------*/
 
+/*给可能永久悬挂的外部等待加超时护栏*/
+function withTimeout(promise, ms, label) {
+    let timer
+    return Promise.race([
+        Promise.resolve(promise).then((v) => {
+            clearTimeout(timer)
+            return v
+        }, (e) => {
+            clearTimeout(timer)
+            throw e
+        }),
+        new Promise((_, reject) => {
+            timer = setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms)
+        }),
+    ])
+}
+
 async function callLLM(messages, options = {}) {
     _llmCalls++
     const openai = new OpenAI({
@@ -787,7 +804,7 @@ async function resolveSlideImages(slide, palette) {
         const query = (typeof el.query === 'string' && el.query.trim()) || 'business presentation'
         let picked = null
         try {
-            const ret = await proxyImgSearch({query, per_page: 5, page: 1})
+            const ret = await withTimeout(proxyImgSearch({query, per_page: 5, page: 1}), 15000, 'pexels搜图')
             const list = (ret?.data || []).filter(i => i?.src)
             if (list.length) picked = list[Math.floor(Math.random() * Math.min(3, list.length))]
         } catch (e) {
@@ -895,7 +912,7 @@ export function layoutLint(slide, pageType) {
 /*上传二进制到文件服务，返回可访问URL*/
 async function uploadBuffer(buffer, fileName, userInfo, folder = '') {
     let fileCode = sha1(buffer)
-    await saveFile(userInfo, fileCode, {fileName}, {}, buffer, folder)
+    await saveFile(userInfo, fileCode, {fileName}, {}, buffer, folder, 45000)
     return `${config.docConfig.baseUrl}/file/download/?fileCode=${fileCode}`
 }
 
@@ -907,16 +924,16 @@ export async function resolveDemoVideos(slide, stats, options) {
         let ok = false
         try {
             const params = {...(spec.params || {})}
-            const ret = await renderDemo(spec.kind, params, {
+            const ret = await withTimeout(renderDemo(spec.kind, params, {
                 width: Math.min(1280, Math.max(320, Math.round(el.width) || 640)),
                 height: Math.min(720, Math.max(180, Math.round(el.height) || 360)),
                 seconds: params.seconds || 6,
-            })
+            }), 90000, '演示渲染')
             const userInfo = options.operator || {userCode: 'ai-direct', realName: 'AI直出'}
-            el.src = await uploadBuffer(ret.video, `demo-${spec.kind}.mp4`, userInfo, 'ppt-demo')
+            el.src = await withTimeout(uploadBuffer(ret.video, `demo-${spec.kind}.mp4`, userInfo, 'ppt-demo'), 60000, '视频上传')
             if (ret.poster && ret.poster.length) {
                 try {
-                    el.poster = await uploadBuffer(ret.poster, `demo-${spec.kind}.png`, userInfo, 'ppt-demo')
+                    el.poster = await withTimeout(uploadBuffer(ret.poster, `demo-${spec.kind}.png`, userInfo, 'ppt-demo'), 30000, '封面上传')
                 } catch (e) { /* 封面失败不影响视频 */
                 }
             }
@@ -1123,7 +1140,7 @@ export async function genPPTDirect(subject, options = {}) {
     const units = buildUnits(plan, granularity)
     const usedSlideIds = new Set()
     const results = new Array(units.length)
-    const stats = {dropped: 0, lintPass: 0, lintWarn: 0, retries: 0, granularity, chapterCalls: 0, chapterFallbacks: 0, pageRegens: 0, renderOk: 0, renderFailed: 0}
+    const stats = {dropped: 0, lintPass: 0, lintWarn: 0, retries: 0, granularity, chapterCalls: 0, chapterFallbacks: 0, pageRegens: 0, renderOk: 0, renderFailed: 0, unitTimeouts: 0}
     let nextGen = 0
     let nextFlush = 0
     let emittedIndex = 0
@@ -1151,8 +1168,10 @@ export async function genPPTDirect(subject, options = {}) {
             if (i >= units.length) break
             let out = null
             try {
-                out = await genOneUnit(plan, units[i], fileText, options, stats, usedSlideIds)
+                /*单元级硬超时：渲染/上传/搜图/LLM任一环节悬挂都不能永久阻塞流水线*/
+                out = await withTimeout(genOneUnit(plan, units[i], fileText, options, stats, usedSlideIds), options.unitTimeoutMs || 900000, `生成单元${i + 1}`)
             } catch (e) {
+                if (e.message && e.message.includes('timeout after')) stats.unitTimeouts++
                 logger.error('直出模式生成单元%s异常: %s', i + 1, e.message || e)
                 out = []
             }

@@ -12,12 +12,13 @@ const docConfig = pptonline.config.docConfig;
 const protoPath = 'grpc/clients/fileManage.proto'
 const docProto = loadProto(protoPath).doc
 
-export async function saveFile(curUserInfo, fileCode, fileInfo, extInfo, buffer, folder = '') {
+export async function saveFile(curUserInfo, fileCode, fileInfo, extInfo, buffer, folder = '', timeoutMs = 0) {
     let client = new docProto.FileManage(docConfig.grpcHost,
         grpc.credentials.createInsecure(), {
             'grpc.max_send_message_length': docConfig.maxMessageLength,
             'grpc.max_receive_message_length': docConfig.maxMessageLength,
         })
+    let callOptions = timeoutMs ? {deadline: new Date(Date.now() + timeoutMs)} : {}
     return new Promise((resolve, reject) => {
         /*调用远程服务方法*/
         client.saveFile({
@@ -27,7 +28,7 @@ export async function saveFile(curUserInfo, fileCode, fileInfo, extInfo, buffer,
             extInfos: JSON.stringify(extInfo),
             buffer,
             folder
-        }, function (err, response) {
+        }, new grpc.Metadata(), callOptions, function (err, response) {
             if (err) {
                 return reject(err)
             }
