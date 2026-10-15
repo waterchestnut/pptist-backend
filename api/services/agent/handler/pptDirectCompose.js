@@ -33,6 +33,7 @@ class PPTDirectCompose extends BaseHandler {
                 fileInfo: params.fileInfo,
                 granularity: params.granularity,
                 maxPages: params.maxPages,
+                operator: params.operator,
             })
         } catch (e) {
             logger.error('直出模式生成课件异常: %s', e.stack || e)

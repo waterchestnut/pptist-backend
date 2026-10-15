@@ -71,9 +71,11 @@ const countType = (t) => slides.reduce((acc, s) => acc + s.data.elements.filter(
 const latex = countType('latex')
 const photo = slides.reduce((acc, s) => acc + s.data.elements.filter(e => e.type === 'image').length, 0)
 const chart = countType('chart')
+const video = countType('video')
+const videoNoSrc = slides.flatMap(s => s.data.elements).filter(e => e.type === 'video' && !e.src).length
 const anim = slides.reduce((acc, s) => acc + ((s.data.animations || []).length), 0)
 const animSlides = slides.filter(s => s.data.animations?.length).length
-console.log(`元素统计: latex公式=${latex}, 照片image=${photo}, 图表=${chart}, 动画元素=${anim}（覆盖${animSlides}页）`)
+console.log(`元素统计: latex公式=${latex}, 照片image=${photo}, 图表=${chart}, 演示视频=${video}(空src:${videoNoSrc}), 动画元素=${anim}（覆盖${animSlides}页）`)
 const latexBad = slides.flatMap(s => s.data.elements.filter(e => e.type === 'latex' && (!e.path || !e.viewBox)))
 console.log(`latex缺path/viewBox: ${latexBad.length}`)
 /*版式丰富度：按元素位置签名看相似度*/

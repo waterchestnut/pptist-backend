@@ -11,6 +11,9 @@ import {jsonrepair} from 'jsonrepair'
 import {hfmath, CONFIG as hfmathConfig} from 'hfmath'
 import {getFileText} from './fileInfo.js'
 import {proxyImgSearch} from './pexels.js'
+import {renderDemo} from '../../grpc/clients/renderer.js'
+import {saveFile} from '../../grpc/clients/fileManage.js'
+import {sha1} from '../../tools/security.js'
 
 const config = pptonline.config
 const pptGenLLMConfig = config.pptGenLLMConfig
@@ -23,9 +26,10 @@ hfmathConfig.SUB_SUP_SCALE = 0.5
 const CANVAS_WIDTH = 1000
 const CANVAS_HEIGHT = 562.5
 const VIEWPORT_RATIO = 0.5625
-const ALLOWED_ELEMENT_TYPES = ['text', 'image', 'shape', 'line', 'table', 'chart', 'latex']
+const ALLOWED_ELEMENT_TYPES = ['text', 'image', 'shape', 'line', 'table', 'chart', 'latex', 'video']
 const CHART_TYPES = ['bar', 'column', 'line', 'pie', 'ring', 'area', 'radar', 'scatter']
 const PAGE_TYPES = ['cover', 'contents', 'transition', 'content', 'end']
+const DEMO_KINDS = ['projectile', 'force_analysis', 'lever', 'derivation', 'limit', 'wave', 'transform', 'reaction']
 const IN_EFFECTS = ['fadeInUp', 'zoomIn', 'slideInRight', 'fadeIn', 'bounceInUp']
 /*LLM调用计数（统计用）*/
 let _llmCalls = 0
@@ -130,6 +134,12 @@ function buildPlanPrompt(options = {}) {
 - 若主题属于STEM/工程/医学类：至少3个content页使用formula-derivation版式或在layout描述性标注formulas字段给出该页关键公式（KaTeX子集语法）
 - 只允许从下方"可用版式菜单"中选择layout
 
+## 原理演示动画规则（让课件"会动"）
+- 当某页讲解运动过程/受力变化/公式推导/几何变换/极限逼近/波动/杠杆平衡/化学平衡移动等"原理"时，可为该页附加demo字段，由渲染服务生成演示动画视频并自动嵌入该页（你只需给出演示意图，不要生成视频本身）
+- 全稿最多2页使用demo；demo页的points照常给出结论要点，动画画面负责演示过程
+- demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为mathtext字符串数组且不得含中文)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)
+- demo页layout要与视频画面配合：derivation→formula-derivation；projectile/wave/limit/transform/force_analysis/lever→split-image-right或split-image-left（一侧留给视频画面）
+
 ## 可用版式菜单
 ${buildLayoutMenu()}
 
@@ -163,6 +173,7 @@ ${buildDesignStats()}
     {"type": "transition", "layout": "transition-number", "number": "01", "title": "章节标题", "text": "章节导语（40字以内）"},
     {"type": "content", "layout": "cards-3", "title": "页标题", "points": [{"title": "要点标题（10字内）", "text": "要点正文（40~70字）"}]},
     {"type": "content", "layout": "formula-derivation", "title": "页标题", "formulas": ["E = mc^2", "\\\\frac{a}{b}"], "points": [{"text": "公式含义说明（40字内）"}]},
+    {"type": "content", "layout": "split-image-right", "title": "页标题", "points": [{"title": "结论", "text": "结论说明（40字内）"}], "demo": {"kind": "projectile", "params": {"v0": 18, "angleDeg": 40}}},
     {"type": "content", "layout": "data-chart", "title": "页标题", "points": [{"text": "数据结论（40字内）"}], "chart": {"chartType": "column", "labels": ["Q1", "Q2"], "legends": ["营收"], "series": [[100, 130]]}},
     {"type": "end", "layout": "cover-center", "title": "谢谢聆听", "text": "结束语"}
   ]
@@ -215,6 +226,11 @@ ${buildDesignStats()}
 ## 图片占位协议
 - image元素src一律填空字符串""，加"query"字段填英文Pexels检索词；系统会替换真实图片，切勿编造URL
 
+## 演示视频协议（仅当本页规划含demo字段时）
+- 在画面预留的区域内输出一个视频元素：{"type":"video","id":"el_demo_01","left":..,"top":..,"width":..,"height":..,"rotate":0,"src":"","render":{"kind":"<demo.kind原样复制>","params":{...demo.params原样复制}}}
+- src保持空字符串，render.render由系统调用渲染服务生成真实视频并回填；不要自己编造视频URL
+- 视频元素区域与文字区域互不重叠，旁边配一行要点/结论文本
+
 ## 其他
 - 元素id以el_前缀且页内唯一；富文本HTML只允许数据规范白名单内的标签与样式
 - 动画由系统统一注入，不要输出animations字段
@@ -243,6 +259,7 @@ ${getSchemaDoc()}
 
 ## 版式与视觉规则
 - 视觉锚点优先用 shape/line/chart/table/latex 绘制；image仅当该页规划给出imageQueries时输出（src为""+query），否则不要输出image
+- 某页规划含demo时：在该页输出一个视频占位元素 {"type":"video","left":..,"top":..,"width":..,"height":..,"rotate":0,"src":"","render":{"kind":"原样复制demo.kind","params":{...原样复制demo.params}}}，系统会渲染并回填视频，与文字区域不重叠
 - 每页至少使用色板中3种颜色；单页元素3~14个
 - 画布${CANVAS_WIDTH} x ${CANVAS_HEIGHT}，左右安全边距≥40；文本防溢出：所需高度≈行数x字号x行高+8，必须≤元素高度
 - 公式一律用type:"latex"元素（给latex/left/top/width/height/color，不要path/viewBox，尺寸由系统渲染时计算）；latex字段内严禁中文（中文说明写进text元素）；禁止在text元素里用unicode拼公式
@@ -524,6 +541,22 @@ function sanitizeElement(el) {
             if (el.clip && Array.isArray(el.clip.range)) base.clip = el.clip
             if (el.filters && typeof el.filters === 'object') base.filters = el.filters
             base.fixedRatio = true
+            break
+        }
+        case 'video': {
+            /*占位视频元素：src为空 + render:{kind,params} 由渲染服务回填*/
+            if (typeof el.src === 'string' && el.src) {
+                base.src = el.src
+                base.ext = 'mp4'
+            } else {
+                const render = el.render
+                if (!render || !DEMO_KINDS.includes(render.kind)) return null
+                base.src = ''
+                base.ext = 'mp4'
+                base.render = {kind: render.kind, params: render.params && typeof render.params === 'object' ? render.params : {}}
+            }
+            base.autoplay = false
+            base.poster = typeof el.poster === 'string' ? el.poster : ''
             break
         }
         case 'latex': {
@@ -834,6 +867,7 @@ export function layoutLint(slide, pageType) {
             hasPhoto = true
         }
         if (['chart', 'table', 'latex'].includes(el.type)) hasVisual = true
+        if (el.type === 'video') hasVisual = true
         if (el.type === 'shape' && el.width >= 60 && el.height >= 60 && el.width < CANVAS_WIDTH * 0.95) hasVisual = true
         const r = el.type === 'line' ? {x: el.left, y: el.top, w: Math.abs(el.end[0] - el.start[0]), h: Math.abs(el.end[1] - el.start[1])} : getTextRect(el)
         if (r.x + r.w > CANVAS_WIDTH + 60 || r.y + r.h > CANVAS_HEIGHT + 60) issues.push(`元素${el.id}超出画布边界，请调整坐标或尺寸`)
@@ -858,13 +892,56 @@ export function layoutLint(slide, pageType) {
     return {ok: issues.length === 0, issues, hasPhoto}
 }
 
+/*上传二进制到文件服务，返回可访问URL*/
+async function uploadBuffer(buffer, fileName, userInfo, folder = '') {
+    let fileCode = sha1(buffer)
+    await saveFile(userInfo, fileCode, {fileName}, {}, buffer, folder)
+    return `${config.docConfig.baseUrl}/file/download/?fileCode=${fileCode}`
+}
+
+/*为演示视频占位元素调用渲染服务并回填src/poster；失败移除元素*/
+export async function resolveDemoVideos(slide, stats, options) {
+    const videos = slide.elements.filter(e => e.type === 'video' && !e.src && e.render)
+    for (const el of videos) {
+        const spec = el.render
+        let ok = false
+        try {
+            const params = {...(spec.params || {})}
+            const ret = await renderDemo(spec.kind, params, {
+                width: Math.min(1280, Math.max(320, Math.round(el.width) || 640)),
+                height: Math.min(720, Math.max(180, Math.round(el.height) || 360)),
+                seconds: params.seconds || 6,
+            })
+            const userInfo = options.operator || {userCode: 'ai-direct', realName: 'AI直出'}
+            el.src = await uploadBuffer(ret.video, `demo-${spec.kind}.mp4`, userInfo, 'ppt-demo')
+            if (ret.poster && ret.poster.length) {
+                try {
+                    el.poster = await uploadBuffer(ret.poster, `demo-${spec.kind}.png`, userInfo, 'ppt-demo')
+                } catch (e) { /* 封面失败不影响视频 */
+                }
+            }
+            stats.renderOk++
+            ok = true
+        } catch (e) {
+            stats.renderFailed++
+            logger.warn('演示渲染失败(%s): %s', spec.kind, e.message || e)
+        }
+        if (!ok) {
+            const idx = slide.elements.indexOf(el)
+            slide.elements.splice(idx, 1)
+        }
+        delete el.render
+    }
+}
+
 /*---------------- 页级后处理 ----------------*/
 
-async function postProcessSlide(slide, pageSpec, plan, stats) {
+async function postProcessSlide(slide, pageSpec, plan, stats, options = {}) {
     const lint = layoutLint(slide, pageSpec.type)
     if (lint.ok) stats.lintPass++
     else stats.lintWarn++
     await resolveSlideImages(slide, plan.design.palette)
+    await resolveDemoVideos(slide, stats, options)
     attachAnimations(slide, pageSpec.type)
     attachTurningMode(slide, pageSpec.type)
     slide._lintIssues = lint.issues
@@ -935,7 +1012,7 @@ async function genOneUnit(plan, unit, fileText, options, stats, usedSlideIds) {
         if (!slide) return []
         const dedup = sanitizeSlide(slide, usedSlideIds)
         if (!dedup) return []
-        await postProcessSlide(dedup, spec, plan, stats)
+        await postProcessSlide(dedup, spec, plan, stats, options)
         return [dedup]
     }
 
@@ -979,7 +1056,7 @@ async function genOneUnit(plan, unit, fileText, options, stats, usedSlideIds) {
             const s = await genOneSlide(plan, unit.start + i, fileText, options, stats)
             const dedup = s && sanitizeSlide(s, usedSlideIds)
             if (dedup) {
-                await postProcessSlide(dedup, unit.pageSpecs[i], plan, stats)
+                await postProcessSlide(dedup, unit.pageSpecs[i], plan, stats, options)
                 out.push(dedup)
             }
         }
@@ -995,7 +1072,7 @@ async function genOneUnit(plan, unit, fileText, options, stats, usedSlideIds) {
             stats.pageRegens++
             const extra = await genOneSlide(plan, unit.start + i, fileText, options, stats)
             slide = extra && sanitizeSlide(extra, usedSlideIds)
-            if (slide) await postProcessSlide(slide, spec, plan, stats)
+            if (slide) await postProcessSlide(slide, spec, plan, stats, options)
             continue
         }
         const lint = layoutLint(slide, spec.type)
@@ -1005,12 +1082,12 @@ async function genOneUnit(plan, unit, fileText, options, stats, usedSlideIds) {
             const fixed = await genOneSlide(plan, unit.start + i, fileText, options, {...stats, retries: 0}, lint.issues.join('；'))
             const fixedDedup = fixed && sanitizeSlide(fixed, usedSlideIds)
             if (fixedDedup) {
-                await postProcessSlide(fixedDedup, spec, plan, stats)
+                await postProcessSlide(fixedDedup, spec, plan, stats, options)
                 out.push(fixedDedup)
                 continue
             }
         }
-        await postProcessSlide(slide, spec, plan, stats)
+        await postProcessSlide(slide, spec, plan, stats, options)
         out.push(slide)
     }
     return out
@@ -1046,7 +1123,7 @@ export async function genPPTDirect(subject, options = {}) {
     const units = buildUnits(plan, granularity)
     const usedSlideIds = new Set()
     const results = new Array(units.length)
-    const stats = {dropped: 0, lintPass: 0, lintWarn: 0, retries: 0, granularity, chapterCalls: 0, chapterFallbacks: 0, pageRegens: 0}
+    const stats = {dropped: 0, lintPass: 0, lintWarn: 0, retries: 0, granularity, chapterCalls: 0, chapterFallbacks: 0, pageRegens: 0, renderOk: 0, renderFailed: 0}
     let nextGen = 0
     let nextFlush = 0
     let emittedIndex = 0

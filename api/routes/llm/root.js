@@ -185,7 +185,7 @@ export default async function (fastify, opts) {
             }
         },
     }, async function (request, reply) {
-        let ret = await genPPTDirect(request.reqParams.subject, request.reqParams.options)
+        let ret = await genPPTDirect(request.reqParams.subject, {...request.reqParams.options, operator: request.userInfo})
         return ret
     })
 
@@ -220,7 +220,7 @@ export default async function (fastify, opts) {
         stream.writeHead(200, headers)
         try {
             await genPPTDirect(request.reqParams.subject, {
-                ...request.reqParams.options, stream: true, streamCallback: (content) => {
+                ...request.reqParams.options, operator: request.userInfo, stream: true, streamCallback: (content) => {
                     stream.write(content)
                 }
             })

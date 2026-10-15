@@ -746,6 +746,40 @@ filter: brightness(108%) contrast(105%) blur(2px) opacity(92%);
 > 严禁把公式塞进文本元素里用 unicode 拼凑；公式一律使用 `latex` 元素。
 > `latex` 字段内**不得出现中文**（渲染器仅支持西文数学符号），变量含义、单位等中文说明请写在相邻的文本元素中。
 
+## 视频元素 `video`
+
+用于承载原理演示动画。**AI 不生成视频本身**：输出"占位元素"，`src` 留空并携带 `render` 规格，由渲染服务生成 mp4 后回填。
+
+### 占位结构（AI 输出形态）
+
+```json
+{
+  "type": "video",
+  "id": "el_demo_01",
+  "left": 620,
+  "top": 120,
+  "width": 320,
+  "height": 180,
+  "rotate": 0,
+  "src": "",
+  "render": {
+    "kind": "projectile",
+    "params": {"v0": 18, "angleDeg": 40}
+  }
+}
+```
+
+| 字段 | 类型 | 必须 | 说明 |
+| --- | --- | --- | --- |
+| `type` | `"video"` | 必须 | 元素类型 |
+| `src` | `string` | 必须 | 占位时填空字符串，系统回填真实 mp4 地址 |
+| `render.kind` | `string` | 必须 | 演示类型：`projectile`/`force_analysis`/`lever`/`derivation`/`limit`/`wave`/`transform`/`reaction` |
+| `render.params` | `object` | 建议 | 演示参数；`derivation` 用 `steps`（mathtext 数组，不含中文）；`transform` 用 `mode`；画面颜色会自动取主题色 |
+| `autoplay` | `boolean` | 可选 | 默认 `false`（点击播放） |
+| `poster` | `string` | 可选 | 封面地址，系统自动回填 |
+
+> 若 `render.kind` 非法或渲染服务不可用，该元素会被系统整体移除。
+
 ## 综合示例数据
 
 ```json
