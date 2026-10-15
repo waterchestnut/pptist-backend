@@ -31,6 +31,8 @@ class PPTDirectCompose extends BaseHandler {
             pptObj = await genPPTDirect(params.subject, {
                 language: params.language,
                 fileInfo: params.fileInfo,
+                granularity: params.granularity,
+                maxPages: params.maxPages,
             })
         } catch (e) {
             logger.error('直出模式生成课件异常: %s', e.stack || e)

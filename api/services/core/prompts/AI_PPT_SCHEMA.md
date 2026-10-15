@@ -708,6 +708,44 @@ filter: brightness(108%) contrast(105%) blur(2px) opacity(92%);
 - `series[0]` 视为 `x` 数据
 - `series[1]` 视为 `y` 数据
 
+## LaTeX 公式元素 `latex`
+
+公式以 KaTeX 子集语法描述，矢量字形与包围盒由系统自动计算，因此**只需给出语义正确的 `latex` 与落位坐标**，不要输出 `path`/`viewBox`。
+
+### 最小推荐结构
+
+```json
+{
+  "type": "latex",
+  "id": "el_formula_01",
+  "left": 320,
+  "top": 250,
+  "width": 360,
+  "height": 60,
+  "rotate": 0,
+  "latex": "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}",
+  "color": "#0F172A"
+}
+```
+
+### 字段说明
+
+| 字段 | 类型 | 必须 | 说明 |
+| --- | --- | --- | --- |
+| `type` | `"latex"` | 必须 | 元素类型 |
+| `latex` | `string` | 必须 | KaTeX 子集语法的公式源文本 |
+| `left` / `top` | `number` | 必须 | 公式块落位坐标（系统按渲染结果自动定尺寸） |
+| `width` / `height` | `number` | 建议 | 期望宽高，用于版面预估；系统会按公式自然比例就近调整 |
+| `color` | `string` | 建议 | 公式笔画颜色 |
+| `rotate` | `number` | 建议 | 通常为 `0` |
+
+### 支持的语法子集
+
+分数 `\frac{a}{b}`、根号 `\sqrt{x}`（含 `\sqrt[n]{x}`）、上下标 `x^2`、`a_{ij}`、求和/积分/极限 `\sum_{i=1}^{n}`、`\int_a^b`、`\lim_{x \to 0}`、希腊字母（`\alpha` `\Delta` `\Omega` 等）、运算符 `\times` `\cdot` `\pm` `\div` `\approx` `\neq` `\leq` `\geq` `\infty` `\to`、括号自适应 `\left( ... \right)`、向量 `\vec{a}`、罗马体 `\mathrm{d}`。
+
+> 严禁把公式塞进文本元素里用 unicode 拼凑；公式一律使用 `latex` 元素。
+> `latex` 字段内**不得出现中文**（渲染器仅支持西文数学符号），变量含义、单位等中文说明请写在相邻的文本元素中。
+
 ## 综合示例数据
 
 ```json

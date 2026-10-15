@@ -1,5 +1,5 @@
 /**
- * @fileOverview AI直出模式联调测试脚本：node init-data/testGenPPTDirect.js [主题]
+ * @fileOverview AI直出模式联调测试脚本：node init-data/testGenPPTDirect.js [主题] [模型] [granularity:page|chapter]
  * @author xianyang
  * @module
  */
@@ -11,19 +11,21 @@ import os from 'os'
 import {genPPTDirect} from '../services/core/llmDirect.js'
 
 const subject = process.argv[2] || '大学生职业生涯规划'
-const model = process.argv[3] || undefined
-const outFile = path.join(os.tmpdir(), `gen-ppt-direct-${Date.now()}.jsonl`)
+const modelArg = process.argv[3]
+const model = !modelArg || modelArg === '-' ? undefined : modelArg
+const granularity = process.argv[4] || undefined
+const outFile = path.join(os.tmpdir(), `gen-ppt-direct-${granularity || 'page'}-${Date.now()}.jsonl`)
 const writeStream = fs.createWriteStream(outFile)
-let currentSlide = null
 
 console.log(`主题：${subject}`)
-console.log(`流式输出文件：${outFile}`)
+console.log(`粒度：${granularity || 'default'} | 流式输出文件：${outFile}`)
 
 const t0 = Date.now()
 try {
     await genPPTDirect(subject, {
         language: '中文',
         model,
+        granularity,
         stream: true,
         streamCallback: (content) => {
             writeStream.write(content)
@@ -34,7 +36,7 @@ try {
                     if (obj.kind === 'stage' && obj.stage === 'slide') {
                         process.stdout.write('.')
                     } else if (obj.kind === 'meta') {
-                        console.log(`\n[meta] 《${obj.title}》 共${obj.total}页 主题色:${obj.theme.themeColors.join(' ')}`)
+                        console.log(`\n[meta] 《${obj.title}》 共${obj.total}页 genre=${obj.design?.genre} 主题色:${obj.theme.themeColors.join(' ')}`)
                     } else if (obj.kind === 'done') {
                         console.log(`\n[done] ${JSON.stringify(obj.stats)}`)
                     }
@@ -48,7 +50,7 @@ try {
 }
 writeStream.end()
 
-/*结果体检：重放解析每一行，统计版式与lint*/
+/*结果体检：重放解析每一行*/
 const all = fs.readFileSync(outFile, 'utf-8').split(/\n+/).filter(Boolean)
 let meta = null
 const slides = []
@@ -63,17 +65,22 @@ for (const line of all) {
     if (obj.kind === 'meta') meta = obj
     if (obj.kind === 'slide') slides.push(obj)
 }
-console.log(`\n行数: ${all.length}, slide行: ${slides.length}, 耗时: ${Math.round((Date.now() - t0) / 1000)}s`)
-let imageCount = 0, emptySrc = 0, chartCount = 0
-for (const s of slides) {
-    for (const el of s.data.elements) {
-        if (el.type === 'image') {
-            imageCount++
-            if (!el.src || !/^https?:/.test(el.src)) emptySrc++
-        }
-        if (el.type === 'chart') chartCount++
-    }
-}
-console.log(`图片元素: ${imageCount}（无src: ${emptySrc}）, 图表元素: ${chartCount}`)
-const layoutOf = (i) => slides[i]?.data?.elements?.length
-console.log('每页元素数:', slides.map((s, i) => `${i + 1}:${layoutOf(i)}`).join(' '))
+console.log(`\nslide行数: ${slides.length}/${meta?.total}, 耗时: ${Math.round((Date.now() - t0) / 1000)}s`)
+
+const countType = (t) => slides.reduce((acc, s) => acc + s.data.elements.filter(e => e.type === t).length, 0)
+const latex = countType('latex')
+const photo = slides.reduce((acc, s) => acc + s.data.elements.filter(e => e.type === 'image').length, 0)
+const chart = countType('chart')
+const anim = slides.reduce((acc, s) => acc + ((s.data.animations || []).length), 0)
+const animSlides = slides.filter(s => s.data.animations?.length).length
+console.log(`元素统计: latex公式=${latex}, 照片image=${photo}, 图表=${chart}, 动画元素=${anim}（覆盖${animSlides}页）`)
+const latexBad = slides.flatMap(s => s.data.elements.filter(e => e.type === 'latex' && (!e.path || !e.viewBox)))
+console.log(`latex缺path/viewBox: ${latexBad.length}`)
+/*版式丰富度：按元素位置签名看相似度*/
+const sig = (s) => s.data.elements.map(e => `${Math.round(e.left / 50)}:${Math.round(e.top / 50)}`).sort().join('|')
+const sigs = slides.map(s => sig(s))
+const uniq = new Set(sigs).size
+console.log(`页面布局签名去重: ${uniq}/${sigs.length}（越接近1说明版式越重复）`)
+const gradient = slides.filter(s => s.data.background?.type === 'gradient').length
+console.log(`渐变背景页: ${gradient}`)
+console.log(`输出文件: ${outFile}`)

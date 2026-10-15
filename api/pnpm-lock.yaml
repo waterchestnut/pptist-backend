@@ -71,6 +71,9 @@ importers:
       grpc-tools:
         specifier: ^1.13.0
         version: 1.13.0
+      hfmath:
+        specifier: ^0.0.2
+        version: 0.0.2
       ioredis:
         specifier: ^5.5.0
         version: 5.7.0
@@ -742,6 +745,9 @@ packages:
 
   help-me@5.0.0:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
+
+  hfmath@0.0.2:
+    resolution: {integrity: sha512-cKUi0yiQLGfLgs8+3Iw5nAiqSH13Knp7vCf0G1vlF5nfiKKO1XmxNagMvyp0F4ZvUNaHpRGTkmc7nowCy1S58g==}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -2248,6 +2254,8 @@ snapshots:
   has-unicode@2.0.1: {}
 
   help-me@5.0.0: {}
+
+  hfmath@0.0.2: {}
 
   html-escaper@2.0.2: {}
 
