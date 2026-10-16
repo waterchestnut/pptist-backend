@@ -138,7 +138,7 @@ function buildPlanPrompt(options = {}) {
 ## 原理演示动画规则（让课件"会动"）
 - 当某页讲解运动过程/受力变化/公式推导/几何变换/极限逼近/波动/杠杆平衡/化学平衡移动等"原理"时，可为该页附加demo字段，由渲染服务生成演示动画视频并自动嵌入该页（你只需给出演示意图，不要生成视频本身）
 - 全稿最多2页使用demo；demo页的points不超过2项，动画画面负责演示过程；视频最终会占用约半页或整页净空区，该区域内不得再安排任何文字/图形
-- demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为mathtext字符串数组且不得含中文)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)
+- demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为公式字符串数组，与页面latex公式同一套KaTeX子集语法、无需$包裹、不得含中文，每步一条，系统自动转换渲染)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)
 - demo页layout要与视频画面配合：derivation→formula-derivation；projectile/wave/limit/transform/force_analysis/lever→split-image-right或split-image-left（一侧留给视频画面）
 
 ## 可用版式菜单

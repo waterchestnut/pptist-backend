@@ -777,7 +777,7 @@ filter: brightness(108%) contrast(105%) blur(2px) opacity(92%);
 | `type` | `"video"` | 必须 | 元素类型 |
 | `src` | `string` | 必须 | 占位时填空字符串，系统回填真实 mp4 地址 |
 | `render.kind` | `string` | 必须 | 演示类型：`projectile`/`force_analysis`/`lever`/`derivation`/`limit`/`wave`/`transform`/`reaction` |
-| `render.params` | `object` | 建议 | 演示参数；`derivation` 用 `steps`（mathtext 数组，不含中文）；`transform` 用 `mode`；画面颜色会自动取主题色 |
+| `render.params` | `object` | 建议 | 演示参数；`derivation` 用 `steps`（公式字符串数组，与页面公式同一 KaTeX 子集语法，无需 `$` 包裹、不含中文）；`transform` 用 `mode`；画面颜色会自动取主题色 |
 | `autoplay` | `boolean` | 可选 | 默认 `false`（点击播放） |
 | `poster` | `string` | 可选 | 封面地址，系统自动回填 |
 

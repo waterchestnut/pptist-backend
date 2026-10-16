@@ -119,8 +119,15 @@ const FRAMES = {
             shapeEl(dotPath(cx + dx, cy + dy, 5), {x: 0, y: 0, w: c.w, h: c.h}, '#10B981', '#10B981')]
     },
     derivation(p, c, color) {
-        const steps = (p.steps || [String.raw`ax^2+bx+c=0`, String.raw`x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}`])
-            .map(s => String(s).replace(/^\$+|\$+$/g, '')).filter(s => s)
+        const clean = s => String(s)
+            .replace(/^\$+|\$+$/g, '')
+            .replace(/\\begin\s*\{[^{}]*\}|\\end\s*\{[^{}]*\}/g, ' ')
+            .replace(/&/g, ' ')
+            .replace(/[\u3400-\u4dbf\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]/g, '')
+            .replace(/\\\\/g, ' ')
+            .trim()
+        const steps = (p.steps && p.steps.length ? p.steps : [String.raw`ax^2+bx+c=0`, String.raw`x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}`])
+            .map(clean).filter(s => s)
         const cur = steps[Math.min(steps.length - 1, c.state * Math.ceil(steps.length / 3))]
         const els = [latexEl(cur || 'f(x)', {x: c.w * 0.08, y: c.h * 0.1, w: c.w * 0.84, h: c.h * 0.7}, color)]
         if (c.state > 0) els.push(lineEl(c.w / 2, c.h * 0.85, 0, 8, '#999999'))
