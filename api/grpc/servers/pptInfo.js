@@ -41,9 +41,9 @@ export function initService(server) {
                 if (call.request.options) {
                     options = JSON.parse(call.request.options)
                 }
-                let agentTaskInfo = options.mode === 'direct'
-                    ? await getAgentTaskForPPTDirect(call.request.subject, options)
-                    : await getAgentTaskForPPT(call.request.subject, options)
+                let agentTaskInfo = options.mode === 'wizard'
+                    ? await getAgentTaskForPPT(call.request.subject, options)
+                    : await getAgentTaskForPPTDirect(call.request.subject, options)
                 callback(null, {agentTaskInfo: JSON.stringify(agentTaskInfo)})
             } catch (e) {
                 callback(e)
