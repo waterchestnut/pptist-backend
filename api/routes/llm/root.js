@@ -218,15 +218,37 @@ export default async function (fastify, opts) {
             'Access-Control-Allow-Origin': request.headers.origin || '*'
         }
         stream.writeHead(200, headers)
+        /*客户端断开后停止写入，避免异常风暴*/
+        let streamAlive = true
+        request.raw.on('close', () => {
+            streamAlive = false
+        })
+        /*SSE心跳：等待LLM/渲染的静默期保持连接，防止nginx等代理按read_timeout掐断HTTP/2流*/
+        const heartbeat = setInterval(() => {
+            if (!streamAlive) {
+                clearInterval(heartbeat)
+                return
+            }
+            try {
+                stream.write(': ping\n\n')
+            } catch (e) { /* ignore */ }
+        }, 15000)
         try {
             await genPPTDirect(request.reqParams.subject, {
                 ...request.reqParams.options, operator: request.userInfo, stream: true, streamCallback: (content) => {
-                    stream.write(content)
+                    if (streamAlive) {
+                        try {
+                            stream.write(content)
+                        } catch (e) { /* ignore */ }
+                    }
                 }
             })
         } catch (e) {
-            stream.write(`${JSON.stringify({kind: 'error', message: e.message || 'AI直出生成失败'})}\n\n`)
+            if (streamAlive) {
+                stream.write(`${JSON.stringify({kind: 'error', message: e.message || 'AI直出生成失败'})}\n\n`)
+            }
         }
+        clearInterval(heartbeat)
         stream.end()
         return reply
     })

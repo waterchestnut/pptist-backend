@@ -461,17 +461,37 @@ function renderLatex(el) {
         if (!path || !box || !box.w) return null
         const naturalW = box.w + 32
         const naturalH = box.h + 32
-        let scale = 1
+        /*同时适配模型给出的宽高：取宽/高缩放比的较小者，避免公式按自然尺寸放大后撑破卡片/画布*/
         const wantW = typeof el.width === 'number' && el.width > 40 ? el.width : naturalW
-        scale = Math.min(Math.max(wantW / naturalW, 0.55), 1.6)
-        if (naturalW * scale > CANVAS_WIDTH - 80) scale = (CANVAS_WIDTH - 80) / naturalW
+        const wantH = typeof el.height === 'number' && el.height > 24 ? el.height : naturalH
+        let scale = Math.min(wantW / naturalW, wantH / naturalH)
+        scale = Math.min(Math.max(scale, 0.4), 1.6)
+        let fw = round2(naturalW * scale)
+        let fh = round2(naturalH * scale)
+        if (fw > CANVAS_WIDTH - 80) {
+            const k = (CANVAS_WIDTH - 80) / fw
+            fw = round2(fw * k)
+            fh = round2(fh * k)
+        }
+        if (fh > CANVAS_HEIGHT - 80) {
+            const k = (CANVAS_HEIGHT - 80) / fh
+            fw = round2(fw * k)
+            fh = round2(fh * k)
+        }
+        /*越界回收：把公式整体移回画布安全区*/
+        let left = el.left
+        let top = el.top
+        if (left + fw > CANVAS_WIDTH - 20) left = round2(CANVAS_WIDTH - 20 - fw)
+        if (left < 20) left = 20
+        if (top + fh > CANVAS_HEIGHT - 16) top = round2(CANVAS_HEIGHT - 16 - fh)
+        if (top < 16) top = 16
         return {
             type: 'latex',
             id: el.id,
-            left: el.left,
-            top: el.top,
-            width: round2(naturalW * scale),
-            height: round2(naturalH * scale),
+            left: round2(left),
+            top: round2(top),
+            width: fw,
+            height: fh,
             rotate: 0,
             latex: el.latex,
             path,
@@ -1057,7 +1077,7 @@ export function layoutLint(slide, pageType) {
 /*上传二进制到文件服务，返回可访问URL*/
 async function uploadBuffer(buffer, fileName, userInfo, folder = '') {
     let fileCode = sha1(buffer)
-    await saveFile(userInfo, fileCode, {fileName}, {}, buffer, folder, 45000)
+    await saveFile(userInfo, fileCode, {fileName}, {}, buffer, folder, 20000)
     return `${config.docConfig.baseUrl}/file/download/?fileCode=${fileCode}`
 }
 
@@ -1082,12 +1102,13 @@ export async function resolveDemoVideos(slide, stats, options, palette = []) {
                 width: rw,
                 height: rh,
                 seconds: params.seconds || 6,
-            }), 90000, '演示渲染')
+                timeoutMs: 40000,
+            }), 45000, '演示渲染')
             const userInfo = options.operator || {userCode: 'ai-direct', realName: 'AI直出'}
-            el.src = await withTimeout(uploadBuffer(ret.video, `demo-${spec.kind}.mp4`, userInfo, 'ppt-demo'), 60000, '视频上传')
+            el.src = await withTimeout(uploadBuffer(ret.video, `demo-${spec.kind}.mp4`, userInfo, 'ppt-demo'), 30000, '视频上传')
             if (ret.poster && ret.poster.length) {
                 try {
-                    el.poster = await withTimeout(uploadBuffer(ret.poster, `demo-${spec.kind}.png`, userInfo, 'ppt-demo'), 30000, '封面上传')
+                    el.poster = await withTimeout(uploadBuffer(ret.poster, `demo-${spec.kind}.png`, userInfo, 'ppt-demo'), 15000, '封面上传')
                 } catch (e) { /* 封面失败不影响视频 */
                 }
             }
@@ -1342,7 +1363,7 @@ export async function genPPTDirect(subject, options = {}) {
             let out = null
             try {
                 /*单元级硬超时：渲染/上传/搜图/LLM任一环节悬挂都不能永久阻塞流水线*/
-                out = await withTimeout(genOneUnit(plan, units[i], fileText, options, stats, usedSlideIds), options.unitTimeoutMs || 900000, `生成单元${i + 1}`)
+                out = await withTimeout(genOneUnit(plan, units[i], fileText, options, stats, usedSlideIds), options.unitTimeoutMs || 600000, `生成单元${i + 1}`)
             } catch (e) {
                 if (e.message && e.message.includes('timeout after')) stats.unitTimeouts++
                 logger.error('直出模式生成单元%s异常: %s', i + 1, e.message || e)
