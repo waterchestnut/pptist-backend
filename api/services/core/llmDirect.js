@@ -236,6 +236,11 @@ ${buildDesignStats()}
   3. 全页档（宽高比≈16:9且面积>半页）：约950x535居中，本页只保留一行短标题，正文移到其他页
 - 任何元素不得与视频矩形重叠（含文字、形状、线条）；demo页最多2个视觉区块（视频+标题/要点）
 
+## 演讲备注（必须输出）
+- Slide 必须包含 remark 字段：30~80字**纯文本**口语化讲解词（不要HTML标签、不要引号包裹整个字段值以外的内容）
+- 内容是这个页面"讲给学员听的串词"：按页面视觉顺序组织讲述（先看什么后看什么）、公式按符号含义念出来、图表先结论后数据；理科解释推导思路，商业给决策导向，教育给互动提问
+- 不得复读页面文字原文，禁止"本页介绍了……""接下来我们看……"式空话套话
+
 ## 其他
 - 元素id以el_前缀且页内唯一；富文本HTML只允许数据规范白名单内的标签与样式
 - 动画由系统统一注入，不要输出animations字段
@@ -274,6 +279,7 @@ ${buildDesignStats()}
 只输出一个JSON对象（不要markdown围栏、不要解释）：
 {"slides": [ {Slide页1}, {Slide页2}, ... ]}
 slides数组的长度、顺序必须与章节规划的页数一致，每个元素都是完整的Slide对象。
+每个Slide都必须包含 remark 字段：30~80字纯文本口语化讲解词（不要HTML），是该页"讲给学员听的串词"——按页面视觉顺序组织讲述、公式念出符号含义、图表先结论后数据；不得复读页面文字原文，禁止空话套话。
 `
 }
 
@@ -830,6 +836,10 @@ function sanitizeSlide(raw, usedSlideIds) {
     if (elements.length < 2) return null
     const slide = {id, background: sanitizeBackground(raw.background), elements}
     if (raw.type && PAGE_TYPES.includes(raw.type)) slide.type = raw.type
+    /*演讲者备注透传：剥掉模型可能夹带的HTML标签，限长防脏数据*/
+    if (typeof raw.remark === 'string' && raw.remark.trim()) {
+        slide.remark = raw.remark.replace(/<[^>]*>/g, '').trim().substring(0, 500)
+    }
     return slide
 }
 
