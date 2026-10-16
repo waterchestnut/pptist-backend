@@ -224,6 +224,7 @@ ${buildDesignStats()}
 - **latex字段内严禁出现中文**（渲染器不支持，中文会丢失）：变量含义、单位说明等中文一律写在旁边的text元素里
 - 严禁把公式塞进text元素用unicode拼凑；规划formulas中的公式必须原样以latex元素呈现（可按版面微调间距）
 - **公式必须独占一行**：latex矩形上下各留至少20px净空，任何文本/图片/形状不得与其重叠；系统按字形自然尺寸渲染（实际宽度可能比你给的大），长公式务必拆成多个latex元素逐行排布，行距≥16px
+- 公式颜色必须与所在背景明显对比：深色背景（深色页、深色底衬形状）上的公式显式给浅色color（如"#FFFFFF"），浅色背景给深色；系统会按对比度自动兜底修正，但请优先自行配对
 
 ## 图片占位协议
 - image元素src一律填空字符串""，加"query"字段填英文Pexels检索词；系统会替换真实图片，切勿编造URL
@@ -272,7 +273,7 @@ ${getSchemaDoc()}
 - 某页规划含demo时：输出视频占位元素（src为""，render原样复制kind/params），尺寸必须按档位：左右半页约470x265（贴左left≈45或贴右left≈485，垂直居中）/ 上下横幅约640~900x245（水平居中，top≈55或≈262）/ 全页约950x535居中（本页仅留一行短标题）；系统会强制归一档，任何元素不得与视频矩形重叠
 - 每页至少使用色板中3种颜色；单页元素3~14个
 - 画布${CANVAS_WIDTH} x ${CANVAS_HEIGHT}，左右安全边距≥40；文本防溢出：所需高度≈行数x字号x行高+8，必须≤元素高度
-- 公式一律用type:"latex"元素（给latex/left/top/width/height/color，不要path/viewBox，尺寸由系统渲染时计算）；latex字段内严禁中文（中文说明写进text元素）；禁止在text元素里用unicode拼公式；**公式独占一行、上下留≥20px净空、不得被任何后绘制元素压盖，长公式拆分为多个latex元素逐行排布**
+- 公式一律用type:"latex"元素（给latex/left/top/width/height/color，不要path/viewBox，尺寸由系统渲染时计算）；latex字段内严禁中文（中文说明写进text元素）；禁止在text元素里用unicode拼公式；**公式独占一行、上下留≥20px净空、不得被任何后绘制元素压盖，长公式拆分为多个latex元素逐行排布；深色背景上的公式color必须用浅色（如#FFFFFF），系统按对比度兜底**
 ${buildDesignStats()}
 
 ## 输出格式
@@ -1196,6 +1197,80 @@ export async function resolveDemoVideos(slide, stats, options, palette = []) {
     }
 }
 
+/*---------------- 公式色彩对比度自适应 ----------------*/
+
+function parseColor(c) {
+    if (typeof c !== 'string') return null
+    let m = c.match(/^#([0-9a-fA-F]{3,8})$/)
+    if (m) {
+        let h = m[1]
+        if (h.length === 3 || h.length === 4) h = h.split('').map(x => x + x).join('')
+        if (h.length === 6) h += 'ff'
+        if (h.length !== 8) return null
+        return {r: parseInt(h.substring(0, 2), 16), g: parseInt(h.substring(2, 4), 16), b: parseInt(h.substring(4, 6), 16), a: parseInt(h.substring(6, 8), 16) / 255}
+    }
+    m = c.match(/^rgba?\(([^)]+)\)$/)
+    if (m) {
+        const p = m[1].split(/[,/\s]+/).filter(Boolean).map(parseFloat)
+        if (p.length >= 3) return {r: p[0], g: p[1], b: p[2], a: p[3] === undefined ? 1 : p[3]}
+    }
+    return null
+}
+
+function luminanceOf(color) {
+    if (!color) return null
+    const f = v => {
+        v = v / 255
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
+    }
+    return 0.2126 * f(color.r) + 0.7152 * f(color.g) + 0.0722 * f(color.b)
+}
+
+/*公式的"有效背景"亮度：优先其下方(z序更早)覆盖它的不透明形状填充，其次页面背景；图片背景等无法判断返回 undefined*/
+function effectiveBgLuminance(slide, elIdx, el) {
+    for (let j = elIdx - 1; j >= 0; j--) {
+        const o = slide.elements[j]
+        if (o.type !== 'shape') continue
+        const fc = parseColor(o.fill)
+        if (!fc || fc.a * (typeof o.opacity === 'number' ? o.opacity : 1) < 0.85) continue
+        if (o.left <= el.left + 2 && o.top <= el.top + 2
+            && o.left + o.width >= el.left + el.width - 2 && o.top + o.height >= el.top + el.height - 2) {
+            if (o.gradient && Array.isArray(o.gradient.colors) && o.gradient.colors.length) {
+                const lum = o.gradient.colors.map(c => luminanceOf(parseColor(c.color))).filter(v => v !== null)
+                if (lum.length) return lum.reduce((a, b) => a + b, 0) / lum.length
+            }
+            return luminanceOf(fc)
+        }
+    }
+    const bg = slide.background
+    if (bg && bg.type === 'solid') {
+        const l = luminanceOf(parseColor(bg.color))
+        return l === null ? undefined : l
+    }
+    if (bg && bg.type === 'gradient' && bg.gradient && Array.isArray(bg.gradient.colors) && bg.gradient.colors.length) {
+        const lum = bg.gradient.colors.map(c => luminanceOf(parseColor(c.color))).filter(v => v !== null)
+        return lum.length ? lum.reduce((a, b) => a + b, 0) / lum.length : undefined
+    }
+    return undefined
+}
+
+/*深色背景页上的公式（缺省深灰）按对比度自动换浅色，反之亦然；渲染层 svg stroke 取 element.color，改动即生效*/
+export function fixLatexContrast(slide) {
+    slide.elements.forEach((el, idx) => {
+        if (el.type !== 'latex') return
+        const bgL = effectiveBgLuminance(slide, idx, el)
+        if (bgL === undefined) return
+        const fc = parseColor(el.color)
+        if (fc) {
+            const fl = luminanceOf(fc)
+            const contrast = (Math.max(fl, bgL) + 0.05) / (Math.min(fl, bgL) + 0.05)
+            if (contrast >= 2.8) return
+        }
+        el.color = bgL < 0.35 ? '#FFFFFF' : '#1F2937'
+    })
+    return slide
+}
+
 /*---------------- 页级后处理 ----------------*/
 
 async function postProcessSlide(slide, pageSpec, plan, stats, options = {}) {
@@ -1205,6 +1280,7 @@ async function postProcessSlide(slide, pageSpec, plan, stats, options = {}) {
     await resolveSlideImages(slide, plan.design.palette)
     await resolveDemoVideos(slide, stats, options, plan.design.palette)
     fixLatexClearance(slide)
+    fixLatexContrast(slide)
     attachAnimations(slide, pageSpec.type)
     for (const el of slide.elements) delete el.__frame
     attachTurningMode(slide, pageSpec.type)
