@@ -14,6 +14,7 @@ import {proxyImgSearch} from './pexels.js'
 import {renderDemo} from '../../grpc/clients/renderer.js'
 import {saveFile} from '../../grpc/clients/fileManage.js'
 import {sha1} from '../../tools/security.js'
+import {buildDemoFallbackElements} from './demoFallback.js'
 
 const config = pptonline.config
 const pptGenLLMConfig = config.pptGenLLMConfig
@@ -136,7 +137,7 @@ function buildPlanPrompt(options = {}) {
 
 ## 原理演示动画规则（让课件"会动"）
 - 当某页讲解运动过程/受力变化/公式推导/几何变换/极限逼近/波动/杠杆平衡/化学平衡移动等"原理"时，可为该页附加demo字段，由渲染服务生成演示动画视频并自动嵌入该页（你只需给出演示意图，不要生成视频本身）
-- 全稿最多2页使用demo；demo页的points照常给出结论要点，动画画面负责演示过程
+- 全稿最多2页使用demo；demo页的points不超过2项，动画画面负责演示过程；视频最终会占用约半页或整页净空区，该区域内不得再安排任何文字/图形
 - demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为mathtext字符串数组且不得含中文)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)
 - demo页layout要与视频画面配合：derivation→formula-derivation；projectile/wave/limit/transform/force_analysis/lever→split-image-right或split-image-left（一侧留给视频画面）
 
@@ -222,14 +223,18 @@ ${buildDesignStats()}
 - 支持：\\frac \\sqrt x^2 a_{ij} \\sum \\int \\lim \\infty \\to 希腊字母 \\times \\cdot \\pm \\div \\approx \\neq \\leq \\geq \\left( \\right) \\vec \\mathrm
 - **latex字段内严禁出现中文**（渲染器不支持，中文会丢失）：变量含义、单位说明等中文一律写在旁边的text元素里
 - 严禁把公式塞进text元素用unicode拼凑；规划formulas中的公式必须原样以latex元素呈现（可按版面微调间距）
+- **公式必须独占一行**：latex矩形上下各留至少20px净空，任何文本/图片/形状不得与其重叠；系统按字形自然尺寸渲染（实际宽度可能比你给的大），长公式务必拆成多个latex元素逐行排布，行距≥16px
 
 ## 图片占位协议
 - image元素src一律填空字符串""，加"query"字段填英文Pexels检索词；系统会替换真实图片，切勿编造URL
 
 ## 演示视频协议（仅当本页规划含demo字段时）
-- 在画面预留的区域内输出一个视频元素：{"type":"video","id":"el_demo_01","left":..,"top":..,"width":..,"height":..,"rotate":0,"src":"","render":{"kind":"<demo.kind原样复制>","params":{...demo.params原样复制}}}
-- src保持空字符串，render.render由系统调用渲染服务生成真实视频并回填；不要自己编造视频URL
-- 视频元素区域与文字区域互不重叠，旁边配一行要点/结论文本
+- 输出视频占位元素：{"type":"video","id":"el_demo_01","left":..,"top":..,"width":..,"height":..,"rotate":0,"src":"","render":{"kind":"<demo.kind原样复制>","params":{...demo.params原样复制}}}；src保持空字符串，系统渲染真实视频并回填，不要编造URL
+- **视频尺寸三选一（系统会强制归一到以下档位，请按档位边界排版）**：
+  1. 左右半页档（16:9类）：约470x265，完整落在页面左半区（left≈45）或右半区（left≈485），垂直居中；标题正文放另一半页
+  2. 上下半页档（超宽横幅类，宽高比>2）：约640x245或900x245，水平居中，落在上半部（top≈55）或下半部（top≈262）；其余内容放另一横半页
+  3. 全页档（宽高比≈16:9且面积>半页）：约950x535居中，本页只保留一行短标题，正文移到其他页
+- 任何元素不得与视频矩形重叠（含文字、形状、线条）；demo页最多2个视觉区块（视频+标题/要点）
 
 ## 其他
 - 元素id以el_前缀且页内唯一；富文本HTML只允许数据规范白名单内的标签与样式
@@ -259,10 +264,10 @@ ${getSchemaDoc()}
 
 ## 版式与视觉规则
 - 视觉锚点优先用 shape/line/chart/table/latex 绘制；image仅当该页规划给出imageQueries时输出（src为""+query），否则不要输出image
-- 某页规划含demo时：在该页输出一个视频占位元素 {"type":"video","left":..,"top":..,"width":..,"height":..,"rotate":0,"src":"","render":{"kind":"原样复制demo.kind","params":{...原样复制demo.params}}}，系统会渲染并回填视频，与文字区域不重叠
+- 某页规划含demo时：输出视频占位元素（src为""，render原样复制kind/params），尺寸必须按档位：左右半页约470x265（贴左left≈45或贴右left≈485，垂直居中）/ 上下横幅约640~900x245（水平居中，top≈55或≈262）/ 全页约950x535居中（本页仅留一行短标题）；系统会强制归一档，任何元素不得与视频矩形重叠
 - 每页至少使用色板中3种颜色；单页元素3~14个
 - 画布${CANVAS_WIDTH} x ${CANVAS_HEIGHT}，左右安全边距≥40；文本防溢出：所需高度≈行数x字号x行高+8，必须≤元素高度
-- 公式一律用type:"latex"元素（给latex/left/top/width/height/color，不要path/viewBox，尺寸由系统渲染时计算）；latex字段内严禁中文（中文说明写进text元素）；禁止在text元素里用unicode拼公式
+- 公式一律用type:"latex"元素（给latex/left/top/width/height/color，不要path/viewBox，尺寸由系统渲染时计算）；latex字段内严禁中文（中文说明写进text元素）；禁止在text元素里用unicode拼公式；**公式独占一行、上下留≥20px净空、不得被任何后绘制元素压盖，长公式拆分为多个latex元素逐行排布**
 ${buildDesignStats()}
 
 ## 输出格式
@@ -515,6 +520,86 @@ function sanitizeBackground(bg) {
     return {type: 'solid', color: '#FFFFFF'}
 }
 
+/*视频布局档位归一化：强制半页（左右半页/上下半页横幅）或全页，防止占位视频与元素互相压盖*/
+export function normalizeVideoBox(el) {
+    const canvasArea = CANVAS_WIDTH * CANVAS_HEIGHT
+    let w = num(el.width, 460)
+    let h = num(el.height, round2(w * 9 / 16))
+    if (w <= 0 || h <= 0) { w = 460; h = 259 }
+    let aspect = w / h
+    aspect = Math.min(2.6, Math.max(1.15, aspect))
+    const side = el.left + w / 2 <= CANVAS_WIDTH / 2 ? 'L' : 'R'
+    const band = el.top + h / 2 <= CANVAS_HEIGHT / 2 ? 'T' : 'B'
+    if (w * h >= canvasArea * 0.5) {
+        /*全页档：按比例占满页面*/
+        let fw = Math.min(960, round2(535 * aspect))
+        let fh = round2(fw / aspect)
+        if (fh > 535) {
+            fh = 535
+            fw = round2(fh * aspect)
+        }
+        el.width = fw
+        el.height = fh
+        el.left = round2((CANVAS_WIDTH - fw) / 2)
+        el.top = round2((CANVAS_HEIGHT - fh) / 2)
+    } else if (aspect <= 2.05) {
+        /*左右半页：宽约半页，垂直居中（覆盖4:3~16:9等常规比例）*/
+        const hw = 470
+        const hh = Math.min(500, Math.max(200, round2(hw / aspect)))
+        el.width = hw
+        el.height = hh
+        el.left = side === 'L' ? 45 : round2(CANVAS_WIDTH - 45 - hw)
+        el.top = round2((CANVAS_HEIGHT - hh) / 2)
+    } else {
+        /*上下半页：横幅比例，高约半页的四成半，水平居中*/
+        const hh = 245
+        const hw = Math.min(900, Math.max(440, round2(hh * aspect)))
+        el.width = hw
+        el.height = hh
+        el.left = round2((CANVAS_WIDTH - hw) / 2)
+        el.top = band === 'T' ? 55 : round2(CANVAS_HEIGHT - hh - 55)
+    }
+    return el
+}
+
+/*公式避让修复：latex按自然字形放大后可能被后绘制元素遮挡，先垂直挪移、再整体缩小*/
+export function fixLatexClearance(slide) {
+    for (let i = 0; i < slide.elements.length; i++) {
+        const el = slide.elements[i]
+        if (el.type !== 'latex') continue
+        const isBlocked = () => {
+            for (let j = i + 1; j < slide.elements.length; j++) {
+                const o = slide.elements[j]
+                if (o.type === 'line') continue
+                const inter = rectOverlap({x: el.left, y: el.top, w: el.width, h: el.height}, {x: o.left, y: o.top, w: o.width || 0, h: o.height || 0})
+                if (inter / Math.max(1, el.width * el.height) > 0.45) return true
+            }
+            return false
+        }
+        if (!isBlocked()) continue
+        const originTop = el.top
+        const tried = [24, -24, 48, -48, 72, -72, 96, -96]
+        for (const dy of tried) {
+            el.top = round2(Math.min(CANVAS_HEIGHT - el.height - 8, Math.max(8, originTop + dy)))
+            if (!isBlocked()) break
+        }
+        if (isBlocked()) {
+            /*挪移无效：整体缩小（viewBox不变，渲染自动缩放）*/
+            el.top = originTop
+            const origW = el.width
+            const origH = el.height
+            for (const s of [0.8, 0.65, 0.55]) {
+                el.width = round2(origW * s)
+                el.height = round2(origH * s)
+                if (el.left + el.width > CANVAS_WIDTH - 20) el.left = round2(CANVAS_WIDTH - 20 - el.width)
+                if (el.top + el.height > CANVAS_HEIGHT - 8) el.top = round2(CANVAS_HEIGHT - 8 - el.height)
+                if (!isBlocked()) break
+            }
+        }
+    }
+    return slide
+}
+
 function sanitizeElement(el) {
     if (!el || typeof el !== 'object' || !ALLOWED_ELEMENT_TYPES.includes(el.type)) return null
     const base = {type: el.type, id: typeof el.id === 'string' && el.id ? el.id : `el_${tools.getUUID().substring(0, 8)}`, rotate: num(el.rotate, 0)}
@@ -572,6 +657,8 @@ function sanitizeElement(el) {
                 base.ext = 'mp4'
                 base.render = {kind: render.kind, params: render.params && typeof render.params === 'object' ? render.params : {}}
             }
+            /*强制半页/全页档位，避免视频与其他元素互相压盖*/
+            normalizeVideoBox(base)
             base.autoplay = false
             base.poster = typeof el.poster === 'string' ? el.poster : ''
             break
@@ -748,6 +835,42 @@ export function attachAnimations(slide, pageType) {
         if (r.w < 12 || r.h < 12) continue
         candidates.push({el, r})
     }
+    /*分镜面板兜底：按 __frame 标记逐帧点击出场*/
+    if (candidates.some(c => c.el.__frame !== undefined)) {
+        const byFrame = {}
+        const normal = []
+        for (const c of candidates) {
+            if (c.el.__frame === undefined) normal.push(c)
+            else (byFrame[c.el.__frame] = byFrame[c.el.__frame] || []).push(c)
+        }
+        const animations = []
+        const order = Object.keys(byFrame).sort((a, b) => {
+            if (a === 'base') return -1
+            if (b === 'base') return 1
+            return Number(a) - Number(b)
+        })
+        let effectIdx = 0
+        order.forEach((fk, gi) => {
+            const group = byFrame[fk]
+            group.forEach((c, ei) => {
+                animations.push({
+                    id: `an_${tools.getUUID().substring(0, 10)}`,
+                    elId: c.el.id,
+                    effect: gi === 0 ? 'fadeIn' : (ei === 0 ? IN_EFFECTS[effectIdx++ % IN_EFFECTS.length] : 'fadeIn'),
+                    type: 'in',
+                    duration: 500,
+                    trigger: gi === 0 ? 'measured' : (ei === 0 ? 'click' : 'measured'),
+                })
+            })
+        })
+        /*非分镜元素（页面标题等）与页面同现*/
+        for (const c of normal) {
+            animations.unshift({id: `an_${tools.getUUID().substring(0, 10)}`, elId: c.el.id, effect: 'fadeIn', type: 'in', duration: 400, trigger: 'measured'})
+        }
+        for (const el of elements) delete el.__frame
+        if (animations.length) slide.animations = animations
+        return
+    }
     if (!candidates.length) return
     const clusters = clusterCandidates(candidates)
     clusters.sort((a, b) => (Math.min(...a.map(x => x.r.y)) - Math.min(...b.map(x => x.r.y))) || (Math.min(...a.map(x => x.r.x)) - Math.min(...b.map(x => x.r.x))))
@@ -902,6 +1025,28 @@ export function layoutLint(slide, pageType) {
             if (minArea > 0 && inter / minArea > 0.6) issues.push(`文本元素${texts[i].id}与${texts[j].id}大面积重叠，请重新安排位置`)
         }
     }
+    /*公式/视频遮挡检测：数组序=层级序，后绘制元素压盖关键区域视为遮挡*/
+    for (let i = 0; i < slide.elements.length; i++) {
+        const e = slide.elements[i]
+        if (!['latex', 'video'].includes(e.type)) continue
+        const r = {x: e.left, y: e.top, w: e.width || 0, h: e.height || 0}
+        for (let j = i + 1; j < slide.elements.length; j++) {
+            const o = slide.elements[j]
+            if (o.type === 'line') continue
+            const ro = {x: o.left, y: o.top, w: o.width || 0, h: o.height || 0}
+            const inter = rectOverlap(r, ro)
+            const minArea = Math.min(r.w * r.h, ro.w * ro.h)
+            if (e.type === 'video') {
+                if (minArea > 0 && inter / minArea > 0.5) {
+                    issues.push(`元素${o.id}与视频区${e.id}重叠：视频必须保持半页或全页净空，其他元素请移到页面另一半或视频上下方`)
+                    break
+                }
+            } else if (inter / Math.max(1, r.w * r.h) > 0.5) {
+                issues.push(`公式元素${e.id}被后绘制元素${o.id}遮挡：公式请独占一行并上下留至少20px净空，长公式拆分为多个latex元素分行排列`)
+                break
+            }
+        }
+    }
     if (pageType === 'content') {
         const totalText = texts.reduce((acc, el) => acc + (el.content || '').replace(/<[^>]+>/g, '').length, 0)
         if (!hasVisual || slide.elements.length < 3 || totalText > 420) issues.push('本页过于单调：请增加视觉锚点（绘制形状卡片组/流程图/图表/公式/大数字），并将正文精简为要点式短语')
@@ -916,17 +1061,26 @@ async function uploadBuffer(buffer, fileName, userInfo, folder = '') {
     return `${config.docConfig.baseUrl}/file/download/?fileCode=${fileCode}`
 }
 
-/*为演示视频占位元素调用渲染服务并回填src/poster；失败移除元素*/
-export async function resolveDemoVideos(slide, stats, options) {
+/*为演示视频占位元素调用渲染服务并回填src/poster；失败降级为三帧分镜面板*/
+export async function resolveDemoVideos(slide, stats, options, palette = []) {
     const videos = slide.elements.filter(e => e.type === 'video' && !e.src && e.render)
     for (const el of videos) {
         const spec = el.render
         let ok = false
         try {
             const params = {...(spec.params || {})}
+            /*按元素框2倍分辨率渲染（半页/全页档下保持清晰），不超过渲染服务1280x720像素上限*/
+            let rw = Math.round(el.width) * 2
+            let rh = Math.round(el.height) * 2
+            const maxPx = 1280 * 720
+            if (rw * rh > maxPx) {
+                const s = Math.sqrt(maxPx / (rw * rh)) * 0.99
+                rw = Math.round(rw * s)
+                rh = Math.round(rh * s)
+            }
             const ret = await withTimeout(renderDemo(spec.kind, params, {
-                width: Math.min(1280, Math.max(320, Math.round(el.width) || 640)),
-                height: Math.min(720, Math.max(180, Math.round(el.height) || 360)),
+                width: rw,
+                height: rh,
                 seconds: params.seconds || 6,
             }), 90000, '演示渲染')
             const userInfo = options.operator || {userCode: 'ai-direct', realName: 'AI直出'}
@@ -944,8 +1098,25 @@ export async function resolveDemoVideos(slide, stats, options) {
             logger.warn('演示渲染失败(%s): %s', spec.kind, e.message || e)
         }
         if (!ok) {
+            /*渲染不可用：在同净空区内生成三帧分镜面板兜底*/
             const idx = slide.elements.indexOf(el)
             slide.elements.splice(idx, 1)
+            const fb = buildDemoFallbackElements(spec, {left: el.left, top: el.top, width: el.width, height: el.height}, palette.length ? palette : ['#2563EB'])
+            const fallback = fb.elements || []
+            for (let k = 0; k < fallback.length; k++) {
+                /*分镜中的latex帧补走矢量渲染管线，失败则自动降级为文本*/
+                if (fallback[k].type === 'latex') {
+                    const rendered = sanitizeElement(fallback[k])
+                    if (rendered) {
+                        rendered.__frame = fallback[k].__frame
+                        fallback[k] = rendered
+                    }
+                }
+            }
+            if (fallback.length) {
+                slide.elements.splice(idx, 0, ...fallback)
+                stats.renderFallbacked++
+            }
         }
         delete el.render
     }
@@ -958,8 +1129,10 @@ async function postProcessSlide(slide, pageSpec, plan, stats, options = {}) {
     if (lint.ok) stats.lintPass++
     else stats.lintWarn++
     await resolveSlideImages(slide, plan.design.palette)
-    await resolveDemoVideos(slide, stats, options)
+    await resolveDemoVideos(slide, stats, options, plan.design.palette)
+    fixLatexClearance(slide)
     attachAnimations(slide, pageSpec.type)
+    for (const el of slide.elements) delete el.__frame
     attachTurningMode(slide, pageSpec.type)
     slide._lintIssues = lint.issues
     return slide
@@ -1140,7 +1313,7 @@ export async function genPPTDirect(subject, options = {}) {
     const units = buildUnits(plan, granularity)
     const usedSlideIds = new Set()
     const results = new Array(units.length)
-    const stats = {dropped: 0, lintPass: 0, lintWarn: 0, retries: 0, granularity, chapterCalls: 0, chapterFallbacks: 0, pageRegens: 0, renderOk: 0, renderFailed: 0, unitTimeouts: 0}
+    const stats = {dropped: 0, lintPass: 0, lintWarn: 0, retries: 0, granularity, chapterCalls: 0, chapterFallbacks: 0, pageRegens: 0, renderOk: 0, renderFailed: 0, renderFallbacked: 0, unitTimeouts: 0}
     let nextGen = 0
     let nextFlush = 0
     let emittedIndex = 0
