@@ -332,20 +332,50 @@ function withTimeout(promise, ms, label) {
 
 async function callLLM(messages, options = {}) {
     _llmCalls++
+    const trace = typeof options.trace === 'function' ? options.trace : null
+    const t0 = Date.now()
+    const promptChars = messages.reduce((a, m) => a + String(m.content || '').length, 0)
+    const emitCall = (ok, completionChars, error) => {
+        if (!trace) return
+        try {
+            trace({
+                event: 'llm_call',
+                role: options.role || '-',
+                model: options.model || pptGenLLMConfig.model,
+                promptChars,
+                completionChars,
+                ms: Date.now() - t0,
+                ok,
+                error: error ? String(error).substring(0, 200) : undefined,
+            })
+        } catch (e) { /* 记录失败不影响生成 */
+        }
+    }
     const openai = new OpenAI({
         apiKey: pptGenLLMConfig.apiKey,
         baseURL: pptGenLLMConfig.baseURL,
     })
-    let ret = await openai.chat.completions.create({
-        model: options.model || pptGenLLMConfig.model,
-        messages,
-        max_tokens: Math.min(pptGenLLMConfig.maxTokens || 8192, 16384),
-        temperature: options.temperature !== undefined ? options.temperature : pptGenLLMConfig.temperature || 0.7,
-        stream: false,
-        response_format: {type: 'json_object'},
-    })
-    if (!ret?.choices?.length) return null
-    return ret.choices[0].message.content
+    let ret
+    try {
+        ret = await openai.chat.completions.create({
+            model: options.model || pptGenLLMConfig.model,
+            messages,
+            max_tokens: Math.min(pptGenLLMConfig.maxTokens || 8192, 16384),
+            temperature: options.temperature !== undefined ? options.temperature : pptGenLLMConfig.temperature || 0.7,
+            stream: false,
+            response_format: {type: 'json_object'},
+        })
+    } catch (e) {
+        emitCall(false, 0, e.message || e)
+        throw e
+    }
+    if (!ret?.choices?.length) {
+        emitCall(false, 0, '空响应')
+        return null
+    }
+    const content = ret.choices[0].message.content
+    emitCall(true, String(content || '').length)
+    return content
 }
 
 function parseJSONText(text) {
@@ -383,7 +413,7 @@ ${fileText || subject}
             const content = await callLLM([
                 {role: 'system', content: buildPlanPrompt(options)},
                 {role: 'user', content: userPrompt},
-            ], {temperature: 0.6, model: options.model})
+            ], {temperature: 0.6, model: options.model, trace: options.onTrace, role: 'plan'})
             let plan = parseJSONText(content)
             plan = normalizePlan(plan, options)
             if (plan) return {plan, fileText}
@@ -1083,10 +1113,19 @@ async function uploadBuffer(buffer, fileName, userInfo, folder = '') {
 
 /*为演示视频占位元素调用渲染服务并回填src/poster；失败降级为三帧分镜面板*/
 export async function resolveDemoVideos(slide, stats, options, palette = []) {
+    const doTrace = typeof options.onTrace === 'function' ? options.onTrace : null
+    const traceDemo = (ev) => {
+        if (!doTrace) return
+        try {
+            const r = doTrace(ev)
+            if (r && typeof r.catch === 'function') r.catch(() => {})
+        } catch (e) { /* ignore */ }
+    }
     const videos = slide.elements.filter(e => e.type === 'video' && !e.src && e.render)
     for (const el of videos) {
         const spec = el.render
         let ok = false
+        const tRender = Date.now()
         try {
             const params = {...(spec.params || {})}
             /*按元素框2倍分辨率渲染（半页/全页档下保持清晰），不超过渲染服务1280x720像素上限*/
@@ -1114,6 +1153,7 @@ export async function resolveDemoVideos(slide, stats, options, palette = []) {
             }
             stats.renderOk++
             ok = true
+            traceDemo({event: 'demo_render', kind: spec.kind, result: 'ok', ms: Date.now() - tRender})
         } catch (e) {
             stats.renderFailed++
             logger.warn('演示渲染失败(%s): %s', spec.kind, e.message || e)
@@ -1137,6 +1177,9 @@ export async function resolveDemoVideos(slide, stats, options, palette = []) {
             if (fallback.length) {
                 slide.elements.splice(idx, 0, ...fallback)
                 stats.renderFallbacked++
+                traceDemo({event: 'demo_render', kind: spec.kind, result: 'fallback', ms: Date.now() - tRender})
+            } else {
+                traceDemo({event: 'demo_render', kind: spec.kind, result: 'failed', ms: Date.now() - tRender})
             }
         }
         delete el.render
@@ -1163,6 +1206,7 @@ async function postProcessSlide(slide, pageSpec, plan, stats, options = {}) {
 
 async function genOneSlide(plan, pageIndex, fileText, options, stats, initialFeedback = '') {
     const pageSpec = plan.pages[pageIndex]
+    const llmRole = 'page:' + (pageIndex + 1)
     let feedback = initialFeedback
     let lastSlide = null
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -1171,7 +1215,7 @@ async function genOneSlide(plan, pageIndex, fileText, options, stats, initialFee
             content = await callLLM([
                 {role: 'system', content: buildSlideSysPrompt(plan.design, pageSpec)},
                 {role: 'user', content: buildSlideUserPrompt(plan, pageIndex, fileText, feedback)},
-            ], {model: options.model})
+            ], {model: options.model, trace: options.onTrace, role: llmRole})
         } catch (e) {
             logger.warn('直出模式第%s页LLM调用失败: %s', pageIndex + 1, e.message || e)
             continue
@@ -1236,7 +1280,7 @@ async function genOneUnit(plan, unit, fileText, options, stats, usedSlideIds) {
             content = await callLLM([
                 {role: 'system', content: buildChapterSysPrompt(plan.design)},
                 {role: 'user', content: buildChapterUserPrompt(plan, unit, fileText, feedback)},
-            ], {model: options.model})
+            ], {model: options.model, trace: options.onTrace, role: `chapter:${unit.start + 1}-${unit.start + unit.pageSpecs.length}`})
         } catch (e) {
             logger.warn('直出模式章节(起始页%s)LLM调用失败: %s', unit.start + 1, e.message || e)
             continue
@@ -1316,11 +1360,29 @@ export async function genPPTDirect(subject, options = {}) {
     const emit = (obj) => {
         if (options.streamCallback) options.streamCallback(`${JSON.stringify(obj)}\n\n`)
     }
+    const trace = typeof options.onTrace === 'function' ? options.onTrace : null
+    const doTrace = (ev) => {
+        if (!trace) return
+        try {
+            const r = trace(ev)
+            if (r && typeof r.catch === 'function') r.catch(() => {})
+        } catch (e) { /* 记录失败不影响生成 */
+        }
+    }
+    const t0 = Date.now()
     const granularity = options.granularity || 'chapter'
     const callsBefore = _llmCalls
 
     emit({kind: 'stage', stage: 'plan', message: 'AI 正在构思大纲与版式设计…'})
-    const {plan, fileText} = await genPPTDirectPlan(subject, options)
+    doTrace({event: 'plan_start', subject})
+    let plan, fileText
+    try {
+        ({plan, fileText} = await genPPTDirectPlan(subject, options))
+    } catch (e) {
+        doTrace({event: 'error', message: `设计规划失败：${e.message || e}`})
+        throw e
+    }
+    doTrace({event: 'plan_done', title: plan.title, total: plan.pages.length, genre: plan.design.genre, palette: plan.design.palette, fileChars: (fileText || '').length, ms: Date.now() - t0})
 
     const theme = {
         backgroundColor: plan.design.backgroundColor,
@@ -1329,7 +1391,7 @@ export async function genPPTDirect(subject, options = {}) {
         fontName: plan.design.fontName,
     }
     const total = plan.pages.length
-    emit({kind: 'meta', title: plan.title, theme, viewportSize: CANVAS_WIDTH, viewportRatio: VIEWPORT_RATIO, total, design: plan.design})
+    emit({kind: 'meta', title: plan.title, theme, viewportSize: CANVAS_WIDTH, viewportRatio: VIEWPORT_RATIO, total, design: plan.design, traceCode: options.traceCode || undefined})
 
     const units = buildUnits(plan, granularity)
     const usedSlideIds = new Set()
@@ -1360,16 +1422,28 @@ export async function genPPTDirect(subject, options = {}) {
         while (true) {
             const i = nextGen++
             if (i >= units.length) break
+            const u = units[i]
+            const before = {calls: _llmCalls, retries: stats.retries, regens: stats.pageRegens, t: Date.now()}
             let out = null
             try {
                 /*单元级硬超时：渲染/上传/搜图/LLM任一环节悬挂都不能永久阻塞流水线*/
-                out = await withTimeout(genOneUnit(plan, units[i], fileText, options, stats, usedSlideIds), options.unitTimeoutMs || 600000, `生成单元${i + 1}`)
+                out = await withTimeout(genOneUnit(plan, u, fileText, options, stats, usedSlideIds), options.unitTimeoutMs || 600000, `生成单元${i + 1}`)
             } catch (e) {
                 if (e.message && e.message.includes('timeout after')) stats.unitTimeouts++
                 logger.error('直出模式生成单元%s异常: %s', i + 1, e.message || e)
                 out = []
             }
             results[i] = out || []
+            doTrace({
+                event: 'unit_done',
+                unit: u.type,
+                from: u.start + 1,
+                to: u.start + u.pageSpecs.length,
+                llmCalls: _llmCalls - before.calls,
+                retries: stats.retries - before.retries,
+                pageRegens: stats.pageRegens - before.regens,
+                ms: Date.now() - before.t,
+            })
             await flushReady()
         }
     }
@@ -1381,6 +1455,16 @@ export async function genPPTDirect(subject, options = {}) {
 
     stats.llmCalls = _llmCalls - callsBefore
     const slides = results.flat()
+    doTrace({
+        event: 'done',
+        title: plan.title,
+        slides: slides.length,
+        dropped: stats.dropped,
+        renderOk: stats.renderOk,
+        renderFallback: stats.renderFallbacked,
+        renderFailed: stats.renderFailed,
+        ms: Date.now() - t0,
+    })
     emit({kind: 'done', title: plan.title, theme, viewportSize: CANVAS_WIDTH, viewportRatio: VIEWPORT_RATIO, stats})
     if (!options.stream) {
         return {title: plan.title, theme, slides, viewportSize: CANVAS_WIDTH, viewportRatio: VIEWPORT_RATIO, stats}

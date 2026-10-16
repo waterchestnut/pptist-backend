@@ -111,6 +111,8 @@ export default {
         maxMessageLength: 256 * 1024 * 1024,
         /** 生成课件智能体大模型任务的模型配置节点名称 */
         aiPPTModel: process.env['LLMAPI_MODEL'],
+        /** 是否把AI生成过程记录到llm.api的agent任务/日志存储 */
+        recordTrace: process.env['LLMAPI_RECORD_TRACE'] !== 'false',
     },
     /** 课件本身rpc服务的地址 */
     grpcHost: process.env['MY_GRPC_HOST'],

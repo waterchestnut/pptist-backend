@@ -1,6 +1,7 @@
 import {getListResSwaggerSchema, getResSwaggerSchema} from '../../daos/swaggerSchema/responseHandler.js'
 import {genPPT, genPPTSyllabus, getIdeologyContent} from '../../services/core/llm.js'
 import {genPPTDirect} from '../../services/core/llmDirect.js'
+import {createGenerationTrace} from '../../services/core/traceRecorder.js'
 import {getDefaultResponseSchema} from '../../plugins/format-reply.js'
 
 export default async function (fastify, opts) {
@@ -29,7 +30,11 @@ export default async function (fastify, opts) {
             }
         },
     }, async function (request, reply) {
-        let ret = await genPPTSyllabus(request.reqParams.subject, request.reqParams.options)
+        const trace = createGenerationTrace({subject: request.reqParams.subject, source: 'editor-wizard', operator: request.userInfo})
+        trace.onTrace && trace.onTrace({event: 'syllabus_start', subject: request.reqParams.subject})
+        let ret = await genPPTSyllabus(request.reqParams.subject, {...request.reqParams.options, onTrace: trace.onTrace})
+        trace.onTrace && trace.onTrace({event: 'syllabus_done', outlineChars: String(ret || '').length})
+        trace.finish && trace.finish(2, {stage: 'syllabus'})
         /*console.log(ret)*/
         return {content: ret}
     })
@@ -55,18 +60,27 @@ export default async function (fastify, opts) {
         },
     }, async function (request, reply) {
         const stream = reply.raw
+        const trace = createGenerationTrace({subject: request.reqParams.subject, source: 'editor-wizard', operator: request.userInfo})
         const headers = {
             'Content-Type': 'text/event-stream',
             Connection: 'keep-alive',
             'Cache-Control': 'no-cache',
-            'Access-Control-Allow-Origin': request.headers.origin
+            'Access-Control-Allow-Origin': request.headers.origin,
+            'X-Trace-Code': trace.agentCode || '',
+            'Access-Control-Expose-Headers': 'X-Trace-Code',
         }
         stream.writeHead(200, headers)
+        trace.onTrace && trace.onTrace({event: 'syllabus_start', subject: request.reqParams.subject})
+        let outlineChars = 0
         await genPPTSyllabus(request.reqParams.subject, {
-            ...request.reqParams.options, stream: true, streamCallback: (content) => {
+            ...request.reqParams.options, stream: true, onTrace: trace.onTrace, streamCallback: (content) => {
+                outlineChars += content.length
                 stream.write(content)
             }
         })
+        trace.onTrace && trace.onTrace({event: 'syllabus_done', outlineChars})
+        /*向导第二步（生成内容）会以同一 traceCode 续写，这里标记为执行中*/
+        trace.finish && trace.finish(1, {stage: 'syllabus'})
         stream.end()
         return reply
     })
@@ -119,9 +133,14 @@ export default async function (fastify, opts) {
             }
         },
     }, async function (request, reply) {
-        let ret = await genPPT(request.reqParams.syllabus, request.reqParams.options)
+        const options = request.reqParams.options || {}
+        const trace = createGenerationTrace({traceCode: options.traceCode, subject: request.reqParams.syllabus, source: 'editor-wizard', operator: request.userInfo})
+        trace.onTrace && trace.onTrace({event: 'ppt_start', syllabusChars: String(request.reqParams.syllabus || '').length, tmplCode: options.tmplCode, style: options.style})
+        let ret = await genPPT(request.reqParams.syllabus, {...options, onTrace: trace.onTrace})
+        trace.onTrace && trace.onTrace({event: 'ppt_done', contentChars: String(ret || '').length})
+        trace.finish && trace.finish(2, {stage: 'content', tmplCode: options.tmplCode || 'template'})
         /*console.log(ret)*/
-        return {content: ret}
+        return {content: ret, traceCode: trace.agentCode || undefined}
     })
 
     fastify.post('/gen-ppt/stream', {
@@ -145,18 +164,27 @@ export default async function (fastify, opts) {
         },
     }, async function (request, reply) {
         const stream = reply.raw
+        const options = request.reqParams.options || {}
+        const trace = createGenerationTrace({traceCode: options.traceCode, subject: request.reqParams.syllabus, source: 'editor-wizard', operator: request.userInfo})
         const headers = {
             'Content-Type': 'text/event-stream',
             Connection: 'keep-alive',
             'Cache-Control': 'no-cache',
-            'Access-Control-Allow-Origin': request.headers.origin
+            'Access-Control-Allow-Origin': request.headers.origin,
+            'X-Trace-Code': trace.agentCode || '',
+            'Access-Control-Expose-Headers': 'X-Trace-Code',
         }
         stream.writeHead(200, headers)
+        trace.onTrace && trace.onTrace({event: 'ppt_start', syllabusChars: String(request.reqParams.syllabus || '').length, tmplCode: options.tmplCode, style: options.style})
+        let lines = 0
         await genPPT(request.reqParams.syllabus, {
-            ...request.reqParams.options, stream: true, streamCallback: (content) => {
+            ...options, stream: true, onTrace: trace.onTrace, streamCallback: (content) => {
+                lines += (content.match(/\n/g) || []).length
                 stream.write(content)
             }
         })
+        trace.onTrace && trace.onTrace({event: 'ppt_done', lines})
+        trace.finish && trace.finish(2, {stage: 'content', tmplCode: options.tmplCode || 'template', lines})
         stream.end()
         return reply
     })
@@ -185,8 +213,20 @@ export default async function (fastify, opts) {
             }
         },
     }, async function (request, reply) {
-        let ret = await genPPTDirect(request.reqParams.subject, {...request.reqParams.options, operator: request.userInfo})
-        return ret
+        const trace = createGenerationTrace({subject: request.reqParams.subject, source: 'editor-direct', operator: request.userInfo})
+        try {
+            let ret = await genPPTDirect(request.reqParams.subject, {
+                ...request.reqParams.options,
+                operator: request.userInfo,
+                onTrace: trace.onTrace,
+                traceCode: trace.agentCode || undefined,
+            })
+            trace.finish && trace.finish(2, {title: ret?.title, slides: ret?.slides?.length})
+            return {...ret, traceCode: trace.agentCode || undefined}
+        } catch (e) {
+            await (trace.finish && trace.finish(3, {error: String(e.message || e).substring(0, 200)}))
+            throw e
+        }
     })
 
     fastify.post('/gen-ppt-direct/stream', {
@@ -211,11 +251,14 @@ export default async function (fastify, opts) {
         },
     }, async function (request, reply) {
         const stream = reply.raw
+        const trace = createGenerationTrace({subject: request.reqParams.subject, source: 'editor-direct', operator: request.userInfo})
         const headers = {
             'Content-Type': 'text/event-stream',
             Connection: 'keep-alive',
             'Cache-Control': 'no-cache',
-            'Access-Control-Allow-Origin': request.headers.origin || '*'
+            'Access-Control-Allow-Origin': request.headers.origin || '*',
+            'X-Trace-Code': trace.agentCode || '',
+            'Access-Control-Expose-Headers': 'X-Trace-Code',
         }
         stream.writeHead(200, headers)
         /*客户端断开后停止写入，避免异常风暴*/
@@ -235,7 +278,7 @@ export default async function (fastify, opts) {
         }, 15000)
         try {
             await genPPTDirect(request.reqParams.subject, {
-                ...request.reqParams.options, operator: request.userInfo, stream: true, streamCallback: (content) => {
+                ...request.reqParams.options, operator: request.userInfo, stream: true, onTrace: trace.onTrace, traceCode: trace.agentCode || undefined, streamCallback: (content) => {
                     if (streamAlive) {
                         try {
                             stream.write(content)
@@ -243,7 +286,9 @@ export default async function (fastify, opts) {
                     }
                 }
             })
+            trace.finish && trace.finish(2, {})
         } catch (e) {
+            trace.finish && trace.finish(3, {error: String(e.message || e).substring(0, 200)})
             if (streamAlive) {
                 stream.write(`${JSON.stringify({kind: 'error', message: e.message || 'AI直出生成失败'})}\n\n`)
             }

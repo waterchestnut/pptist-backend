@@ -7,6 +7,7 @@
 import pptInfoDac from '../../daos/core/dac/pptInfoDac.js'
 import retSchema from '../../daos/retSchema.js'
 import {importRemote} from './importPptx.js'
+import {updateAgentTask} from '../../grpc/clients/agentController.js'
 
 const tools = pptonline.tools
 const logger = pptonline.logger
@@ -43,7 +44,7 @@ export async function saveMyPpt(curUserInfo, pptInfo, skipOperatorCheck = false)
         pptInfo.pptCode = tools.getUUID()
     }
 
-    return pptInfoDac.upsert({
+    let result = await pptInfoDac.upsert({
         pptCode: pptInfo.pptCode,
         title: pptInfo.title,
         theme: pptInfo.theme,
@@ -67,6 +68,12 @@ export async function saveMyPpt(curUserInfo, pptInfo, skipOperatorCheck = false)
         tags: pptInfo.tags,
         aiIndividual: pptInfo.aiIndividual
     })
+    /*把课件与AI生成过程记录关联（traceCode来自生成时的透传）*/
+    if (pptInfo.traceCode) {
+        updateAgentTask(pptInfo.traceCode, {'handleRet.pptCode': pptInfo.pptCode})
+            .catch(e => logger.warn(`补记生成过程记录的pptCode失败: ${e.message || e}`))
+    }
+    return result
 }
 
 /**

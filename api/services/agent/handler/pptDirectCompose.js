@@ -5,6 +5,7 @@
  */
 import BaseHandler from './base.js'
 import {genPPTDirect} from '../../core/llmDirect.js'
+import {createGrpcCallTrace} from '../../core/traceRecorder.js'
 import pptInfoDac from '../../../daos/core/dac/pptInfoDac.js'
 import CreateTypeEnum from '../../../daos/core/enum/CreateTypeEnum.js'
 
@@ -27,6 +28,7 @@ class PPTDirectCompose extends BaseHandler {
             }
         }
         let pptObj
+        const onTrace = createGrpcCallTrace(grpcCall)
         try {
             pptObj = await genPPTDirect(params.subject, {
                 language: params.language,
@@ -34,6 +36,7 @@ class PPTDirectCompose extends BaseHandler {
                 granularity: params.granularity,
                 maxPages: params.maxPages,
                 operator: params.operator,
+                onTrace,
             })
         } catch (e) {
             logger.error('直出模式生成课件异常: %s', e.stack || e)

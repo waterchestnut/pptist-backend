@@ -25,10 +25,33 @@ class PPTCompose extends BaseHandler {
                 logGroup: 'error',
             }
         }
+        let contentPages = 0
+        try {
+            contentPages = JSON.parse(agentTaskInfo.parentRet.pptContent).length || 0
+        } catch (e) { /* ignore */ }
+        try {
+            grpcCall.write({
+                handleStatus: 1,
+                logContent: `开始Playwright模板合成：${contentPages}页内容数据，模板=${agentTaskInfo.params?.tmplCode || '默认'}`,
+                logGroup: 'thinking',
+                logExt: JSON.stringify({event: 'compose_start', tmplCode: agentTaskInfo.params?.tmplCode, contentPages}),
+                handleRet: '',
+            })
+        } catch (e) { /* ignore */ }
+        const t0 = Date.now()
         let pptObj = await packagePPT(JSON.parse(agentTaskInfo.parentRet.pptContent), agentTaskInfo.params?.tmplCode, agentTaskInfo.params?.operator?.userCode || 'system')
         let pptCode = pptObj.pptCode = pptObj.pptCode || agentTaskInfo.params?.pptCode || tools.getUUID()
         let title = pptObj.title = agentTaskInfo.params?.pptTitle || pptObj.title
         let operator = agentTaskInfo.params?.operator || {}
+        try {
+            grpcCall.write({
+                handleStatus: 1,
+                logContent: `模板合成完成：${pptObj.slides?.length || 0}页，耗时${((Date.now() - t0) / 1000).toFixed(1)}s，开始持久化课件`,
+                logGroup: 'thinking',
+                logExt: JSON.stringify({event: 'compose_done', slides: pptObj.slides?.length, ms: Date.now() - t0}),
+                handleRet: '',
+            })
+        } catch (e) { /* ignore */ }
         await pptInfoDac.upsert({
             ...pptObj,pptCode,title,
             operator: {

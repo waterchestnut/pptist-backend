@@ -15,6 +15,8 @@ package llm;
 service AgentController {
   rpc addAgentTask (addAgentTaskRequest) returns (addAgentTaskResponse) {}
   rpc triggerAgentTask (triggerAgentTaskRequest) returns (triggerAgentTaskResponse) {}
+  rpc addAgentLog (addAgentLogRequest) returns (addAgentLogResponse) {}
+  rpc updateAgentTask (updateAgentTaskRequest) returns (updateAgentTaskResponse) {}
 }
 
 // 结构化数据：使用message定义。
@@ -35,4 +37,26 @@ message triggerAgentTaskResponse {
   uint32 handleStatus = 1;
   string handleRet = 2;
   string errorMsg = 3;
+}
+
+message addAgentLogRequest {
+  string agentCode = 1;
+  repeated string agentCodePath = 2;
+  string content = 3;
+  string group = 4;
+  string extInfo = 5;      // JSON字符串
+  string operator = 6;     // JSON字符串
+}
+
+message addAgentLogResponse {
+  uint32 count = 1;
+}
+
+message updateAgentTaskRequest {
+  string agentCode = 1;
+  string toUpdateInfo = 2; // JSON字符串
+}
+
+message updateAgentTaskResponse {
+  uint32 count = 1;
 }

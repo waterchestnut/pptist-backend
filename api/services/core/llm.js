@@ -262,6 +262,20 @@ export async function genPPTSyllabus(subject, options = {}) {
         apiKey: pptGenLLMConfig.apiKey,
         baseURL: pptGenLLMConfig.baseURL,
     })
+    const trace = typeof options.onTrace === 'function' ? options.onTrace : null
+    const t0 = Date.now()
+    let completionChars = 0
+    let promptChars = 0
+    const emitCall = (ok, error) => {
+        if (!trace) return
+        try {
+            trace({
+                event: 'llm_call', role: options.traceRole || 'syllabus', model: pptGenLLMConfig.model,
+                promptChars, completionChars, ms: Date.now() - t0,
+                ok, error: error ? String(error).substring(0, 200) : undefined,
+            })
+        } catch (e) { /* ignore */ }
+    }
 
     let fileText = ''
     if (options?.fileInfo?.fileCode) {
@@ -274,39 +288,56 @@ export async function genPPTSyllabus(subject, options = {}) {
     ## 主题和信息： \n
     ${fileText || subject}
     `
-    let ret = await openai.chat.completions.create(
+    const msgs = [
         {
-            model: pptGenLLMConfig.model,
-            messages: [
-                {
-                    'role': 'system',
-                    'content': syllabusSysPrompt
-                },
-                {
-                    'role': 'user',
-                    'content': syllabusExamplePrompt,
-                },
-                {
-                    'role': 'user',
-                    'content': userPrompt,
-                }
-            ],
-            max_tokens: pptGenLLMConfig.maxTokens || 8192,
-            temperature: pptGenLLMConfig.temperature || 0.7,
-            stream: options.stream
+            'role': 'system',
+            'content': syllabusSysPrompt
+        },
+        {
+            'role': 'user',
+            'content': syllabusExamplePrompt,
+        },
+        {
+            'role': 'user',
+            'content': userPrompt,
         }
-    )
+    ]
+    promptChars = msgs.reduce((a, m) => a + String(m.content || '').length, 0)
+    let ret
+    try {
+        ret = await openai.chat.completions.create(
+            {
+                model: pptGenLLMConfig.model,
+                messages: msgs,
+                max_tokens: pptGenLLMConfig.maxTokens || 8192,
+                temperature: pptGenLLMConfig.temperature || 0.7,
+                stream: options.stream
+            }
+        )
+    } catch (e) {
+        emitCall(false, e.message || e)
+        throw e
+    }
 
     if (options.stream) {
-        for await (const chunk of ret) {
-            const content = chunk.choices[0]?.delta?.content || ''
-            options.streamCallback(content)
+        try {
+            for await (const chunk of ret) {
+                const content = chunk.choices[0]?.delta?.content || ''
+                completionChars += content.length
+                options.streamCallback(content)
+            }
+        } catch (e) {
+            emitCall(false, e.message || e)
+            throw e
         }
+        emitCall(true)
         return 'done'
     } else {
         if (!ret?.choices?.length) {
+            emitCall(false, '空响应')
             return ''
         }
+        emitCall(true)
         return ret.choices[0].message.content
     }
 }
@@ -323,6 +354,20 @@ export async function genPPT(syllabus, options = {}) {
         apiKey: pptGenLLMConfig.apiKey,
         baseURL: pptGenLLMConfig.baseURL,
     })
+    const trace = typeof options.onTrace === 'function' ? options.onTrace : null
+    const t0 = Date.now()
+    let completionChars = 0
+    let promptChars = 0
+    const emitCall = (ok, error) => {
+        if (!trace) return
+        try {
+            trace({
+                event: 'llm_call', role: options.traceRole || 'ppt-content', model: pptGenLLMConfig.model,
+                promptChars, completionChars, ms: Date.now() - t0,
+                ok, error: error ? String(error).substring(0, 200) : undefined,
+            })
+        } catch (e) { /* ignore */ }
+    }
 
     let fileText = ''
     if (options?.fileInfo?.fileCode) {
@@ -338,56 +383,73 @@ export async function genPPT(syllabus, options = {}) {
     ${syllabus} \n
     ${fileText ? '## 详细材料： \n' + fileText : ''}
     `
-    let ret = await openai.chat.completions.create(
+    const msgs = [
         {
-            model: pptGenLLMConfig.model,
-            messages: [
-                {
-                    'role': 'system',
-                    'content': options.pptSysPrompt || prompts.sys
-                },
-                {
-                    'role': 'user',
-                    'content': options.examplePrompt || prompts.example,
-                },
-                {
-                    'role': 'user',
-                    'content': userPrompt,
-                }
-            ],
-            max_tokens: pptGenLLMConfig.maxTokens || 8192,
-            temperature: pptGenLLMConfig.temperature || 0.7,
-            stream: options.stream,
-            response_format: options.stream ? undefined : {
-                type: 'json_object',
-            },
+            'role': 'system',
+            'content': options.pptSysPrompt || prompts.sys
+        },
+        {
+            'role': 'user',
+            'content': options.examplePrompt || prompts.example,
+        },
+        {
+            'role': 'user',
+            'content': userPrompt,
         }
-    )
+    ]
+    promptChars = msgs.reduce((a, m) => a + String(m.content || '').length, 0)
+    let ret
+    try {
+        ret = await openai.chat.completions.create(
+            {
+                model: pptGenLLMConfig.model,
+                messages: msgs,
+                max_tokens: pptGenLLMConfig.maxTokens || 8192,
+                temperature: pptGenLLMConfig.temperature || 0.7,
+                stream: options.stream,
+                response_format: options.stream ? undefined : {
+                    type: 'json_object',
+                },
+            }
+        )
+    } catch (e) {
+        emitCall(false, e.message || e)
+        throw e
+    }
 
     if (options.stream) {
         let buffer = ''
 
-        for await (const chunk of ret) {
-            const content = chunk.choices[0]?.delta?.content || ''
-            buffer += content
+        try {
+            for await (const chunk of ret) {
+                const content = chunk.choices[0]?.delta?.content || ''
+                completionChars += content.length
+                buffer += content
 
-            let newlineIndex
-            while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
-                const line = buffer.slice(0, newlineIndex).trim()
-                buffer = buffer.slice(newlineIndex + 1)
+                let newlineIndex
+                while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+                    const line = buffer.slice(0, newlineIndex).trim()
+                    buffer = buffer.slice(newlineIndex + 1)
 
-                if (line) options.streamCallback(`${line}\n\n`)
+                    if (line) options.streamCallback(`${line}\n\n`)
+                }
             }
+        } catch (e) {
+            emitCall(false, e.message || e)
+            throw e
         }
 
         if (buffer.trim()) {
             options.streamCallback(`${buffer.trim()}\n\n`)
         }
+        emitCall(true)
         return 'done'
     } else {
         if (!ret?.choices?.length) {
+            emitCall(false, '空响应')
             return []
         }
+        emitCall(true)
         return ret.choices[0].message.content
     }
 }
