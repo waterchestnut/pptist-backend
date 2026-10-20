@@ -5,7 +5,7 @@
  */
 import BaseHandler from './base.js'
 import {genPPTDirect} from '../../core/llmDirect.js'
-import {createGrpcCallTrace} from '../../core/traceRecorder.js'
+import {buildAndSavePptCover} from '../../core/coverShot.js'
 import pptInfoDac from '../../../daos/core/dac/pptInfoDac.js'
 import CreateTypeEnum from '../../../daos/core/enum/CreateTypeEnum.js'
 
@@ -70,10 +70,20 @@ class PPTDirectCompose extends BaseHandler {
                 realName: operator.realName || '系统生成'
             }
         })
+        let coverNote = ''
+        const coverInfo = await buildAndSavePptCover(pptCode, {
+            userCode: operator.userCode || 'system',
+            realName: operator.realName || '系统生成',
+        })
+        if (coverInfo) {
+            await pptInfoDac.update({...coverInfo, pptCode})
+        } else {
+            coverNote = '（封面生成失败）'
+        }
         return {
             handleStatus: 2,
             handleRet: {pptCode, title},
-            logContent: `PPT《${title}》直出模式生成完成（${pptObj.slides.length}页）`,
+            logContent: `PPT《${title}》直出模式生成完成（${pptObj.slides.length}页）${coverNote}`,
             logGroup: 'completed',
         }
     }

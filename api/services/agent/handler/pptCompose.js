@@ -5,6 +5,7 @@
  */
 import BaseHandler from './base.js'
 import {packagePPT} from '../../console-mock/aippt.js'
+import {buildAndSavePptCover} from '../../core/coverShot.js'
 import pptInfoDac from '../../../daos/core/dac/pptInfoDac.js'
 
 const tools = pptonline.tools
@@ -59,10 +60,20 @@ class PPTCompose extends BaseHandler {
                 realName: operator.realName || '系统生成'
             }
         })
+        let coverNote = ''
+        const coverInfo = await buildAndSavePptCover(pptCode, {
+            userCode: operator.userCode || 'system',
+            realName: operator.realName || '系统生成',
+        })
+        if (coverInfo) {
+            await pptInfoDac.update({...coverInfo, pptCode})
+        } else {
+            coverNote = '（封面生成失败）'
+        }
         return {
             handleStatus: 2,
             handleRet: {pptCode, title},
-            logContent: `PPT《${title}》生成完成`,
+            logContent: `PPT《${title}》生成完成${coverNote}`,
             logGroup: 'completed',
         }
     }
