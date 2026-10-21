@@ -31,7 +31,22 @@ const ALLOWED_ELEMENT_TYPES = ['text', 'image', 'shape', 'line', 'table', 'chart
 const CHART_TYPES = ['bar', 'column', 'line', 'pie', 'ring', 'area', 'radar', 'scatter']
 const PAGE_TYPES = ['cover', 'contents', 'transition', 'content', 'end']
 const DEMO_KINDS = ['projectile', 'force_analysis', 'lever', 'derivation', 'limit', 'wave', 'transform', 'reaction', 'custom']
-const IN_EFFECTS = ['fadeInUp', 'zoomIn', 'slideInRight', 'fadeIn', 'bounceInUp']
+/*入场动画效果家族：按页确定性选一个家族，家族内方向轮换——多样且风格统一*/
+const EFFECT_FAMILIES = [
+    ['fadeIn', 'fadeInUp', 'fadeInDown', 'fadeInLeft', 'fadeInRight'],
+    ['slideInUp', 'slideInLeft', 'slideInRight', 'slideInDown'],
+    ['zoomIn', 'zoomInUp', 'zoomInLeft', 'zoomInRight', 'zoomInDown'],
+    ['bounceInUp', 'bounceInLeft', 'bounceInRight', 'bounceInDown', 'bounceIn'],
+    ['rotateIn', 'rotateInUpLeft', 'rotateInUpRight', 'rotateInDownLeft', 'rotateInDownRight'],
+    ['backInUp', 'backInLeft', 'backInRight', 'backInDown'],
+]
+
+function pickEffectFamily(slide) {
+    const key = String(slide.id || '')
+    let h = 0
+    for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0
+    return EFFECT_FAMILIES[h % EFFECT_FAMILIES.length]
+}
 /*LLM调用计数（统计用）*/
 let _llmCalls = 0
 
@@ -245,7 +260,7 @@ ${buildDesignStats()}
 
 ## 其他
 - 元素id以el_前缀且页内唯一；富文本HTML只允许数据规范白名单内的标签与样式
-- 动画由系统统一注入，不要输出animations字段
+- 动画由系统统一注入，不要输出animations字段；若本页有希望**按顺序强调展示**的核心元素（结论、公式、图表、主卡片等），给这些元素加 "emphasis":N（N从1开始，1最先出场；**每页最多标注4个**，只标核心，标题/装饰/正文不要标）；不标注则系统自动挑选核心元素或不加动画
 - 文本内容使用规划中的文案，可按排版需要微调标点，不得大幅改写
 - 只输出一个Slide JSON对象，不要markdown围栏、不要任何解释
 `
@@ -282,6 +297,7 @@ ${buildDesignStats()}
 {"slides": [ {Slide页1}, {Slide页2}, ... ]}
 slides数组的长度、顺序必须与章节规划的页数一致，每个元素都是完整的Slide对象。
 每个Slide都必须包含 remark 字段：30~80字纯文本口语化讲解词（不要HTML），是该页"讲给学员听的串词"——按页面视觉顺序组织讲述、公式念出符号含义、图表先结论后数据；不得复读页面文字原文，禁止空话套话。
+动画由系统统一注入（不要输出animations字段）；需要按顺序强调的核心元素可加 "emphasis":N（1最先，每页最多4个，只标核心元素）。
 `
 }
 
@@ -776,6 +792,9 @@ function sanitizeElement(el) {
     base.left = num(el.left, 0)
     base.top = num(el.top, 0)
     if (base.left < -80 || base.top < -80 || base.left > CANVAS_WIDTH + 80 || base.top > CANVAS_HEIGHT + 80) return null
+    /*动画强调标注：模型输出 emphasis:1~8（二次清洗从 _em 继承），由 attachAnimations 消费后移除*/
+    const em = typeof el.emphasis === 'number' ? el.emphasis : (typeof el._em === 'number' ? el._em : null)
+    if (em !== null && em >= 1 && em <= 8) base._em = Math.round(em)
     if (el.type === 'line') {
         if (!Array.isArray(el.start) || el.start.length !== 2 || !Array.isArray(el.end) || el.end.length !== 2) return null
         base.width = num(el.width, 2)
@@ -1005,10 +1024,71 @@ function clusterCandidates(candidates) {
 }
 
 export function attachAnimations(slide, pageType) {
-    if (!['content', 'transition'].includes(pageType)) return
+    try {
+        attachAnimationsInner(slide, pageType)
+    } finally {
+        for (const el of slide.elements) delete el._em
+    }
+}
+
+/*只为核心元素添加入场动画：模型emphasis标注优先 > 启发式挑选核心元素 > 无可强调内容则不加*/
+function attachAnimationsInner(slide, pageType) {
+    const elements = slide.elements
+    /*分镜面板兜底（demo渲染失败产物）：保持逐帧点击*/
+    if (elements.some(el => el.__frame !== undefined)) {
+        attachFrameAnimations(slide)
+        return
+    }
+    if (pageType !== 'content') return
+    /*1) 模型显式标注的强调元素：按emphasis分组，数字小的先出场，最多4组*/
+    const marked = elements.filter(el => typeof el._em === 'number')
+    let groups = []
+    if (marked.length) {
+        const byEm = {}
+        for (const el of marked) (byEm[el._em] = byEm[el._em] || []).push(el)
+        groups = Object.keys(byEm).map(Number).sort((a, b) => a - b).slice(0, 4).map(k => byEm[k])
+    } else {
+        /*2) 启发式：只挑核心元素（条目文本/公式/图表/表格/视频/整幅配图），邻近归组，按文档顺序=内容顺序排列*/
+        const core = []
+        for (const el of elements) {
+            if (['latex', 'chart', 'table', 'video'].includes(el.type)) core.push(el)
+            else if (el.type === 'text' && ['item', 'itemTitle'].includes(el.textType)) core.push(el)
+            else if (el.type === 'image' && el.imageType === 'pageFigure') core.push(el)
+        }
+        if (core.length) {
+            const items = []
+            for (const el of core) {
+                const r = getElRect(el)
+                if (r.w < 12 || r.h < 12) continue
+                items.push({el, r})
+            }
+            const clustered = clusterCandidates(items)
+            clustered.sort((a, b) => elements.indexOf(a[0].el) - elements.indexOf(b[0].el))
+            groups = clustered.slice(0, 4).map(g => g.map(x => x.el))
+        }
+    }
+    if (!groups.length) return
+    const family = pickEffectFamily(slide)
+    const animations = []
+    groups.forEach((group, gi) => {
+        group.forEach((el, ei) => {
+            animations.push({
+                id: `an_${tools.getUUID().substring(0, 10)}`,
+                elId: el.id,
+                effect: ei === 0 ? family[gi % family.length] : 'fadeIn',
+                type: 'in',
+                duration: 500 + (gi % 3) * 100,
+                trigger: ei === 0 ? 'click' : 'measured',
+            })
+        })
+    })
+    if (animations.length) slide.animations = animations
+}
+
+/*分镜面板：底图与页面同现，其后每帧一次点击出场*/
+function attachFrameAnimations(slide) {
     const elements = slide.elements
     const canvasArea = CANVAS_WIDTH * CANVAS_HEIGHT
-    /*参与动画的元素：排除通铺装饰（大面积shape/line）*/
     const candidates = []
     for (const el of elements) {
         if (el.type === 'line') continue
@@ -1017,63 +1097,38 @@ export function attachAnimations(slide, pageType) {
         if (r.w < 12 || r.h < 12) continue
         candidates.push({el, r})
     }
-    /*分镜面板兜底：按 __frame 标记逐帧点击出场*/
-    if (candidates.some(c => c.el.__frame !== undefined)) {
-        const byFrame = {}
-        const normal = []
-        for (const c of candidates) {
-            if (c.el.__frame === undefined) normal.push(c)
-            else (byFrame[c.el.__frame] = byFrame[c.el.__frame] || []).push(c)
-        }
-        const animations = []
-        const order = Object.keys(byFrame).sort((a, b) => {
-            if (a === 'base') return -1
-            if (b === 'base') return 1
-            return Number(a) - Number(b)
-        })
-        let effectIdx = 0
-        order.forEach((fk, gi) => {
-            const group = byFrame[fk]
-            group.forEach((c, ei) => {
-                animations.push({
-                    id: `an_${tools.getUUID().substring(0, 10)}`,
-                    elId: c.el.id,
-                    effect: gi === 0 ? 'fadeIn' : (ei === 0 ? IN_EFFECTS[effectIdx++ % IN_EFFECTS.length] : 'fadeIn'),
-                    type: 'in',
-                    duration: 500,
-                    trigger: gi === 0 ? 'measured' : (ei === 0 ? 'click' : 'measured'),
-                })
-            })
-        })
-        /*非分镜元素（页面标题等）与页面同现*/
-        for (const c of normal) {
-            animations.unshift({id: `an_${tools.getUUID().substring(0, 10)}`, elId: c.el.id, effect: 'fadeIn', type: 'in', duration: 400, trigger: 'measured'})
-        }
-        for (const el of elements) delete el.__frame
-        if (animations.length) slide.animations = animations
-        return
+    const byFrame = {}
+    const normal = []
+    for (const c of candidates) {
+        if (c.el.__frame === undefined) normal.push(c)
+        else (byFrame[c.el.__frame] = byFrame[c.el.__frame] || []).push(c)
     }
-    if (!candidates.length) return
-    const clusters = clusterCandidates(candidates)
-    clusters.sort((a, b) => (Math.min(...a.map(x => x.r.y)) - Math.min(...b.map(x => x.r.y))) || (Math.min(...a.map(x => x.r.x)) - Math.min(...b.map(x => x.r.x))))
-    /*第一块视为标题区：与页面同现（measured）；后续块逐块点击出场*/
+    const family = pickEffectFamily(slide)
     const animations = []
+    const order = Object.keys(byFrame).sort((a, b) => {
+        if (a === 'base') return -1
+        if (b === 'base') return 1
+        return Number(a) - Number(b)
+    })
     let effectIdx = 0
-    clusters.slice(0, 8).forEach((group, ci) => {
-        const isTitle = ci === 0
-        const trigger = isTitle ? 'measured' : 'click'
-        const effect = isTitle ? 'fadeIn' : IN_EFFECTS[effectIdx++ % IN_EFFECTS.length]
+    order.forEach((fk, gi) => {
+        const group = byFrame[fk]
         group.forEach((c, ei) => {
             animations.push({
                 id: `an_${tools.getUUID().substring(0, 10)}`,
                 elId: c.el.id,
-                effect: ei === 0 ? effect : 'fadeIn',
+                effect: gi === 0 ? 'fadeIn' : (ei === 0 ? family[effectIdx++ % family.length] : 'fadeIn'),
                 type: 'in',
-                duration: 600,
-                trigger: ei === 0 ? trigger : 'measured',
+                duration: 500,
+                trigger: gi === 0 ? 'measured' : (ei === 0 ? 'click' : 'measured'),
             })
         })
     })
+    /*非分镜元素（页面标题等）与页面同现*/
+    for (const c of normal) {
+        animations.unshift({id: `an_${tools.getUUID().substring(0, 10)}`, elId: c.el.id, effect: 'fadeIn', type: 'in', duration: 400, trigger: 'measured'})
+    }
+    for (const el of elements) delete el.__frame
     if (animations.length) slide.animations = animations
 }
 
