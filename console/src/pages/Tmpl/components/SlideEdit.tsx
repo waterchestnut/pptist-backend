@@ -59,6 +59,7 @@ const SlideEdit: ForwardRefRenderFunction<SlideEditAction, SlideEditProps> = (pr
           height='100%'
           scrolling='no'
           frameBorder='0'
+          allow="fullscreen; autoplay; clipboard-read; clipboard-write"
         /> : null
       }
     </Modal>
