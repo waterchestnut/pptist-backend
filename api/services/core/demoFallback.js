@@ -179,6 +179,56 @@ const FRAMES = {
             shapeEl(dots.trim(), {x: 0, y: 0, w: c.w, h: c.h}, '#EF4444', '#EF4444'),
             shapeEl(sq.trim(), {x: 0, y: 0, w: c.w, h: c.h}, color, color)]
     },
+    custom(p, c, color) {
+        const frames = Array.isArray(p.frames) ? p.frames : []
+        const f = frames[Math.min(frames.length - 1, c.state)]
+        if (!f || !Array.isArray(f.elements)) return []
+        const sx = c.w / 100, sy = c.h / 100
+        const els = []
+        const groups = {}
+        const pathOf = e => {
+            switch (e.type) {
+                case 'rect': {
+                    const w = e.w || 0, h = e.h || 0
+                    return `M${e.x} ${e.y} L${e.x + w} ${e.y} L${e.x + w} ${e.y + h} L${e.x} ${e.y + h} Z`
+                }
+                case 'circle': return dotPath(e.cx, e.cy, e.r)
+                case 'poly': return `M${e.points.map(pt => `${pt[0]} ${pt[1]}`).join(' L ')} Z`
+                case 'path': return e.d || ''
+                case 'arc': {
+                    const a1 = (e.a1 || 0) * Math.PI / 180, a2 = (e.a2 || 90) * Math.PI / 180
+                    const x1 = e.cx + e.r * Math.cos(a1), y1 = e.cy + e.r * Math.sin(a1)
+                    const x2 = e.cx + e.r * Math.cos(a2), y2 = e.cy + e.r * Math.sin(a2)
+                    const large = Math.abs((e.a2 || 90) - (e.a1 || 0)) > 180 ? 1 : 0
+                    return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${e.r} ${e.r} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`
+                }
+                default: return ''
+            }
+        }
+        for (const e of f.elements) {
+            if (e.type === 'line') {
+                els.push(lineEl(e.from[0] * sx, e.from[1] * sy, (e.to[0] - e.from[0]) * sx, (e.to[1] - e.from[1]) * sy, e.color || color, !!e.arrow))
+            }
+            else if (e.type === 'text') {
+                const plain = String(e.s || '').replace(/^\$+|\$+$/g, '').replace(/\\[a-zA-Z]+/g, ' ').replace(/[{}^_]/g, ' ').replace(/\s+/g, ' ').trim()
+                if (plain) els.push(textEl(plain, {x: e.x * sx - 60, y: e.y * sy - 12, w: 120, h: 24}, e.color || color, Math.round(10 + (e.size || 4) * 1.6)))
+            }
+            else {
+                const key = e.fill || 'none'
+                if (!groups[key]) groups[key] = {d: '', color: e.color || color}
+                groups[key].d += ' ' + pathOf(e)
+            }
+        }
+        for (const key of Object.keys(groups)) {
+            const g = groups[key]
+            const d = g.d.trim()
+            if (!d) continue
+            els.push({type: 'shape', id: uid(), left: 0, top: 0, width: c.w, height: c.h, rotate: 0,
+                viewBox: [100, 100], path: d, fill: key === 'none' ? '#00000000' : key,
+                outline: {width: 2, style: 'solid', color: g.color}})
+        }
+        return els
+    },
 }
 
 /**
@@ -237,7 +287,8 @@ export function buildDemoFallbackElements(spec, box, palette) {
             els.push(el)
             groupIds.push(el.id)
         }
-        const cap = `${s + 1}. ${(CAPTIONS[spec.kind] || ['', '', ''])[s] || ''}`
+        const customCap = spec.kind === 'custom' && spec.params && Array.isArray(spec.params.frames) && spec.params.frames[s] ? spec.params.frames[s].caption : ''
+        const cap = `${s + 1}. ${customCap || (CAPTIONS[spec.kind] || ['', '', ''])[s] || ''}`
         const capEl = textEl(cap, {x: cell.x, y: cell.y + figH + 2, w: cell.w, h: capH - 4}, ink, 12)
         capEl.__frame = s
         els.push(capEl)

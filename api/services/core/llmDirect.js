@@ -30,7 +30,7 @@ const VIEWPORT_RATIO = 0.5625
 const ALLOWED_ELEMENT_TYPES = ['text', 'image', 'shape', 'line', 'table', 'chart', 'latex', 'video']
 const CHART_TYPES = ['bar', 'column', 'line', 'pie', 'ring', 'area', 'radar', 'scatter']
 const PAGE_TYPES = ['cover', 'contents', 'transition', 'content', 'end']
-const DEMO_KINDS = ['projectile', 'force_analysis', 'lever', 'derivation', 'limit', 'wave', 'transform', 'reaction']
+const DEMO_KINDS = ['projectile', 'force_analysis', 'lever', 'derivation', 'limit', 'wave', 'transform', 'reaction', 'custom']
 const IN_EFFECTS = ['fadeInUp', 'zoomIn', 'slideInRight', 'fadeIn', 'bounceInUp']
 /*LLM调用计数（统计用）*/
 let _llmCalls = 0
@@ -138,7 +138,8 @@ function buildPlanPrompt(options = {}) {
 ## 原理演示动画规则（让课件"会动"）
 - 当某页讲解运动过程/受力变化/公式推导/几何变换/极限逼近/波动/杠杆平衡/化学平衡移动等"原理"时，可为该页附加demo字段，由渲染服务生成演示动画视频并自动嵌入该页（你只需给出演示意图，不要生成视频本身）
 - 全稿最多2页使用demo；demo页的points不超过2项，动画画面负责演示过程；视频最终会占用约半页或整页净空区，该区域内不得再安排任何文字/图形
-- demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为公式字符串数组，与页面latex公式同一套KaTeX子集语法、无需$包裹、不得含中文，每步一条，系统自动转换渲染)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)
+- demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为公式字符串数组，与页面latex公式同一套KaTeX子集语法、无需$包裹、不得含中文，每步一条，系统自动转换渲染)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)、custom(通用帧序列原理演示，见下)
+- **custom 通用帧序列**（不属于上述8类原理时用custom，如单摆、光路、电路、滴定、细胞分裂、机械结构等任意过程演示）：params={"title":"演示标题","frames":[{"caption":"该帧说明(≤12字)","static":true/缺省,"elements":[图元...]}]}；2~6帧，每帧1~14个图元；图元坐标一律用**0~100归一化画布**（y向下）；图元类型：{"type":"line","from":[x,y],"to":[x,y],"arrow":true,"style":"dashed","color":"#hex"}、{"type":"rect","x":,"y":,"w":,"h":,"rx":,"fill":"#hex","color":"#hex"}、{"type":"circle","cx":,"cy":,"r":,"fill":,"color":}、{"type":"arc","cx":,"cy":,"r":,"a1":度,"a2":度,"color":}、{"type":"path","d":"M x y L x y Q cx cy x y C ... Z(仅大写绝对坐标)","fill":,"color":}、{"type":"poly","points":[[x,y],...],"fill":,"color":}、{"type":"text","x":,"y":,"s":"mathtext如v_{max}(不含中文)","size":1~10,"color":}；**第一帧建议 static:true 放支架/坐标系等全程不变的底图**，其后每帧描述一个状态（位置/箭头/数值随帧变化），caption写阶段说明
 - demo页layout要与视频画面配合：derivation→formula-derivation；projectile/wave/limit/transform/force_analysis/lever→split-image-right或split-image-left（一侧留给视频画面）
 
 ## 可用版式菜单
@@ -657,6 +658,118 @@ export function fixLatexClearance(slide) {
     return slide
 }
 
+/*custom帧序列参数校验（与python渲染器契约一致，双侧防御）*/
+const CUSTOM_TYPE_WHITELIST = ['line', 'rect', 'circle', 'arc', 'path', 'poly', 'text']
+const CUSTOM_COLOR_RE = /^(#[0-9a-fA-F]{3,8}|rgba?\([\d.,\s]+\))$/
+
+function _cnum(v, lo = 0, hi = 100) {
+    return typeof v === 'number' && isFinite(v) ? Math.min(hi, Math.max(lo, v)) : null
+}
+
+function _cleanCustomElement(e) {
+    if (!e || typeof e !== 'object' || !CUSTOM_TYPE_WHITELIST.includes(e.type)) return null
+    const out = {type: e.type}
+    const color = typeof e.color === 'string' && CUSTOM_COLOR_RE.test(e.color) ? e.color : undefined
+    const fill = typeof e.fill === 'string' && e.fill !== 'none' && CUSTOM_COLOR_RE.test(e.fill) ? e.fill : undefined
+    if (color) out.color = color
+    if (fill) out.fill = fill
+    switch (e.type) {
+        case 'line': {
+            if (!Array.isArray(e.from) || !Array.isArray(e.to) || e.from.length !== 2 || e.to.length !== 2) return null
+            const [x1, y1, x2, y2] = [_cnum(e.from[0]), _cnum(e.from[1]), _cnum(e.to[0]), _cnum(e.to[1])]
+            if ([x1, y1, x2, y2].some(v => v === null)) return null
+            out.from = [x1, y1]
+            out.to = [x2, y2]
+            if (e.arrow) out.arrow = true
+            if (e.style === 'dashed') out.style = 'dashed'
+            return out
+        }
+        case 'rect': {
+            const x = _cnum(e.x), y = _cnum(e.y), w = _cnum(e.w), h = _cnum(e.h)
+            if ([x, y, w, h].some(v => v === null) || Math.min(w, 100 - x) < 1 || Math.min(h, 100 - y) < 1) return null
+            Object.assign(out, {x, y, w: Math.min(w, 100 - x), h: Math.min(h, 100 - y)})
+            const rx = _cnum(e.rx, 0, 10)
+            if (rx) out.rx = rx
+            return out
+        }
+        case 'circle': {
+            const cx = _cnum(e.cx), cy = _cnum(e.cy), r = _cnum(e.r, 0.5, 50)
+            if ([cx, cy, r].some(v => v === null)) return null
+            return Object.assign(out, {cx, cy, r})
+        }
+        case 'arc': {
+            const cx = _cnum(e.cx), cy = _cnum(e.cy), r = _cnum(e.r, 0.5, 50)
+            const a1 = _cnum(e.a1, -360, 360), a2 = _cnum(e.a2, -360, 360)
+            if ([cx, cy, r, a1, a2].some(v => v === null)) return null
+            return Object.assign(out, {cx, cy, r, a1, a2})
+        }
+        case 'text': {
+            if (typeof e.s !== 'string' || !e.s.trim() || e.s.length > 48) return null
+            const x = _cnum(e.x), y = _cnum(e.y)
+            if (x === null || y === null) return null
+            out.x = x
+            out.y = y
+            out.s = e.s.replace(/[\u4e00-\u9fff]/g, '')
+            if (!out.s.trim()) return null
+            const size = _cnum(e.size, 1, 10)
+            if (size) out.size = size
+            return out
+        }
+        case 'path': {
+            const d = typeof e.d === 'string' ? e.d.trim() : ''
+            if (!d || d.length > 400 || !/^[MLQCZmlqcz\s\d.\-,]+$/.test(d)) return null
+            out.d = d
+            return out
+        }
+        case 'poly': {
+            if (!Array.isArray(e.points) || e.points.length < 3 || e.points.length > 20) return null
+            const pts = []
+            for (const pt of e.points) {
+                if (!Array.isArray(pt) || pt.length !== 2) return null
+                const x = _cnum(pt[0]), y = _cnum(pt[1])
+                if (x === null || y === null) return null
+                pts.push([x, y])
+            }
+            out.points = pts
+            return out
+        }
+    }
+    return null
+}
+
+export function validateCustomDemoParams(params) {
+    const raw = params && Array.isArray(params.frames) ? params.frames : null
+    if (!raw || raw.length < 2 || raw.length > 6) return null
+    const frames = []
+    for (const f of raw.slice(0, 6)) {
+        if (!f || typeof f !== 'object' || !Array.isArray(f.elements) || !f.elements.length) return null
+        const els = []
+        for (const e of f.elements.slice(0, 14)) {
+            const c = _cleanCustomElement(e)
+            if (c) els.push(c)
+        }
+        if (!els.length) return null
+        frames.push({
+            caption: typeof f.caption === 'string' ? f.caption.substring(0, 24) : '',
+            static: !!f.static,
+            elements: els,
+        })
+    }
+    if (frames.length < 2) return null
+    return {frames, title: typeof params.title === 'string' ? params.title.substring(0, 20) : '', ...(params.seconds ? {seconds: _cnum(params.seconds, 3, 12)} : {})}
+}
+
+/*视频占位元素渲染时长：custom按帧数扩展*/
+function demoSeconds(spec) {
+    if (spec.params && typeof spec.params.seconds === 'number') {
+        return Math.min(12, Math.max(3, spec.params.seconds))
+    }
+    if (spec.kind === 'custom' && Array.isArray(spec.params?.frames)) {
+        return Math.min(12, Math.max(4, Math.round(2 + spec.params.frames.length * 1.6)))
+    }
+    return 6
+}
+
 function sanitizeElement(el) {
     if (!el || typeof el !== 'object' || !ALLOWED_ELEMENT_TYPES.includes(el.type)) return null
     const base = {type: el.type, id: typeof el.id === 'string' && el.id ? el.id : `el_${tools.getUUID().substring(0, 8)}`, rotate: num(el.rotate, 0)}
@@ -710,9 +823,17 @@ function sanitizeElement(el) {
             } else {
                 const render = el.render
                 if (!render || !DEMO_KINDS.includes(render.kind)) return null
-                base.src = ''
-                base.ext = 'mp4'
-                base.render = {kind: render.kind, params: render.params && typeof render.params === 'object' ? render.params : {}}
+                if (render.kind === 'custom') {
+                    const valid = validateCustomDemoParams(render.params)
+                    if (!valid) return null
+                    base.src = ''
+                    base.ext = 'mp4'
+                    base.render = {kind: 'custom', params: valid}
+                } else {
+                    base.src = ''
+                    base.ext = 'mp4'
+                    base.render = {kind: render.kind, params: render.params && typeof render.params === 'object' ? render.params : {}}
+                }
             }
             /*强制半页/全页档位，避免视频与其他元素互相压盖*/
             normalizeVideoBox(base)
@@ -1151,7 +1272,7 @@ export async function resolveDemoVideos(slide, stats, options, palette = []) {
             const ret = await withTimeout(renderDemo(spec.kind, params, {
                 width: rw,
                 height: rh,
-                seconds: params.seconds || 6,
+                seconds: demoSeconds(spec),
                 timeoutMs: 40000,
             }), 45000, '演示渲染')
             const userInfo = options.operator || {userCode: 'ai-direct', realName: 'AI直出'}

@@ -776,12 +776,37 @@ filter: brightness(108%) contrast(105%) blur(2px) opacity(92%);
 | --- | --- | --- | --- |
 | `type` | `"video"` | 必须 | 元素类型 |
 | `src` | `string` | 必须 | 占位时填空字符串，系统回填真实 mp4 地址 |
-| `render.kind` | `string` | 必须 | 演示类型：`projectile`/`force_analysis`/`lever`/`derivation`/`limit`/`wave`/`transform`/`reaction` |
-| `render.params` | `object` | 建议 | 演示参数；`derivation` 用 `steps`（公式字符串数组，与页面公式同一 KaTeX 子集语法，无需 `$` 包裹、不含中文）；`transform` 用 `mode`；画面颜色会自动取主题色 |
+| `render.kind` | `string` | 必须 | 演示类型：`projectile`/`force_analysis`/`lever`/`derivation`/`limit`/`wave`/`transform`/`reaction`/`custom` |
+| `render.params` | `object` | 建议 | 演示参数；`derivation` 用 `steps`（公式字符串数组，与页面公式同一 KaTeX 子集语法，无需 `$` 包裹、不含中文）；`transform` 用 `mode`；`custom` 用 `frames`（见下）；画面颜色会自动取主题色 |
 | `autoplay` | `boolean` | 可选 | 默认 `false`（点击播放） |
 | `poster` | `string` | 可选 | 封面地址，系统自动回填 |
 
 > 若 `render.kind` 非法或渲染服务不可用，系统会在同一净空区内自动降级为"三帧分镜面板"（shape/line/latex + 逐帧点击动画），不产生空白、也不压盖其他元素。
+
+### custom 通用帧序列（任意原理演示）
+
+不属于上述 8 类内置原理时（单摆、光路、电路、滴定、机械结构、细胞分裂等），用 `custom`：模型直接给出**状态帧序列**，渲染服务逐帧合成动画，分镜兜底复用同一份数据。
+
+```json
+{"kind": "custom", "params": {"title": "单摆", "frames": [
+  {"caption": "支架", "static": true, "elements": [
+    {"type": "line", "from": [20, 10], "to": [80, 10], "color": "#1F2937"}]},
+  {"caption": "左端点", "elements": [
+    {"type": "line", "from": [50, 10], "to": [28, 55], "color": "#64748B"},
+    {"type": "circle", "cx": 28, "cy": 60, "r": 6, "fill": "#2563EB", "color": "#1E3A8A"}]},
+  {"caption": "最低点速度最大", "elements": [
+    {"type": "line", "from": [50, 10], "to": [50, 60], "color": "#64748B"},
+    {"type": "circle", "cx": 50, "cy": 66, "r": 6, "fill": "#2563EB", "color": "#1E3A8A"},
+    {"type": "line", "from": [56, 66], "to": [74, 66], "arrow": true, "color": "#EF4444"},
+    {"type": "text", "x": 66, "y": 78, "s": "v_{max}", "size": 4, "color": "#EF4444"}]}
+]}}
+```
+
+规则：
+- `frames` 2~6 帧，每帧 `caption`（≤12字）、`static`（底图帧全程显示，建议第一帧）、`elements` 1~14 个
+- **图元坐标一律 0~100 归一化画布，y 轴向下**
+- 图元类型：`line`（from/to/arrow/style）、`rect`（x/y/w/h/rx/fill）、`circle`（cx/cy/r/fill）、`arc`（cx/cy/r/a1/a2 度）、`path`（`d` 仅大写绝对 M/L/Q/C/Z）、`poly`（points）、`text`（x/y/`s` 为 mathtext 不含中文/size 1~10）
+- 每帧只描述"该状态"，帧间变化的部分（位置、箭头、数值标注）随帧给出，静止的支架/坐标系放 `static` 帧
 
 ### 视频布局档位（系统强制归一，必须按此排版）
 
