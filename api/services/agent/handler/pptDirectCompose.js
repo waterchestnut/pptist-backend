@@ -8,6 +8,7 @@ import {genPPTDirect} from '../../core/llmDirect.js'
 import {buildAndSavePptCover} from '../../core/coverShot.js'
 import pptInfoDac from '../../../daos/core/dac/pptInfoDac.js'
 import CreateTypeEnum from '../../../daos/core/enum/CreateTypeEnum.js'
+import {createGrpcCallTrace} from '../../core/traceRecorder.js'
 
 const tools = pptonline.tools
 const logger = pptonline.logger

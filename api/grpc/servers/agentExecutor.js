@@ -24,7 +24,7 @@ export function initService(server) {
                     handleStatus: 1,
                     logContent: '',
                     logGroup: '',
-                    handleRet: '{msg:""}',
+                    handleRet: '{"msg":""}',
                     logExt: ''
                 })*/
             } catch (e) {
@@ -32,7 +32,7 @@ export function initService(server) {
                     handleStatus: -1,
                     logContent: e.message || e,
                     logGroup: 'error',
-                    handleRet: '{msg:""}',
+                    handleRet: '{"msg":""}',
                     logExt: ''
                 })
             } finally {

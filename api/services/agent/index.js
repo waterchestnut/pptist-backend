@@ -31,6 +31,8 @@ export async function localExecAgentTask(agentTaskInfo, grpcCall) {
         ret = {
             handleStatus: -1,
             handleRet: agentTaskInfo.handleRet,
+            logContent: `任务执行异常：${e.message || e}`,
+            logGroup: 'error',
             errorMsg: e.message || e,
         }
     }
