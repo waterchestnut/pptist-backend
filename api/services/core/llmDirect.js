@@ -260,6 +260,7 @@ ${buildDesignStats()}
 
 ## 其他
 - 元素id以el_前缀且页内唯一；富文本HTML只允许数据规范白名单内的标签与样式
+- 文本元素每段文字必须在 span 的 style 中显式给出 font-size（章节序号90~140px、页标题32~48px、正文16~24px），禁止省略字号靠默认渲染
 - 动画由系统统一注入，不要输出animations字段；若本页有希望**按顺序强调展示**的核心元素（结论、公式、图表、主卡片等），给这些元素加 "emphasis":N（N从1开始，1最先出场；**每页最多标注4个**，只标核心，标题/装饰/正文不要标）；不标注则系统自动挑选核心元素或不加动画
 - 文本内容使用规划中的文案，可按排版需要微调标点，不得大幅改写
 - 只输出一个Slide JSON对象，不要markdown围栏、不要任何解释
@@ -297,6 +298,7 @@ ${buildDesignStats()}
 {"slides": [ {Slide页1}, {Slide页2}, ... ]}
 slides数组的长度、顺序必须与章节规划的页数一致，每个元素都是完整的Slide对象。
 每个Slide都必须包含 remark 字段：30~80字纯文本口语化讲解词（不要HTML），是该页"讲给学员听的串词"——按页面视觉顺序组织讲述、公式念出符号含义、图表先结论后数据；不得复读页面文字原文，禁止空话套话。
+文本元素每段文字必须在 span 的 style 中显式给出 font-size（章节序号90~140px、页标题32~48px、正文16~24px），禁止省略字号靠默认渲染。
 动画由系统统一注入（不要输出animations字段）；需要按顺序强调的核心元素可加 "emphasis":N（1最先，每页最多4个，只标核心元素）。
 `
 }
@@ -1078,7 +1080,7 @@ function attachAnimationsInner(slide, pageType) {
                 effect: ei === 0 ? family[gi % family.length] : 'fadeIn',
                 type: 'in',
                 duration: 500 + (gi % 3) * 100,
-                trigger: ei === 0 ? 'click' : 'measured',
+                trigger: ei === 0 ? 'click' : 'meantime',
             })
         })
     })
@@ -1120,13 +1122,13 @@ function attachFrameAnimations(slide) {
                 effect: gi === 0 ? 'fadeIn' : (ei === 0 ? family[effectIdx++ % family.length] : 'fadeIn'),
                 type: 'in',
                 duration: 500,
-                trigger: gi === 0 ? 'measured' : (ei === 0 ? 'click' : 'measured'),
+                trigger: gi === 0 ? 'meantime' : (ei === 0 ? 'click' : 'meantime'),
             })
         })
     })
     /*非分镜元素（页面标题等）与页面同现*/
     for (const c of normal) {
-        animations.unshift({id: `an_${tools.getUUID().substring(0, 10)}`, elId: c.el.id, effect: 'fadeIn', type: 'in', duration: 400, trigger: 'measured'})
+        animations.unshift({id: `an_${tools.getUUID().substring(0, 10)}`, elId: c.el.id, effect: 'fadeIn', type: 'in', duration: 400, trigger: 'meantime'})
     }
     for (const el of elements) delete el.__frame
     if (animations.length) slide.animations = animations
@@ -1449,7 +1451,60 @@ export function fixLatexContrast(slide) {
 
 /*---------------- 页级后处理 ----------------*/
 
+/*给缺少内联 font-size 的段落注入显式字号：模型偶尔整章遗漏字号，文本会按默认16px渲染（章节序号特别小）；按页面类型与元素角色推断兜底字号，并保证文本框容纳*/
+function pickFallbackFontSize(el, plain, existing, pageType) {
+    const isNumber = el.textType === 'partNumber' || /^\d{1,2}$/.test(plain)
+    if (isNumber && ['transition', 'cover'].includes(pageType)) return 96
+    if (existing.length) return Math.min(...existing)
+    if (['transition', 'cover', 'end'].includes(pageType)) {
+        if (el.top < 260 && plain.length <= 20) return 44
+        return plain.length > 30 ? 20 : 24
+    }
+    if (pageType === 'content') return (el.top < 100 && plain.length <= 24) ? 32 : 18
+    return 18
+}
+
+export function ensureTextFontSizes(slide, pageType) {
+    for (const el of slide.elements) {
+        if (el.type !== 'text' || typeof el.content !== 'string') continue
+        const plain = el.content.replace(/<[^>]*>/g, '').replace(/&[a-z]+;|&#\d+;/gi, '').trim()
+        if (!plain) continue
+        const isNumber = el.textType === 'partNumber' || /^\d{1,2}$/.test(plain)
+        const existing = [...el.content.matchAll(/font-size:\s*(\d+(?:\.\d+)?)px/gi)].map(m => parseFloat(m[1]))
+        /*章节序号缺字号或过小：强制升到96px并放大文本框*/
+        if (isNumber && ['transition', 'cover'].includes(pageType) && (!existing.length || Math.min(...existing) < 56)) {
+            const size = 96
+            if (/<p[\s>]/i.test(el.content)) {
+                el.content = el.content.replace(/font-size:\s*[\d.]+px/gi, 'font-size:96px')
+                el.content = el.content.replace(/<p([^>]*)>([\s\S]*?)<\/p>/gi, (m, attrs, inner) => {
+                    if (/font-size/i.test(attrs) || /font-size/i.test(inner)) return m
+                    return `<p${attrs}><span style="font-size:${size}px">${inner}</span></p>`
+                })
+            } else {
+                el.content = `<p><span style="font-size:${size}px">${el.content}</span></p>`
+            }
+            el.height = Math.max(el.height, Math.ceil(96 * (el.lineHeight || 1.5)))
+            el.width = Math.max(el.width, Math.ceil(96 * 0.62 * plain.length + 12))
+            continue
+        }
+        /*其余：只给缺字号的段落补齐兜底值（span 内联，与富文本白名单一致）*/
+        const size = pickFallbackFontSize(el, plain, existing, pageType)
+        if (/<p[\s>]/i.test(el.content)) {
+            el.content = el.content.replace(/<p([^>]*)>([\s\S]*?)<\/p>/gi, (m, attrs, inner) => {
+                if (/font-size/i.test(attrs) || /font-size/i.test(inner)) return m
+                return `<p${attrs}><span style="font-size:${size}px">${inner}</span></p>`
+            })
+        } else if (!existing.length) {
+            el.content = `<p><span style="font-size:${size}px">${el.content}</span></p>`
+        }
+        const lineCount = Math.max(1, (el.content.match(/<p[\s>]/gi) || []).length)
+        const needH = Math.ceil(size * (el.lineHeight || 1.5) * lineCount)
+        if (el.height < needH) el.height = needH
+    }
+}
+
 async function postProcessSlide(slide, pageSpec, plan, stats, options = {}) {
+    ensureTextFontSizes(slide, pageSpec.type)
     const lint = layoutLint(slide, pageSpec.type)
     if (lint.ok) stats.lintPass++
     else stats.lintWarn++
