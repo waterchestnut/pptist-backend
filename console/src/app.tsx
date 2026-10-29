@@ -5,7 +5,8 @@ import type {Settings as LayoutSettings} from '@ant-design/pro-components';
 import {SettingDrawer} from '@ant-design/pro-components';
 import type {RunTimeLayoutConfig} from '@umijs/max';
 import {history, Link} from '@umijs/max';
-import defaultSettings from '../config/defaultSettings';
+import defaultSettings from '../config/defaultSettings'
+import {themeLayoutSettings} from '@/utils/runtimeTheme';
 import {errorConfig} from './requestErrorConfig';
 import {queryCurrentUser} from '@/services/ucenter/user';
 import React from 'react';
@@ -42,7 +43,7 @@ export async function getInitialState(): Promise<{
   return {
     fetchUserInfo,
     currentUser,
-    settings: defaultSettings as Partial<LayoutSettings>,
+    settings: themeLayoutSettings(defaultSettings as Partial<LayoutSettings>),
   };
 }
 

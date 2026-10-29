@@ -131,9 +131,10 @@ export default defineConfig({
    * @description 配置 <head> 中额外的 script
    */
   favicons: ['/favicon.svg'],
+  links: [{rel: 'stylesheet', href: '/css/brand.css'}],
   headScripts: [
     {src: '/scripts/loading.js', async: true},
-    {content: `APP_TITLE='${process.env.APP_TITLE || 'XXZX_APP_TITLE'}';APP_LOGO='${process.env.APP_LOGO || 'XXZX_APP_LOGO'}';APP_ICP='${process.env.APP_ICP || 'XXZX_APP_ICP'}';APP_COPYRIGHT='${process.env.APP_COPYRIGHT || 'XXZX_APP_COPYRIGHT'}';`},
+    {content: `APP_TITLE='${process.env.APP_TITLE || 'XXZX_APP_TITLE'}';APP_LOGO='${process.env.APP_LOGO || 'XXZX_APP_LOGO'}';APP_ICP='${process.env.APP_ICP || 'XXZX_APP_ICP'}';APP_COPYRIGHT='${process.env.APP_COPYRIGHT || 'XXZX_APP_COPYRIGHT'}';APP_THEME='${process.env.APP_THEME || 'CW2PC_APP_THEME'}';`},
     {
       content: `
     /*用户中心接口地址*/
