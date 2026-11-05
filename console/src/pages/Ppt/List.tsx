@@ -164,7 +164,7 @@ const PptList: React.FC<PptListProps> = (props) => {
     >
       <ProList<any>
         actionRef={actionRef}
-        ghost={true}
+        ghost={false}
         itemCardProps={{
           ghost: true,
         }}

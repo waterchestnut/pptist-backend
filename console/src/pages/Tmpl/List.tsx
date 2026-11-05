@@ -79,7 +79,7 @@ const TmplList: React.FC<TmplListProps> = (props) => {
     >
       <ProList<any>
         actionRef={actionRef}
-        ghost={true}
+        ghost={false}
         itemCardProps={{
           ghost: true,
         }}
