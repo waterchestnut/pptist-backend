@@ -56,7 +56,9 @@ const Home: React.FC = () => {
   const canMyPpt = checkPermissions(['pptonline-ppt-my'], privs)
 
   return (
-    <PageContainer>
+    <PageContainer
+      header={{title: null, breadcrumb: {}}}
+    >
       {/* 欢迎横幅 */}
       <Card
         style={{

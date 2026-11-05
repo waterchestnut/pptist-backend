@@ -73,7 +73,10 @@ const TmplList: React.FC<TmplListProps> = (props) => {
   }
 
   return (
-    <ProCard className={styles.container}>
+    <PageContainer
+      header={{title: null, breadcrumb: {}}}
+      className={styles.container}
+    >
       <ProList<any>
         actionRef={actionRef}
         ghost={true}
@@ -318,7 +321,7 @@ const TmplList: React.FC<TmplListProps> = (props) => {
       <Preview ref={previewRef} version={version}/>
       <SlideEdit ref={slideEditRef} onClose={localEditFinish} version={version}/>
       <PromptView ref={promptViewRef}/>
-    </ProCard>
+    </PageContainer>
   )
 }
 

@@ -158,7 +158,10 @@ const PptList: React.FC<PptListProps> = (props) => {
   }
 
   return (
-    <ProCard className={styles.container}>
+    <PageContainer
+      header={{title: null, breadcrumb: {}}}
+      className={styles.container}
+    >
       <ProList<any>
         actionRef={actionRef}
         ghost={true}
@@ -308,7 +311,7 @@ const PptList: React.FC<PptListProps> = (props) => {
       />
       <Preview ref={previewRef} title='课件预览' version={version}/>
       <SlideEdit ref={slideEditRef} onClose={localEditFinish} title='课件制作' version={version}/>
-    </ProCard>
+    </PageContainer>
   )
 }
 
