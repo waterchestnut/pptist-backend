@@ -8,13 +8,14 @@
 import fs from 'fs'
 import {OpenAI} from 'openai'
 import {jsonrepair} from 'jsonrepair'
-import {hfmath, CONFIG as hfmathConfig} from 'hfmath'
+import {hfmath, CONFIG as hfmathConfig} from './hfmath/index.js' /* 前端本地化hfmath（重写并扩展90+命令），与放映端渲染能力对齐 */
 import {getFileText} from './fileInfo.js'
 import {proxyImgSearch} from './pexels.js'
 import {renderDemo} from '../../grpc/clients/renderer.js'
 import {saveFile} from '../../grpc/clients/fileManage.js'
 import {sha1} from '../../tools/security.js'
 import {buildDemoFallbackElements} from './demoFallback.js'
+import {SHAPE_PATH_FORMULAS} from './shapeformulas/shapes.js'
 
 const config = pptonline.config
 const pptGenLLMConfig = config.pptGenLLMConfig
@@ -41,11 +42,14 @@ const EFFECT_FAMILIES = [
     ['backInUp', 'backInLeft', 'backInRight', 'backInDown'],
 ]
 
-function pickEffectFamily(slide) {
-    const key = String(slide.id || '')
+function hashStr(s) {
     let h = 0
-    for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0
-    return EFFECT_FAMILIES[h % EFFECT_FAMILIES.length]
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
+    return h
+}
+
+function pickEffectFamily(slide) {
+    return EFFECT_FAMILIES[hashStr(String(slide.id || '')) % EFFECT_FAMILIES.length]
 }
 /*LLM调用计数（统计用）*/
 let _llmCalls = 0
@@ -153,7 +157,7 @@ function buildPlanPrompt(options = {}) {
 ## 原理演示动画规则（让课件"会动"）
 - 当某页讲解运动过程/受力变化/公式推导/几何变换/极限逼近/波动/杠杆平衡/化学平衡移动等"原理"时，可为该页附加demo字段，由渲染服务生成演示动画视频并自动嵌入该页（你只需给出演示意图，不要生成视频本身）
 - 全稿最多2页使用demo；demo页的points不超过2项，动画画面负责演示过程；视频最终会占用约半页或整页净空区，该区域内不得再安排任何文字/图形
-- demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为公式字符串数组，与页面latex公式同一套KaTeX子集语法、无需$包裹、不得含中文，每步一条，系统自动转换渲染)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)、custom(通用帧序列原理演示，见下)
+- demo.kind 只允许：projectile(抛体运动,可带v0/angleDeg)、force_analysis(受力分析逐力出现)、lever(杠杆平衡)、derivation(公式分步推导,steps为公式字符串数组，走渲染服务mathtext保守子集——仅四则/分数\\\\frac/根号\\\\sqrt/上下标/希腊字母/\\\\sum \\\\int \\\\lim \\\\infty \\\\to \\\\approx等，不含矩阵cases等页面latex扩展语法、无需$包裹、不得含中文，每步一条，系统自动转换渲染)、limit(极限逼近)、wave(行波,可带wavelength/speed)、transform(几何变换,mode为rotate/reflect/translate)、reaction(化学平衡移动)、custom(通用帧序列原理演示，见下)
 - **custom 通用帧序列**（不属于上述8类原理时用custom，如单摆、光路、电路、滴定、细胞分裂、机械结构等任意过程演示）：params={"title":"演示标题","frames":[{"caption":"该帧说明(≤12字)","static":true/缺省,"elements":[图元...]}]}；2~6帧，每帧1~14个图元；图元坐标一律用**0~100归一化画布**（y向下）；图元类型：{"type":"line","from":[x,y],"to":[x,y],"arrow":true,"style":"dashed","color":"#hex"}、{"type":"rect","x":,"y":,"w":,"h":,"rx":,"fill":"#hex","color":"#hex"}、{"type":"circle","cx":,"cy":,"r":,"fill":,"color":}、{"type":"arc","cx":,"cy":,"r":,"a1":度,"a2":度,"color":}、{"type":"path","d":"M x y L x y Q cx cy x y C ... Z(仅大写绝对坐标)","fill":,"color":}、{"type":"poly","points":[[x,y],...],"fill":,"color":}、{"type":"text","x":,"y":,"s":"mathtext如v_{max}(不含中文)","size":1~10,"color":}；**第一帧建议 static:true 放支架/坐标系等全程不变的底图**，其后每帧描述一个状态（位置/箭头/数值随帧变化），caption写阶段说明
 - demo页layout要与视频画面配合：derivation→formula-derivation；projectile/wave/limit/transform/force_analysis/lever→split-image-right或split-image-left（一侧留给视频画面）
 
@@ -230,13 +234,15 @@ ${buildDesignStats()}
 
 ## 视觉表达规则（多用绘制，少用照片）
 - 视觉锚点优先用 shape（卡片/色带/容器/编号芯片）、line（分割线/流程箭头/坐标轴）、chart、table、latex 绘制实现
+- shape 优先使用预制公式：给 {"type":"shape","pathFormula":"star5","left":..,"top":..,"width":..,"height":..,"fill":"#hex"} 即可（无需path/viewBox，系统自动展开）；常用key：roundRect圆角卡、arrowRight/arrowUp箭头、chevronRight流程箭头条、star4/star5/star6/star8星形、hexagon/octagon科技多边形、donut圆环、donut/indicator、triangle/trapezoid/parallelogramLeft；简单的矩形/色带也可继续用自定义M/L path
 - 只有本页规划明确给出imageQueries时才输出image元素（src填""，加query字段），否则一个image都不要
 - 每页至少使用色板中3种颜色：标题主色/深色、卡片或底衬浅色、编号装饰强调色
 - 装饰最低要求：cover必须有渐变或大色块背景、标题不小于40px；contents条目配编号装饰；transition有超大节编号（60px以上）；end有装饰色块或渐变
 
 ## 公式规则（理科类页面必须遵守）
-- 公式一律使用type:"latex"元素，给出 {"type":"latex","id":"el_xx","left":..,"top":..,"width":..,"height":..,"color":"..","latex":"KaTeX子集语法"}；path/尺寸由系统渲染生成，不要输出path和viewBox
-- 支持：\\frac \\sqrt x^2 a_{ij} \\sum \\int \\lim \\infty \\to 希腊字母 \\times \\cdot \\pm \\div \\approx \\neq \\leq \\geq \\left( \\right) \\vec \\mathrm
+- 公式一律使用type:"latex"元素，给出 {"type":"latex","id":"el_xx","left":..,"top":..,"width":..,"height":..,"color":"..","latex":"LaTeX语法"}；path/尺寸由系统渲染生成，不要输出path和viewBox
+- 支持（扩展hfmath引擎，完整清单见数据规范LaTeX章节）：分数/根号/上下标嵌套、\\sum \\prod \\int \\iint \\oint \\lim \\partial、希腊字母全表、关系/集合/逻辑/运算符大类、箭头族、\\hat \\vec \\bar \\overline \\underbrace \\binom、\\mathrm \\mathbf \\mathbb{R} \\mathcal{L} \\text{英文}、转义 \\% \\$ \\{、自适应括号 \\left( \\right)、尖括号取整、函数名 \\sin \\cos \\log \\ln \\det \\gcd 等、**矩阵与分段：\\begin{matrix|pmatrix|bmatrix|vmatrix|cases|array}，& 分列、\\\\ 分行**
+- 不支持/避免：latex内中文、\\ce化学式（反应式写 2H_2 + O_2 \\rightarrow 2H_2O）、\\tag编号、align/gather多行对齐（分段用cases、多步算式拆多个latex元素）
 - **latex字段内严禁出现中文**（渲染器不支持，中文会丢失）：变量含义、单位说明等中文一律写在旁边的text元素里
 - 严禁把公式塞进text元素用unicode拼凑；规划formulas中的公式必须原样以latex元素呈现（可按版面微调间距）
 - **公式必须独占一行**：latex矩形上下各留至少20px净空，任何文本/图片/形状不得与其重叠；系统按字形自然尺寸渲染（实际宽度可能比你给的大），长公式务必拆成多个latex元素逐行排布，行距≥16px
@@ -286,7 +292,7 @@ ${getSchemaDoc()}
 - 公式、示意图、图表按需要在页间衔接：例如推导页在过渡页预告结论，随后页面展开步骤
 
 ## 版式与视觉规则
-- 视觉锚点优先用 shape/line/chart/table/latex 绘制；image仅当该页规划给出imageQueries时输出（src为""+query），否则不要输出image
+- 视觉锚点优先用 shape/line/chart/table/latex 绘制；shape 优先用预制公式 pathFormula（如 "roundRect"/"arrowRight"/"chevronRight"/"star5"/"hexagon"/"octagon"/"donut"，给宽高即可，系统自动展开path/viewBox）；image仅当该页规划给出imageQueries时输出（src为""+query），否则不要输出image
 - 某页规划含demo时：输出视频占位元素（src为""，render原样复制kind/params），尺寸必须按档位：左右半页约470x265（贴左left≈45或贴右left≈485，垂直居中）/ 上下横幅约640~900x245（水平居中，top≈55或≈262）/ 全页约950x535居中（本页仅留一行短标题）；系统会强制归一档，任何元素不得与视频矩形重叠
 - 每页至少使用色板中3种颜色；单页元素3~14个
 - 画布${CANVAS_WIDTH} x ${CANVAS_HEIGHT}，左右安全边距≥40；文本防溢出：所需高度≈行数x字号x行高+8，必须≤元素高度
@@ -380,6 +386,9 @@ async function callLLM(messages, options = {}) {
     const openai = new OpenAI({
         apiKey: pptGenLLMConfig.apiKey,
         baseURL: pptGenLLMConfig.baseURL,
+        /*挂死快速失败：默认10min等待×2重试会吃光整个生成单元预算，收敛为300s+1次重试*/
+        timeout: 300000,
+        maxRetries: 1,
     })
     let ret
     try {
@@ -788,7 +797,7 @@ function demoSeconds(spec) {
     return 6
 }
 
-function sanitizeElement(el) {
+export function sanitizeElement(el) {
     if (!el || typeof el !== 'object' || !ALLOWED_ELEMENT_TYPES.includes(el.type)) return null
     const base = {type: el.type, id: typeof el.id === 'string' && el.id ? el.id : `el_${tools.getUUID().substring(0, 8)}`, rotate: num(el.rotate, 0)}
     base.left = num(el.left, 0)
@@ -883,11 +892,30 @@ function sanitizeElement(el) {
             return rendered
         }
         case 'shape': {
-            if (!Array.isArray(el.viewBox) || el.viewBox.length !== 2) return null
-            if (typeof el.path !== 'string' || !el.path.trim()) return null
-            base.viewBox = [num(el.viewBox[0], 100), num(el.viewBox[1], 100)]
-            base.path = el.path
-            base.fill = isColor(el.fill) ? el.fill : '#FFFFFF'
+            /*预制形状公式：给出 pathFormula:"star5" + 宽高即可，path/viewBox 由系统按前端同款公式展开（编辑器内仍可拖拽调形）*/
+            const fKey = typeof el.pathFormula === 'string' && el.pathFormula ? el.pathFormula : null
+            if (fKey) {
+                const F = SHAPE_PATH_FORMULAS[fKey]
+                if (!F) return null
+                base.pathFormula = fKey
+                base.viewBox = [base.width, base.height]
+                try {
+                    if (F.editable) {
+                        base.path = F.formula(base.width, base.height, F.defaultValue)
+                        base.keypoints = F.defaultValue
+                    } else base.path = F.formula(base.width, base.height)
+                } catch (e) {
+                    logger.warn('pathFormula展开失败: %s => %s', fKey, e.message || e)
+                    return null
+                }
+                base.fill = isColor(el.fill) ? el.fill : '#FFFFFF'
+            } else {
+                if (!Array.isArray(el.viewBox) || el.viewBox.length !== 2) return null
+                if (typeof el.path !== 'string' || !el.path.trim()) return null
+                base.viewBox = [num(el.viewBox[0], 100), num(el.viewBox[1], 100)]
+                base.path = el.path
+                base.fill = isColor(el.fill) ? el.fill : '#FFFFFF'
+            }
             if (el.gradient && Array.isArray(el.gradient.colors)) base.gradient = el.gradient
             if (el.text && typeof el.text.content === 'string') {
                 base.text = {
@@ -1134,10 +1162,15 @@ function attachFrameAnimations(slide) {
     if (animations.length) slide.animations = animations
 }
 
-/*翻页动画：封面/结束页淡入，过渡页左右滑动*/
-function attachTurningMode(slide, pageType) {
-    if (pageType === 'cover' || pageType === 'end') slide.turningMode = 'fade'
-    else if (pageType === 'transition') slide.turningMode = 'slideX'
+/*翻页动画：封面淡入；章节过渡页与结束页按slide.id哈希从扩展模式池选取（多样化，需新版前端支持）*/
+const TRANSITION_TURNING_MODES = ['slideX', 'wipeX', 'slideDiagonal', 'circle', 'revealX', 'flipY']
+const END_TURNING_MODES = ['fade', 'scale', 'wipeY', 'slideY']
+
+export function attachTurningMode(slide, pageType) {
+    const key = String(slide.id || '')
+    if (pageType === 'cover') slide.turningMode = 'fade'
+    else if (pageType === 'end') slide.turningMode = END_TURNING_MODES[hashStr('end:' + key) % END_TURNING_MODES.length]
+    else if (pageType === 'transition') slide.turningMode = TRANSITION_TURNING_MODES[hashStr('turn:' + key) % TRANSITION_TURNING_MODES.length]
 }
 
 /*---------------- 搜图换真实URL ----------------*/

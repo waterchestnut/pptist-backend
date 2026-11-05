@@ -388,6 +388,31 @@ filter: brightness(108%) contrast(105%) blur(2px) opacity(92%);
 | `opacity` | `number` | 可选 | 透明度，`0~1` |
 | `shadow` | `object` | 可选 | 阴影，参考共享样式结构 |
 | `text` | `object` | 可选 | 形状内文本 |
+| `pathFormula` | `string` | 可选 | 预制形状公式 key；给出时**无需输出 `path`/`viewBox`**，系统按 `width`/`height` 自动展开（且编辑器中可继续拖拽调形） |
+
+可用 `pathFormula` key：
+
+- 圆角/切角/信息牌：`roundRect`、`roundRectDiagonal`、`roundRectSingle`、`roundRectSameSide`、`cutRectDiagonal`、`cutRectSingle`、`cutRectSameSide`、`cutRoundRect`、`message`、`roundMessage`、`ringRect`、`donut`、`diagStripe`、`plus`、`bullet`、`indicator`
+- 箭头：`arrowUp`、`arrowDown`、`arrowLeft`、`arrowRight`、`arrowUpDown`、`arrowLeftRight`
+- 箭头条/指示形：`chevronRight`、`chevronLeft`、`pentagonRight`、`pentagonLeft`、`dartRight`、`dartLeft`
+- 星形：`star4`、`star5`、`star6`、`star8`
+- 多边形：`hexagon`、`hexagonVertical`、`octagon`、`triangle`、`parallelogramLeft`、`parallelogramRight`、`trapezoid`、`L`
+
+示例（星形强调标记）：
+
+```json
+{
+  "type": "shape",
+  "id": "P03_el_star_01",
+  "left": 820,
+  "top": 96,
+  "width": 64,
+  "height": 64,
+  "rotate": 0,
+  "pathFormula": "star5",
+  "fill": "#F59E0B"
+}
+```
 
 ### `path` 绘制规范
 
@@ -714,7 +739,7 @@ filter: brightness(108%) contrast(105%) blur(2px) opacity(92%);
 
 ## LaTeX 公式元素 `latex`
 
-公式以 KaTeX 子集语法描述，矢量字形与包围盒由系统自动计算，因此**只需给出语义正确的 `latex` 与落位坐标**，不要输出 `path`/`viewBox`。
+公式以 LaTeX 语法描述（扩展 hfmath 渲染引擎），矢量字形与包围盒由系统自动计算，因此**只需给出语义正确的 `latex` 与落位坐标**，不要输出 `path`/`viewBox`。
 
 ### 最小推荐结构
 
@@ -737,15 +762,25 @@ filter: brightness(108%) contrast(105%) blur(2px) opacity(92%);
 | 字段 | 类型 | 必须 | 说明 |
 | --- | --- | --- | --- |
 | `type` | `"latex"` | 必须 | 元素类型 |
-| `latex` | `string` | 必须 | KaTeX 子集语法的公式源文本 |
+| `latex` | `string` | 必须 | LaTeX 语法（扩展 hfmath 引擎）的公式源文本 |
 | `left` / `top` | `number` | 必须 | 公式块落位坐标（系统按渲染结果自动定尺寸） |
 | `width` / `height` | `number` | 建议 | 期望宽高，用于版面预估；系统会按公式自然比例就近调整 |
 | `color` | `string` | 建议 | 公式笔画颜色 |
 | `rotate` | `number` | 建议 | 通常为 `0` |
 
-### 支持的语法子集
+### 支持的语法（已实测验证）
 
-分数 `\frac{a}{b}`、根号 `\sqrt{x}`（含 `\sqrt[n]{x}`）、上下标 `x^2`、`a_{ij}`、求和/积分/极限 `\sum_{i=1}^{n}`、`\int_a^b`、`\lim_{x \to 0}`、希腊字母（`\alpha` `\Delta` `\Omega` 等）、运算符 `\times` `\cdot` `\pm` `\div` `\approx` `\neq` `\leq` `\geq` `\infty` `\to`、括号自适应 `\left( ... \right)`、向量 `\vec{a}`、罗马体 `\mathrm{d}`。
+- 基础：分数 `\frac{a}{b}` `\dfrac` `\tfrac`、根号 `\sqrt{x}` `\sqrt[n]{x}`、上下标 `x^2` `a_{ij}`（可嵌套）、`f'(x)` 撇号
+- 微积分：`\sum_{i=1}^{n}` `\prod` `\int_a^b` `\iint` `\oint` `\lim_{x \to 0}` `\partial` `\frac{dy}{dx}` `\infty` `\to`
+- 希腊字母：`\alpha`~`\omega` `\Gamma`~`\Omega` `\varphi` `\varepsilon` 等
+- 关系/运算：`\times` `\cdot` `\pm` `\div` `\approx` `\neq` `\leq` `\geq` `\equiv` `\sim` `\propto` `\ll` `\gg` `\perp` `\parallel` `\cong` `\angle` `\triangle` `\odot` `\oplus` `\otimes` `\cup` `\cap` `\setminus` `\in` `\notin` `\subset` `\subseteq` `\forall` `\exists` `\nabla` `\therefore` `\because` `\land` `\lor` `\neg` `\implies` `\iff`
+- 箭头：`\rightarrow` `\Rightarrow` `\leftarrow` `\Leftarrow` `\leftrightarrow` `\Leftrightarrow` `\mapsto` `\uparrow` `\downarrow` `\nearrow` `\searrow` `\longrightarrow`
+- 组合记号：`\hat` `\bar` `\vec` `\dot` `\ddot` `\tilde` `\overline{AB}` `\widehat{}` `\overrightarrow{AB}` `\underbrace{...}_{...}` `\overbrace{...}` `\binom{n}{k}`
+- 字体/文本：`\mathrm{d}` `\mathbf{v}` `\mathbb{R}` `\mathcal{L}` `\mathit{x}` `\text{英文}`；转义 `\%` `\$` `\{` `\}` `\&` `\#`
+- 定界：`\left( ... \right)` `\left[ ... \right]` `\left\{ ... \right\}` `\left| ... \right|` `\langle \rangle` `\lfloor \rfloor` `\lceil \rceil`
+- 函数名：`\sin` `\cos` `\tan` `\sec` `\arcsin` `\log` `\ln` `\exp` `\lim` `\max` `\min` `\det` `\gcd`
+- 矩阵与分段（`\列` 用 `&` 分隔、行用 `\\` 分隔）：`\begin{matrix}` `\begin{pmatrix}` `\begin{bmatrix}` `\begin{Bmatrix}` `\begin{vmatrix}` `\begin{Vmatrix}` `\begin{cases}` `\begin{array}{cc}`
+- **不支持/请避免**：中文（`\text{中文}` 会丢字）、`\ce{}` 化学式（化学反应式写成 `2H_2 + O_2 \rightarrow 2H_2O` 并把中文说明放旁边 text）、`\tag{}` 编号、`align/gather` 多行对齐排版（分段条件用 `cases`、多行算式拆多个 `latex` 元素）
 
 > 严禁把公式塞进文本元素里用 unicode 拼凑；公式一律使用 `latex` 元素。
 > `latex` 字段内**不得出现中文**（渲染器仅支持西文数学符号），变量含义、单位等中文说明请写在相邻的文本元素中。
