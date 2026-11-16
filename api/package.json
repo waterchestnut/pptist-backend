@@ -42,7 +42,6 @@
     "hfmath": "^0.0.2",
     "ioredis": "^5.5.0",
     "jsonrepair": "^3.15.0",
-    "kafkajs": "^2.2.4",
     "mongoose": "^8.10.0",
     "mongoose-to-swagger-2": "^1.5.4",
     "node-fetch": "^3.3.2",
@@ -55,7 +54,8 @@
     "pptxtojson": "^1.6.0",
     "redlock": "5.0.0-beta.2",
     "svg-pathdata": "^8.0.0",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "@platformatic/kafka": "2.15.0"
   },
   "devDependencies": {
     "c8": "^10.1.2"
